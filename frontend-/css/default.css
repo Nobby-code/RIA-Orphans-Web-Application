@@ -1,0 +1,360 @@
+/*------------------------------------------------------------------
+* Project:        Royalheart - NonProfit Fundraising Charity HTML Template
+* Author:         HtmlDesignTemplates
+* URL:            https://themeforest.net/user/htmldesigntemplates
+* Created:        09/14/2025
+-------------------------------------------------------------------*/
+
+
+/* Font */
+ /* @font-face {
+  font-family: 'Poppins';
+  src: url('../fonts/PoppinsRegular.eot');
+  src: url('../fonts/PoppinsRegular.eot') format('embedded-opentype'),
+       url('../fonts/PoppinsRegular.woff2') format('woff2'),
+       url('../fonts/PoppinsRegular.woff') format('woff'),
+       url('../fonts/PoppinsRegular.ttf') format('truetype'),
+       url('../fonts/PoppinsRegular.svg') format('svg');
+} 
+
+@font-face {
+  font-family: 'Playfair';
+  src: url('../fonts/PlayfairDisplayRegular.eot');
+  src: url('../fonts/PlayfairDisplayRegular.eot') format('embedded-opentype'),
+       url('../fonts/PlayfairDisplayRegular.woff2') format('woff2'),
+       url('../fonts/PlayfairDisplayRegular.woff') format('woff'),
+       url('../fonts/PlayfairDisplayRegular.ttf') format('truetype'),
+       url('../fonts/PlayfairDisplayRegular.svg') format('svg');
+}  */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+
+/* Color */
+.primary {color: #FF6D12;}
+.secondary {color: #2C2734;}
+.text {color: #7e838b;}
+.white {color: #fff}
+.blue {color: #002C5B;}
+
+/* Background Color */
+.bg-primary{background-color: #FF6D12 !important;}
+.bg-secondary {background-color: #2C2734 !important;}
+.bg-secondary-light {background-color: #E6E3EB !important;}
+.bg-text {background-color: #7E838B;}
+.bg-grey{background-color: #F1F1F1 !important;}
+.bg-facebook {background-color: #3b5998;}
+.bg-twitter {background-color: #1da1f2;}
+.bg-youtube {background-color: #cd201f;}
+.bg-instagram {background-color: #7E838B;}
+.bg-light {background-color: #F9FAFB !important;}
+.bg-yellow{background-color: #F9F4D6;}
+
+html {
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%
+}
+
+*,:after,:before {
+    box-sizing: border-box
+}
+
+ol, ul,  li {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+    background-color: #fff;
+    color: #7E838B;
+    font-family: 'Poppins', Sans-serif; 
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+h1,h2,h3,h4,h5,h6 {
+    color: #FF6D12;
+    font-family: 'Playfair Display', Sans-serif;
+    font-weight: 700;
+    text-transform: capitalize;
+    line-height: 1.22;
+    margin: 0;
+  }
+
+h1, .h1 {
+    font-size: 4rem
+}
+
+h2, .h2 {
+    font-size: 3rem
+}
+
+h3, .h3 {
+    font-size: 2rem
+}
+
+h4, .h4 {
+    font-size: 1.5rem
+}
+
+h5, .h5 {
+    font-size: 1.125rem
+}
+
+h6, .h6 {
+    font-size: 1rem
+}
+
+@media (max-width: 1100px) {
+  h1, .h1 {font-size: 3.5rem;}
+  
+  h2, .h2 {font-size: 2.5rem;}
+
+  h3, .h3 {font-size: 1.75rem;}
+
+  h4, .h4 {font-size: 1.25rem;}
+
+  h5, .h5 {font-size: 1.125rem;}
+
+  h6, .h6 {font-size: 1rem;}
+}
+
+@media (max-width: 576px){
+  h1, .h1 {font-size: 2.5rem;}
+  
+  h2, .h2 {font-size: 2rem;}
+
+  h3, .h3 {font-size: 1.5rem;}
+
+  h4, .h4 {font-size: 1.125rem;}
+
+  h5, .h5 {font-size: 1rem;}
+
+  h6, .h6 {font-size: 1rem;}
+} 
+
+a{
+  color: #fff;
+  text-decoration: none;
+  transition: all .3s ease-in-out;
+}
+
+a:hover {
+  color: #FF6D12;
+  transition: all .3s ease-in-out;
+}
+
+section, .section-padding {
+  padding: 100px 0;
+}
+
+/* ---------------- PADDING ---------------- */
+.p-6 { padding: 4rem !important; }
+.p-7 { padding: 5rem !important; }
+.p-8 { padding: 6rem !important; }
+.p-9 { padding: 7rem !important; }
+.p-10 { padding: 8rem !important; }
+
+/* Padding Top */
+.pt-6, .py-6 { padding-top: 4rem !important; }
+.pt-7, .py-7 { padding-top: 5rem !important; }
+.pt-8, .py-8 { padding-top: 6rem !important; }
+.pt-9, .py-9 { padding-top: 7rem !important; }
+.pt-10, .py-10 { padding-top: 8rem !important; }
+
+/* Padding Bottom */
+.pb-6, .py-6 { padding-bottom: 4rem !important; }
+.pb-7, .py-7 { padding-bottom: 5rem !important; }
+.pb-8, .py-8 { padding-bottom: 6rem !important; }
+.pb-9, .py-9 { padding-bottom: 7rem !important; }
+.pb-10, .py-10 { padding-bottom: 8rem !important; }
+
+/* Padding Start */
+.ps-6, .px-6 { padding-left: 4rem !important; }
+.ps-7, .px-7 { padding-left: 5rem !important; }
+.ps-8, .px-8 { padding-left: 6rem !important; }
+.ps-9, .px-9 { padding-left: 7rem !important; }
+.ps-10, .px-10 { padding-left: 8rem !important; }
+
+/* Padding End */
+.pe-6, .px-6 { padding-right: 4rem !important; }
+.pe-7, .px-7 { padding-right: 5rem !important; }
+.pe-8, .px-8 { padding-right: 6rem !important; }
+.pe-9, .px-9 { padding-right: 7rem !important; }
+.pe-10, .px-10 { padding-right: 8rem !important; }
+
+/* ---------------- MARGIN ---------------- */
+.m-6 { margin: 4rem !important; }
+.m-7 { margin: 5rem !important; }
+.m-8 { margin: 6rem !important; }
+.m-9 { margin: 7rem !important; }
+.m-10 { margin: 8rem !important; }
+
+/* Margin Top */
+.mt-6, .my-6 { margin-top: 4rem !important; }
+.mt-7, .my-7 { margin-top: 5rem !important; }
+.mt-8, .my-8 { margin-top: 6rem !important; }
+.mt-9, .my-9 { margin-top: 7rem !important; }
+.mt-10, .my-10 { margin-top: 8rem !important; }
+
+/* Margin Bottom */
+.mb-6, .my-6 { margin-bottom: 4rem !important; }
+.mb-7, .my-7 { margin-bottom: 5rem !important; }
+.mb-8, .my-8 { margin-bottom: 6rem !important; }
+.mb-9, .my-9 { margin-bottom: 7rem !important; }
+.mb-10, .my-10 { margin-bottom: 8rem !important; }
+
+/* Margin Start */
+.ms-6, .mx-6 { margin-left: 4rem !important; }
+.ms-7, .mx-7 { margin-left: 5rem !important; }
+.ms-8, .mx-8 { margin-left: 6rem !important; }
+.ms-9, .mx-9 { margin-left: 7rem !important; }
+.ms-10, .mx-10 { margin-left: 8rem !important; }
+
+/* Margin Start */
+.me-6, .mx-6 { margin-right: 4rem !important; }
+.me-7, .mx-7 { margin-right: 5rem !important; }
+.me-8, .mx-8 { margin-right: 6rem !important; }
+.me-9, .mx-9 { margin-right: 7rem !important; }
+.me-10, .mx-10 { margin-right: 8rem !important; }
+
+/* Btn */
+.btn-primary, .btn-secondary, .btn1, .btn2{
+  background-color: #FF6D12;
+  font-family: 'Poppins', Sans-serif; 
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5rem;
+  padding: 15px 20px;
+  border-radius: 0;
+  color: #fff;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+.btn-secondary {
+  background-color: #2C2734;
+}
+
+.btn1 {
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(225, 225, 225, 0.1);
+  padding: 12px 20px;
+}
+
+.btn2 {
+  background-color: transparent;
+  border: 1px solid #fff;
+  border-radius: 20px;
+  padding: 12px 20px;
+}
+
+.btn1:hover {
+  transform: translateY(-5px);
+  color: #fff;
+  box-shadow: 0 4px 6px rgba(225, 225, 225, 0.2);
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+  border-radius: 50px 50px 50px 50px;
+  color: #fff;
+  transition: all .3s ease-in-out;
+}
+
+/* Font Family */
+.poppins{font-family: 'Poppins', Sans-serif; }
+.playfair {font-family: "Playfair Display", serif;;}
+
+/* Form Control */
+input[type=text], input[type=email], input[type=number], input[type=search],
+input[type=password], input[type=tel], input[type=date], input[type=time], textarea, select {
+  font-size: 16px;
+  font-weight: 400;
+  border: none;
+  padding: 12px 20px;
+  color: #fff;
+  margin-bottom: 0;
+  background-color: #FFFFFF2E;
+  box-shadow: none;
+  width: 100%; 
+  border-radius: 0;
+}
+input[type=text]:focus, input[type=email]:focus, input[type=number]:focus, input[type=search]:focus,
+  input[type=password]:focus, input[type=tel]:focus, input[type=date]:focus, input[type=time]:focus, textarea:focus, select:focus {
+    outline: none;
+    transition: all 0.5s ease;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);; 
+}
+input::placeholder, textarea::placeholder {
+  color: #ffffffb3;
+  font-size: 15px;
+}
+
+/* Overlay */
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #2C2734;
+  opacity: .8;
+}
+
+/* Border */
+.border-light {border-color: #F1F1F1 !important;}
+.border-light20 {border-color: #FFFFFF2E !important;}
+.border-dashed {border: 1px  dashed #F1F1F1;}
+.border-primary {border-color: #FF6D12 !important;}
+
+/* Transition */
+.trasnsition {
+  transition: all .3s ease-in-out;
+}
+
+/* Width */
+
+@media (min-width:768px) {
+  .w-md-50 {width: 50% !important;}
+  .w-md-75 {width: 75% !important;}
+}
+
+@media (min-width:996px) {
+  .w-lg-50 {width: 50% !important;}
+  .w-lg-75 {width: 75% !important;}
+}
+
+
+/* Sticky Header */
+.navbar-sticky-in {
+  position: fixed; /* Fixes navbar at the top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99999; /* Keeps it above other elements */
+  background: #fff;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Paragraph Clipping */
+.clip {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;     
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;  
+}
+
+/* Pattern Webkit Mask */
+.pattern-webkit{
+  -webkit-mask-image: url(../images/download-1.png);
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center center;
+  -webkit-mask-repeat: no-repeat;
+}

@@ -1,0 +1,1499 @@
+/*------------------------------------------------------------------
+* Project:        Royalheart - NonProfit Fundraising Charity HTML Template
+* Author:         HtmlDesignTemplates
+* URL:            https://themeforest.net/user/htmldesigntemplates
+* Created:        09/14/2025
+-------------------------------------------------------------------*/
+
+/* 
+1.Header
+2.Banner
+*/
+
+/* Header */
+header .header-nav .header-logo img {
+  width: 208px;
+}
+
+.navbar-nav .nav-link{
+  padding: 13px 15px;
+}
+
+.navbar-nav .nav-item.no-after::after {
+  display: none;
+}
+
+.dropdown-menu>li>a {
+  font-size: 16px;
+  padding: 13px 30px;
+  background-color: #FBFBFB;
+}
+
+
+.navbar-nav .nav-link:hover, .navbar-nav .nav-link.show{
+  color: #FF6D12;
+}
+
+.dropdown-menu>li>a:hover{
+  background-color: #FF6D12;
+  color: #ffffff;
+}
+
+@media (min-width: 1180px) {
+  .navbar-nav .dropdown-menu{
+    position: absolute;
+    top: auto;
+  }
+
+  .dropdown-menu{
+    display: block;
+    opacity: 0;
+    visibility:hidden;
+  }
+
+  .dropdown:hover>.dropdown-menu {
+    opacity: 1 ;
+    visibility: visible;
+    transition:all .3s ease-in-out;
+  }
+  
+  .dropdown>.dropdown-toggle:active {
+    /*Without this, clicking will make it sticky*/
+    pointer-events: none;
+  }
+
+  ul.dropdown-menu {
+    max-height: 630px !important; 
+    overflow-y: auto !important;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .navbar-nav .nav-link.active{
+    color: #FF6D12;
+  }
+
+  .dropdown-item.active{
+    background-color: #FF6D12;
+  }
+}
+
+@media (min-width: 1181px) and (max-width: 1380px){
+  .navbar-logo img {
+    width: 70% !important;
+  }
+}
+
+@media (max-width: 1180px){
+  div#slicknav-mobile, .dropdown-toggle::after  {
+    display: block;
+  }
+
+  .header-top, .mt_search ,.slicknav_nav .slicknav_arrow,  .navbar-button, .navbar-sticky-in, #responsive-menu {
+    display: none;
+  }
+
+  .slicknav_menu {
+    display: block;
+  }
+
+  .nav-link{
+    padding: 12px 36px !important;
+    margin: 0 !important;
+  }
+
+  .slicknav_btn{
+    position: absolute;
+    right: 70px;
+  }
+
+  .slicknav_btn.slicknav_open:before, .slicknav_btn.slicknav_collapsed:before {
+    left : 0;
+    top: 30px;
+    padding: 8px;
+    position: absolute;
+    color: #33373d;
+  }
+
+  .dropdown-menu {
+    border-radius: 0 !important;
+  }
+
+  .slicknav_btn.slicknav_open:before{
+    color: #FF6D12;
+  }
+
+  .slicknav_nav {
+    top: 84px;
+    left: 0;
+    background-color: #F5F5F5;
+    position: absolute;
+    height: 280px;
+    overflow: auto;
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.12);
+  } 
+
+  .slicknav_nav a:hover, li.nav-item.dropdown.slicknav_parent.slicknav_open > a > a {
+    background-color: #FF6D12 !important;
+    color: #fff;
+  }
+
+  .slicknav_nav a, .dropdown-menu>li>a{
+    font-size: 16px;
+    background-color: #F5F5F5;
+    color: #33373d;
+    text-transform: capitalize !important;
+    border: none !important;
+    font-weight: 400 !important;
+  }
+
+  .dropdown-menu>li>a{
+    padding-left: 50px !important;
+    border-top: 1px solid #FBFBFB !important;
+  }
+  
+  .dropdown-toggle::after{
+    display: none;
+  }
+
+  .slicknav_nav .active, .fa-angle-up:before{
+    background-color: #FF6D12;
+    color: #fff;
+  }
+
+  .dropdown-toggle::after {
+    display: inline-block;
+    margin-left: .255em;
+    vertical-align: .255em;
+    content: "";
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-bottom: 0;
+    border-left: .3em solid transparent;
+  }
+}
+
+@media (max-width: 1100px) {
+  .slicknav_nav .slicknav_item a {
+      pointer-events: none;
+  }
+}
+
+@media (max-width: 768px) {
+  header .header-nav .header-logo img {
+    width: 160px;
+  }
+  .slicknav_btn.slicknav_open:before, .slicknav_btn.slicknav_collapsed:before {
+    top: 23px;
+  }
+  .slicknav_nav{
+    top: 72px;
+  }
+}
+
+/* Popup hidden by default */
+#search1 {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+#search1 input{
+width: 400px;
+}
+
+#search1.open {
+  display: flex;
+}
+
+#search1 .close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 2rem;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+
+/* Banner CSS */
+.banner .slide{
+  height: 650px;
+  background-position: center;
+  background-size: cover;
+  cursor: grab;
+}
+
+.banner .slide-info {
+  opacity: 0;        
+  top: 122%;           
+}
+
+.banner h1 {
+  font-size: 70px;
+}
+
+.banner .slide.slick-slide.slick-current.slick-active .slide-info{
+  animation: bannerfadein 1.2s ease-out forwards;
+}
+
+@keyframes bannerfadein{
+  0% {
+    opacity: 0;
+    top: 122%;
+  }
+  100% {
+    opacity: 1;
+    top: 50%;
+  }
+}
+
+@media (max-width: 1100px){
+  .banner .slide-info {
+    width: 90%;
+  }
+  .banner h1 {
+    font-size: 54px;
+  }
+}
+
+@media (max-width: 768px){
+  .banner h1 {
+    font-size: 32px;
+  }
+}
+
+
+/* About CSS */
+.about {
+  background-image: url(../images/causes-01.png);
+    background-position: top right;
+    background-repeat: no-repeat;
+    background-size: 60% auto;
+}
+
+.about .about-left .exp-box {
+  bottom: 60px;
+  right: -30px;
+  padding: 30px;
+}
+
+.about .about-features .feature-box:hover {
+  background-color: #33373d;
+  transform: translateY(-10px);
+  transition: all .3s ease-in-out;
+  color: #fff;
+}
+
+.about .about-features .feature-box:hover h4 a{
+  color: #FF6D12;
+}
+
+@media (max-width: 992px){
+ .about .about-left .exp-box {
+    right: 30px;
+    bottom: 30px;
+  }
+}
+
+@media (max-width: 768px){
+ .about .about-left .exp-box {
+    right: 0;
+    bottom: 0;
+    position: relative !important;
+  }
+}
+
+
+/* Donation Banner */
+.dono-banner {
+  background-image: linear-gradient(90deg, #fff 50%, #2C2734 0%);
+}
+
+.dono-banner .dono-banner-left {
+  background-position: center center;
+  background-size: cover;
+}
+
+.dono-banner .dono-banner-left .overlay {
+  background-color: #33373d;
+  opacity: .8;
+}
+
+@media (max-width: 768px){
+  .donate-banner .donate-banner-right img {
+    width: 75%;
+  }
+}
+
+/* Donation Section */
+.percentage-wrapper {
+  height: 22px;
+  right: 0px;
+  border-radius: 3px; 
+  font-size: 13px;
+}
+
+.progress-bar {
+  animation: progressBar 3s ease-in-out;
+  animation-fill-mode:both; 
+  -moz-animation: progressBar 3s ease-in-out;
+  -moz-animation-fill-mode:both; 
+  background-color: #FF6D12
+}
+
+@keyframes progressBar {
+  0% { width: 0; }
+  100% { width: width; }
+}
+
+/* Stats CSS */
+.stats {
+  background-image: linear-gradient(90deg, #FF6D12 0%, #2C2734 100%);
+}
+
+.stats .overlay {
+  background-color: #2C2734;
+  opacity: .8;
+}
+
+.stats .stats-left{
+  background-color: #FFFFFF2E;
+}
+
+/* Events */
+.events {
+  background-image: url(../images/group-of-kids-using-tablet-in-school-2021-09-24-03-47-39-utc-e1752131460102.png);
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-size: auto;
+}
+
+.events .overlay {
+  background-color: #FBFBFB;
+  opacity: .8;
+}
+
+/* Volunteer Banner */
+.volunteer-banner {
+  background-image: url(../images/diverse-team-of-volunteers-2021-09-24-04-19-01-utc.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.volunteer-banner .overlay {
+  background-color: #2C2734;
+  opacity: .8;
+}
+
+/* Faq */
+.faq .faq-left img {
+  border: 8px solid #FFFFFF33;
+}
+
+.faq .accordion-button:not(.collapsed) {
+  background-color: #2C2734 !important;
+  color: #fff;
+}
+
+.faq .accordion-button::after {
+  background-image: none;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f078"; 
+  margin-right: 8px;
+  color: #2C2734;
+}
+
+.faq .accordion-button:not(.collapsed)::after {
+  color: #fff;
+}
+
+/* Vounteer CSS */
+.volunteer .volunteer-title{
+  background-image:  linear-gradient(90deg, #2C2734 77%, #fff 0%);
+}
+
+ .social-link li a{
+  width:30px;
+  height:30px;
+  line-height:30px;
+  font-size: 12px;
+  background-color: #a1a1a1;
+  transition:all .3s ease-in-out
+}
+
+@keyframes iconTranslateY {
+  48% {
+      -webkit-transform: translateY(50%);
+      transform: translateY(50%)
+  }
+
+  49% {
+      opacity: 0;
+      -webkit-transform: translateY(-50%);
+      transform: translateY(-50%)
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.social-link>li>a:hover>i {
+  -webkit-animation: iconTranslateY .4s forwards; 
+  animation: iconTranslateY .4s forwards; 
+}
+
+.social-link li a:hover{
+  background:#1DA1F2;
+  color: #fff;
+}
+
+.social-link li:last-child a:hover{background:#E60023;}
+
+.social-link li:first-child a:hover{background:#1877F2;}
+
+.volunteer-box .volunteer-info {
+  top: 115%;
+  transition: all 0.4s ease-in-out;
+}
+
+.volunteer-box:hover .volunteer-info{
+  top: 75%;
+  transition: all 0.4s ease-in-out;
+}
+
+.volunteer-box .overlay {
+  opacity: 0;
+  background-color: #111;
+  transition: all 0.4s ease-in-out;
+}
+
+.volunteer-box:hover .overlay{
+  opacity: .8;
+  transition: all 0.4s ease-in-out;
+}
+
+@media (min-width: 996px) and (max-width: 1400px){
+  .volunteer-box .volunteer-info {
+    top: 150%;
+    transition: all 0.4s ease-in-out;
+  }
+
+  .volunteer-box:hover .volunteer-info{
+    top: 65%;
+    transition: all 0.4s ease-in-out;
+  }
+}
+
+/* Testimonial */
+.testimonial {
+  background-image: url(../images/multi-ethnic-group-of-kids-lying-on-each-other-in-2021-08-26-16-13-19-utc.jpg);
+  background-position: bottom left;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.testimonial .testimonial-body {
+ padding-left: 300px;
+}
+
+.testimonial .testimonial-box .reviewer {
+  bottom: -50%;
+}
+
+.testimonial .overlay {
+  background-color: #F9F9FA;
+  opacity: .8;
+}
+
+@media (max-width: 1400px){
+  .testimonial .testimonial-box .reviewer {
+    bottom: -45%;
+  }
+}
+
+@media (max-width: 1100px){
+  .testimonial .testimonial-box .reviewer {
+    bottom: -37%;
+  }
+}
+
+@media (max-width: 992px) {
+  .testimonial .testimonial-body  {
+    padding-left: 0px;
+  }
+}
+
+/* Gallery Slider */
+.gallery-slider .slide img {
+  height: 350px;
+  object-fit: cover;
+}
+
+/* Donate CSS */
+.donation-type-box:hover span {
+  color: #2C2734;
+  transition: all .3s ease-in-out;
+}
+
+ .donation-type-box.bg-secondary:hover span{
+  color: #fff;
+}
+
+/* Donate Banner CSS */
+.donate-banner {
+  background-image: url(../images/serednie-ukraine-march-09-2011-romani-boy-and-little-girl-in-orange-pumpkin-style-dress-over-clothes_t20_dzoxaJ.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.donate-banner .overlay {
+  background-color: #2C2734;
+  opacity: .8;
+}
+
+/* Volunteer Banner2 */
+.volunteer-banner2 {
+  padding-left: 300px;
+}
+
+@media (max-width: 1400px){
+  .volunteer-banner2 {
+    padding-left: 90px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .volunteer-banner2 {
+    padding-left: 0;
+  }
+}
+
+
+/* Blog */
+ .blog-box {
+  background-color: #FBFBFB;
+}
+ .blog-box .blog-info-top {
+  border-bottom: 1px solid #eaeaea;
+}
+
+ .blog-box .blog-info-bottom span:last-of-type::before{
+  content: "•";
+  margin: 0 5px;
+}
+
+ .blog-box .blog-image .overlay {
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, .35), transparent 75%);
+  background-color: transparent;
+  opacity: 1;
+  transition: all .3s ease-in-out;
+}
+
+ .blog-box .blog-image:hover .overlay {
+  opacity: 0;
+  transition: all .3s ease-in-out;
+}
+
+/* Involvement */
+.involvement-banner {
+  background-image: linear-gradient(90deg, #FF6D12 85%, #2C2734 15%);
+}
+
+.involvement-banner-left ul li span {
+  height: 100px;
+  width: 100px;
+}
+
+.involvement-banner-right a {
+  background-color: #fff;
+  color: #FF6D12;
+}
+
+.involvement-banner-right a:hover {
+  background-color: #2C2734;
+  color: #fff;
+}
+
+/* Footer */
+footer {
+  background-image: url(../images/group-of-kids-using-tablet-in-school-2021-09-24-03-47-39-utc-e1752131460102.png);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+footer .overlay{
+  background-color: #2C2734;
+  opacity: .9;
+}
+
+.social-links a i {
+  height: 42px;
+  width: 42px;
+  font-size: 21px;
+  line-height: 42px;
+  transition: all .3s ease-in-out;
+}
+
+.social-links a i:hover {
+  opacity: .9;
+  transition: all .3s ease-in-out;
+}
+
+
+/* ========================================= */
+/*             Homepage-2 page CSS           */
+/* ========================================= */
+
+/* About */
+.home2 .about .about-right img{
+  border: 8px solid #FFFFFF33;
+  margin-top: -100px;
+}
+
+.home2 .about {
+  background-image: url(../images/group-of-kids-using-tablet-in-school-2021-09-24-03-47-39-utc-e1752131460102.png);
+  background-position: top left;
+  background-repeat: no-repeat;
+  background-size: auto;
+}
+
+.home2 .about .overlay {
+  background-color: #FBFBFB;
+  opacity: .8;
+}
+
+.home2 .about .donation-type-box img{
+  height: 40px;
+  width: 40px;
+}
+
+@media (max-width: 1100px) {
+  .home2 .about .about-right img {
+    margin-top: 0px;
+  }
+  .home-2 .banner-bottom-slider {
+    padding-bottom: 0 !important;
+  }
+}
+
+
+
+/* Ad Banner */
+.home2 .ad-banner-left, .event-detail-ad-banner .ad-banner-left {
+  background-image: url(../images/serednie-ukraine-march-09-2011-portrat-of-romani-schoolgirl-looking-at-the-camera-younger-siblings_t20_JJYomO.jpg);
+  background-position: center center;
+  background-size: cover;
+}
+
+.home2 .ad-banner-left .overlay, .event-detail-ad-banner .ad-banner-left .overlay{
+  background-color: #2C2734;
+  opacity: .8;
+}
+
+.home2 .ad-banner-right, .event-detail-ad-banner .ad-banner-right{
+  background-image: url(../images/children-left-alone-after-hostilities-2021-09-24-02-51-49-utc.jpg);
+  background-position: center center;
+  background-size: cover;
+}
+
+.home2 .ad-banner-right .overlay, .event-detail-ad-banner .ad-banner-right .overlay{
+  background-color: #FF6D12;
+  opacity: .5;
+}
+
+
+/* Stats Section */
+.home2 .stats{
+  background-image: url(../images/serednie-ukraine-march-09-2011-romani-boy-and-little-girl-in-orange-pumpkin-style-dress-over-clothes_t20_dzoxaJ.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+/* Events */
+.home2 .event-box:hover .event-image img {
+  transform: scale(1.05) rotate(2deg);
+  opacity: 0.8;
+  transition: all .3s ease-in-out;
+} 
+
+/* Donate CSS */
+.home2 .donate {
+  background-image: url(../images/multi-ethnic-group-of-kids-lying-on-each-other-in-2021-08-26-16-13-19-utc.jpg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.home2 .donate .overlay {
+  background-color: #FBFBFB;
+  opacity: .9;
+}
+
+
+/* ========================================= */
+/*             Homepage-3 page CSS           */
+/* ========================================= */
+
+/* Banner */
+.home3 .banner {
+  background-image: url(../images/photorealistic-kid-refugee-camp.jpg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.home3 .banner .overlay {
+  background-image: linear-gradient(180deg, #0F0D13 0%, #2C2734 100%);
+  opacity: 0.65;
+  background-color: transparent;
+}
+
+.home3 .banner .banner-right {
+  background-image: url(../images/main-slider-two-img-shape-1.png);
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.home3 .banner .banner-right img {
+  width: 65%;
+}
+
+@media (max-width: 996px){
+  .home3 .banner .banner-right img {
+    width: 45%;
+  }
+}
+
+@media (max-width: 768px){
+  .home3 .banner .banner-right img {
+    width: 65%;
+  }
+}
+
+/* Banner Bottom */
+.home3 .banner-bottom-left {
+  background-image: url(../images/children-left-alone-after-hostilities-2021-09-24-02-51-49-utc.jpg);
+  background-position: center center;
+  background-size: cover;
+}
+
+/* About CSS */
+.home3 .about .about-right .lightgallery i {
+  height: 66px;
+  width: 66px;
+  font-size: 33px;
+  line-height: 66px;
+  text-align: center;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+}
+
+.home3 .about .about-right .lightgallery a::after, 
+.home3 .about .about-right .lightgallery a::before{
+  content: " ";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  box-shadow: currentcolor 0px 0px 0px 0px;
+  opacity: 0.6;
+  z-index: -1;
+  border-radius: 50%;
+  animation: 3s ease 0s infinite normal none running button-ripple;
+}
+
+.home3 .about .about-right .lightgallery a::before {
+  animation-delay: 0.3s;
+}
+
+@keyframes button-ripple {
+  70% {
+    box-shadow: 0 0 0 var(--glow-size, 15px) currentColor;
+    opacity: 0;
+  }
+
+  100% {
+      box-shadow: currentcolor 0px 0px 0px 0px;
+      opacity: 0;
+  }
+}
+
+@media (max-width: 768px){
+  .home3 .about .exp-box {
+    left: 200px;
+    bottom: -20px !important;
+  }
+
+  .about-right {
+    margin-bottom: 100px;
+  }
+}
+
+/* Feature */
+.feature .feature-icon {
+  height: 80px;
+  width: 80px;
+}
+
+.home3 .feature .feature-inner .col-lg-3 {
+  border-right: 1px solid #fff;
+}
+
+@media (max-width: 996px){
+  .home3 .feature .feature-inner .col-lg-3:nth-child(2){
+    border-right: none !important;
+  }
+}
+
+@media (max-width: 768px){
+  .home3 .feature .feature-inner .col-lg-3{
+    border-right: none !important;
+    border-bottom: 1px solid #fff;
+  }
+}
+
+/* Donate Banner */
+.home3 .donate-banner {
+  background-image: url(../images/people-donating-clothing-to-charity-collection-in-2021-08-26-16-13-29-utc.jpg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.home3 .donate-banner .overlay {
+  background-color: transparent;
+  background-image: linear-gradient(180deg, #2C2734 0%, #0F0D13 100%);
+  opacity: 0.9;
+}
+
+/* Events */
+.home3 .events .event-box {
+  border-bottom-width: 4px !important;
+}
+
+/* Volunteer */
+.home3 .volunteer .volunteer-title {
+  background-image: linear-gradient(90deg, #2C2734 77%, #F9FAFB 0%);
+}
+
+/* Donate*/
+.home3 .donate {
+  background-image: linear-gradient(90deg, #F9FAFB 56%,#2C2734 0%);
+}
+
+@media (max-width: 996px){
+  .home3 .donate {
+    background-image: linear-gradient(180deg, #F9FAFB 38%,#2C2734 0%);
+  }
+}
+
+/* Testimonial */
+.home3 .testimonial {
+  background-image: url(../images/testimonial.png);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain
+}
+
+/* Partner Slider */
+.home3 .partner {
+  background-image: url(../images/serednie-ukraine-march-09-2011-romani-boy-and-little-girl-in-orange-pumpkin-style-dress-over-clothes_t20_dzoxaJ.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.home3 .partner .overlay {
+  background-color: #2C2734;
+  opacity: .8;
+}
+
+/* ========================================= */
+/*              About Us page CSS            */
+/* ========================================= */
+
+/* Breadcrumb */
+.breadcrumb {
+  min-height: 300px;
+  background-image: url(../images/asian-beautiful-boy-charity-cheerful-child-childhood-children-color-cute-dress-education-emotion_t20_b6GeGV.jpg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+/* ========================================= */
+/*           Causse Detail page CSS          */
+/* ========================================= */
+.gallery-slider1 .slide img{
+  height: 300px;
+  object-fit: cover;
+}
+
+.volunteer-form {
+  background-image: url(../images/volunteer_t20_jLXp2X.jpg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.volunteer-form input, .volunteer-form textarea, .search-bar input, 
+.error input, .sidebar-searchbar input, .contact-us-right input, 
+.contact-us-right textarea, .blog-detail textarea, .blog-detail input{
+  color: #7e838b;
+}
+
+.volunteer-form input::placeholder, .volunteer-form textarea::placeholder, 
+.search-bar input::placeholder , .error input::placeholder, 
+.sidebar-searchbar input::placeholder, .contact-us-right input::placeholder, 
+.contact-us-right textarea::placeholder, .blog-detail textarea::placeholder, .blog-detail input::placeholder{
+  color: #7e838b90;
+}
+
+/* ========================================= */
+/*            Event Detail page CSS          */
+/* ========================================= */
+.event-detail .volunteer-box:hover .volunteer-info{
+  top: 50%;
+  transition: all 0.4s ease-in-out;
+}
+
+.event-detail .volunteer-form {
+  background-image: url(../images/serednie-ukraine-march-09-2011-romani-boy-and-little-girl-in-orange-pumpkin-style-dress-over-clothes_t20_dzoxaJ.jpg);
+}
+
+.event-detail .volunteer-box .volunteer-info {
+      top: 120%;
+}
+
+/* ========================================= */
+/*                Faq page CSS               */
+/* ========================================= */
+.faq-top .accordion-button:not(.collapsed), .faq-bottom .accordion-button:not(.collapsed) {
+  color: #FF6D12;
+}
+
+.faq-bottom .volunteer-form {
+  background-image: url(../images/teen-volunteer-girl-2021-08-27-09-31-01-utc.jpg);
+}
+
+/* ========================================= */
+/*            Testimonial page CSS           */
+/* ========================================= */
+.testimonial1 .testimonial-icon {
+  bottom: 24px;
+  right: 24px;
+}
+
+.testimonial1 {
+  background-image: url(../images/serednie-ukraine-march-09-2011-romani-boy-and-little-girl-in-orange-pumpkin-style-dress-over-clothes_t20_dzoxaJ.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* ========================================= */
+/*             Volunteer page CSS            */
+/* ========================================= */
+.donate1 {
+  background-image: url(../images/group-of-kids-using-tablet-in-school-2021-09-24-03-47-39-utc-e1752131460102.png);
+  background-position: center right;
+  background-repeat: no-repeat;
+}
+
+/* ========================================= */
+/*           Search Result page CSS          */
+/* ========================================= */
+.search-result-box {
+      box-shadow: 0 0 10px 0 rgba(0, 0, 0, .15);
+}
+
+.search-result-box-stats span:last-of-type::before{
+  content: "•";
+  margin: 0 5px;
+}
+
+/* ========================================= */
+/*             Coming Soon page CSS          */
+/* ========================================= */
+.coming-soon {
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url(../images/serednie-ukraine-march-09-2011-romani-boy-and-little-girl-in-orange-pumpkin-style-dress-over-clothes_t20_dzoxaJ.jpg);
+}
+
+.label {
+  background: #FF6D12;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.flip-card {
+  perspective: 1000px;
+  width: 100%;
+  height: 80px;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.digit {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  line-height: 80px;
+  background: white;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  overflow: hidden;
+}
+
+/* halves */
+.top, .bottom {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  left: 0;
+  overflow: hidden;
+}
+
+.top {
+  top: 0;
+  border-bottom: 3px solid #F1F1F1;
+}
+
+.bottom {
+  bottom: 0;
+  line-height: 0;
+}
+
+/* animated flipping panel */
+.flip {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  transform-origin: bottom;
+  background: white;
+  transform: rotateX(0);
+}
+
+.flip.animate {
+  animation: flip .5s forwards;
+}
+
+@keyframes flip {
+  0%   { transform: rotateX(0); }
+  100% { transform: rotateX(-90deg); }
+}
+
+.coming-soon .social-links a i {
+  height: 50px;
+  width: 50px;
+  font-size: 25px;
+  line-height: 50px;
+  transition: all .3s ease-in-out;
+}
+
+
+@media (max-width: 995px) and (orientation: landscape) {
+  .coming-soon {
+    height: 200vh;
+  }
+}
+
+/* ========================================= */
+/*             Blog Detail page CSS          */
+/* ========================================= */
+.blog-detail .bg-twitter:hover {
+  opacity: .8;
+  background-color: #1DA1F2;
+}
+
+/* ========================================= */
+/*              Contact US page CSS          */
+/* ========================================= */
+.contact-us .contact-info ul li a i{
+  height: 70px;
+  width: 70px;
+  line-height: 70px;
+  font-size: 30px;
+}
+
+.contact-us .overlay {
+  background-image: url(../images/testimonial.png);
+  background-color: transparent;
+}
+
+.contact-social-media ul li a i {
+  height: 50px;
+  width: 50px;
+  line-height: 50px;
+}
+
+/* Donation Form Page */
+.donation-form1 select, .donation-form1 input, 
+.donation select , .donation input, .home4 .faq-right input, 
+.home4 .faq-right textarea {
+  color: #7e838b;
+}
+
+.donation-form1 input::placeholder,
+ .donation input::placeholder, 
+ .home4 .faq-right input::placeholder, 
+.home4 .faq-right textarea::placeholder {
+  color: #7e838b90;
+}
+
+.donation-form1 {
+  background-image: url(../images/multi-ethnic-group-of-kids-lying-on-each-other-in-2021-08-26-16-13-19-utc.jpg);
+  background-size: 25%;
+  background-position: top top;
+  background-repeat: no-repeat;
+}
+
+/* ========================================= */
+/*              Homepage 4 page CSS          */
+/* ========================================= */
+.home4 .header-nav-inner{
+  margin-top: -30px;
+}
+
+.home4 .navbar-sticky-in .header-nav-inner{
+  margin-top: 0 !important;
+  background-color: #fff !important;
+}
+
+.home4 .banner {
+  margin-top: -35px;
+  background-image: linear-gradient(to top, rgba(44, 39, 52, .9) 0%, #2C2734 50%);
+}
+
+.home4 .banner-spin, .home4 .banner-volunteers {
+  top: 100px;
+  right: 100px;
+}
+
+.home4 .banner-volunteers {
+  left: 75px;
+  right: auto;
+}
+
+.banner-spin:hover .spin-demo-main i {
+  color: #FF6D12;
+  transition: all ease-in-out 0.5s;
+}
+
+.spin-demo-main {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  cursor: pointer;
+}
+
+.spin-demo-main i {
+  position: absolute;
+  font-size: 25px;
+  color: #fff;
+  transition: all ease-in-out 0.5s;
+}
+
+.spin-demo-main #rotatingText {
+  animation-name: rotate-circle;
+  animation-duration: 15s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.spin-demo-main .text {
+  font-weight: 400;
+  letter-spacing: 1.7px;
+  text-transform: uppercase;
+  fill: #fff;
+  font-size: 22px;
+}
+
+@keyframes rotate-circle {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (max-width: 1200px) {
+  .home4 .header-nav-inner, .home4 .banner{
+    margin-top: 0px;
+  }
+  .home4 .header-nav-inner{
+    padding: 16px 8px !important;
+  }
+}
+
+@media (max-width: 992px){
+  .home4 .banner-spin, .home4 .banner-volunteers {
+    display: none;
+  }
+}
+
+
+/* About US */
+.about .about-body .about-body-left .overlay {
+  background-color: transparent;
+  background: linear-gradient(to bottom, #ffffff00, #2C2734);
+  opacity: .9;
+}
+
+/* Feature */
+.home4 .feature .feature-inner {
+  margin-top: -96px;
+}
+
+/* Ad Banner */
+.home4 .ad-banner .social-links a i {
+    height: 30px;
+    width: 30px;
+    font-size: 15px;
+    line-height: 30px;
+}    
+
+/* Ad Banner */
+.home4 .ad-banner .social-links a i:hover{
+  color: #FF6D12;
+}
+
+.home4 .ad-banner .ad-banner-left img{
+  width: 90% ;
+}
+
+.home4 .ad-banner .overlay {
+  background-color: transparent;
+  background-image: radial-gradient(circle at bottom left, rgba(44, 39, 52, 0.5) 0%, rgba(44, 39, 52, 0.95) 45%);
+  opacity: 1;
+}
+
+/* Testimonial Section */
+.home4 .testimonials {
+ background-image: url(../images/pexels-suraphat-933632.jpg);
+ background-position: center;
+ background-size: cover;
+ background-attachment: fixed;
+}
+
+.home4 .testimonials .overlay {
+  background-color: transparent;
+  background-image: linear-gradient(to right, rgba(44, 39, 52, 0.902) 0%, #2C2734 75%);
+  opacity: 1;
+}
+
+.testimonials .swiper {
+  width: 100%;
+  height: 600px; /* full screen height */
+}
+
+.testimonials .swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Side slides */
+.testimonials .swiper-slide {
+  opacity: 0.7;
+}
+
+.testimonials .swiper-slide-active {
+  transform: scale(1.1);
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.testimonials .swiper-slide-active .testimonial-box {
+  width: 85% !important;
+}
+
+.testimonials .swiper-pagination-bullet {
+  background-color: #F1F1F1 !important;
+}
+
+.testimonials .swiper-pagination-bullet-active {
+  background-color: #FF6D12 !important;
+}
+
+@media (max-width: 768px) {
+  .testimonials .swiper {
+    height: 1000px;
+  }
+}
+
+/* Volunteer */
+.home4 .faq {
+ background-image: url(../images/testimonial.png);
+}
+
+.home4 .volunteers .volunteers-box .volunteers-info {
+  bottom: -50px;
+  transition: all .3s ease-in-out;
+}
+
+.home4 .volunteers .volunteers-box:hover .volunteers-info {
+  bottom: 0;
+  transition: all .3s ease-in-out;
+}
+
+.home4 .volunteer-box1 {
+  margin-top: -96px
+}
+
+@media (max-width: 992px) {
+  .home4 .volunteer-box1 {
+    margin-top: 0
+  }
+
+  .home4 .volunteers-inner {
+    padding: 0 !important;
+  }
+}
+
+/* Blog */
+.home4 .blog .blog-box .overlay {
+  background-color: transparent;
+  background: linear-gradient(to bottom, #ffffff00, #2C2734);
+  opacity: .9;
+}
+
+
+/* Footer */
+.home4 .newsletter-inner {
+  background-color: transparent;
+  background-image: radial-gradient(circle at bottom left, rgba(44, 39, 52, 0.7) 0%, rgba(44, 39, 52, 0.95) 45%);
+}
+
+.home4 footer {
+  background-image: none;
+}
+
+.home4 .social-links a i{
+  height: 36px;
+  width: 36px;
+  line-height: 36px;
+  font-size: 16px;
+}
+
+@media (max-width:  1200px){
+  .home4 .footer-left {
+    border: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .home4 .newsletter-right input, 
+  .home4 .newsletter-right button{
+    border-radius: .5rem !important;
+  }
+}
+
+/* ========================================= */
+/*              Homepage 5 page CSS          */
+/* ========================================= */
+
+/* Banner CSS */
+.home5 .banner .banner-position-img {
+  top: -5%;
+  right: -5%;
+}
+
+.home5 .banner .play-icon a i{
+  height: 70px;
+  width:70px;
+  line-height: 70px;
+  font-size: 30px;
+  background-color: #FF6D12;
+  opacity: .8;
+  color: #fff;
+  transition: all .3s ease-in-out;
+}
+
+.home5 .banner .play-icon a i:hover {
+  color: #2C2734;
+  opacity: 1;
+  transition: all .3s ease-in-out;
+}
+
+.donation-progress {
+  position: absolute;
+  bottom: -5%;
+  left: -5%;
+}
+
+.circular-progress {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background: conic-gradient(#FF6D12 0%, #e5e5e5 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  --progress: 0;
+}
+
+.circular-progress::before {
+  content: "";
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.progress-value {
+  position: absolute;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #FF6D12;
+}
+
+/* Services CSS */
+.home5 .services-box:hover {
+  background-color: #2C2734 !important;
+  color: #fff;
+  transition: all .3s ease-in-out;
+}
+
+/* Causes CSS */
+.home5 .causes .percentage-wrapper{
+  background-color: #FF6D12;
+}
+
+/* Mission CSS */
+.home5 .mission .mission-right {
+  background-image: url(../images/donation.jpeg);
+  background-size: cover;
+}
