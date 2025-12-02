@@ -142,7 +142,7 @@
         if (res.token) {
           localStorage.setItem("token", res.token);
           alert("Login successful!");
-          window.location.href = "create-orphan.html"; // Redirect to create orphan page
+          window.location.href = "dashboard.html"; // Redirect to create orphan page
         } else {
           alert(res.message || "Invalid login");
         }
