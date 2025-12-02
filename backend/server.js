@@ -1,9 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const path = require("path");
 require("dotenv").config();
 
 const mpesaRoutes = require("./routes/mpesaRoutes");
+const orphanRoutes = require("./routes/orphanRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const mongoose = require("mongoose");
 
@@ -32,6 +35,12 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use("/api/mpesa", mpesaRoutes);
+app.use("/api/orphans", orphanRoutes);
+app.use("/api/auth", authRoutes);
+// app.use("/uploads", express.static("uploads"));
+// Serve the uploads folder
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 
 app.get("/", (req, res) => {
   res.send("M-Pesa Backend Running");

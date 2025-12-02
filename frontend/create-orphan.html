@@ -1,0 +1,263 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Orphan</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #eef1f5;
+      padding: 40px 0;
+    }
+    .form-card {
+      max-width: 650px;
+      margin: auto;
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+    }
+    .btn-primary {
+      border-radius: 30px;
+      padding: 10px 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="form-card">
+    <h3 class="fw-bold text-center mb-2">Create New Orphan</h3>
+    <p class="text-muted text-center mb-4">
+      Fill the details below to add orphan information
+    </p>
+
+    <form id="orphanForm">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="fw-semibold">Full Name</label>
+          <input type="text" id="name" class="form-control" placeholder="Enter full name" required>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="fw-semibold">Gender</label>
+          <select id="gender" class="form-select" required>
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="fw-semibold">Age</label>
+          <input type="number" id="age" class="form-control" placeholder="Enter age" required>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="fw-semibold">Upload Photo (optional)</label>
+          <input type="file" id="image" class="form-control">
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="fw-semibold">Story / Background</label>
+        <textarea id="story" class="form-control" rows="4" placeholder="Write a short story"></textarea>
+      </div>
+
+      <div class="text-center">
+        <button class="btn btn-primary mt-3">Save Orphan</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script>
+    document.getElementById("orphanForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = {
+        name: document.getElementById("name").value,
+        gender: document.getElementById("gender").value,
+        age: document.getElementById("age").value,
+        story: document.getElementById("story").value
+      };
+
+      const res = await createOrphan(data);
+
+      if (res.success) {
+        alert("Orphan created successfully!");
+      } else {
+        alert(res.message);
+        console.log(re.message);
+      }
+    });
+  </script>
+
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Orphan</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: #eef1f5;
+        padding: 40px 0;
+      }
+      .form-card {
+        max-width: 650px;
+        margin: auto;
+        background: #fff;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+      }
+      .btn-primary {
+        border-radius: 30px;
+        padding: 10px 18px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="form-card">
+      <h3 class="fw-bold text-center mb-2">Create New Orphan</h3>
+      <p class="text-muted text-center mb-4">
+        Fill the details below to add orphan information
+      </p>
+
+      <form id="orphanForm">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              class="form-control"
+              placeholder="Enter full name"
+              required
+            />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold">Gender</label>
+            <select id="gender" class="form-select" required>
+              <option>Male</option>
+              <option>Female</option>
+            </select>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold">Age</label>
+            <input
+              type="number"
+              id="age"
+              class="form-control"
+              placeholder="Enter age"
+              required
+            />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold">Upload Photo (optional)</label>
+            <input type="file" id="image" class="form-control" />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="fw-semibold">Story / Background</label>
+          <textarea
+            id="story"
+            class="form-control"
+            rows="4"
+            placeholder="Write a short story"
+          ></textarea>
+        </div>
+
+        <div class="text-center">
+          <button class="btn btn-primary mt-3">Save Orphan</button>
+        </div>
+      </form>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+      // document.getElementById("orphanForm").addEventListener("submit", async (e) => {
+      //   e.preventDefault();
+
+      //   const data = {
+      //     name: document.getElementById("name").value,
+      //     gender: document.getElementById("gender").value,
+      //     age: parseInt(document.getElementById("age").value),
+      //     story: document.getElementById("story").value
+      //   };
+
+      //   try {
+      //     const res = await createOrphan(data);
+
+      //     if (res.success) {
+      //       alert("Orphan created successfully!");
+      //       document.getElementById("orphanForm").reset(); // Reset form after submission
+      //     } else {
+      //       alert(res.message || "Failed to create orphan.");
+      //     }
+      //   } catch (err) {
+      //     console.error(err);
+      //     alert("An error occurred. Please try again.");
+      //   }
+      // });
+
+      document
+        .getElementById("orphanForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = new FormData();
+          formData.append("name", document.getElementById("name").value);
+          formData.append("gender", document.getElementById("gender").value);
+          formData.append("age", document.getElementById("age").value);
+          formData.append("story", document.getElementById("story").value);
+
+          const imageInput = document.getElementById("image");
+          if (imageInput.files[0]) {
+            formData.append("image", imageInput.files[0]);
+          }
+
+          try {
+            const token = localStorage.getItem("token");
+
+            const res = await fetch(`${API_URL}/orphans`, {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`, // DO NOT set Content-Type, browser will set it
+              },
+              body: formData,
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+              alert("Orphan created successfully!");
+              document.getElementById("orphanForm").reset();
+            } else {
+              alert(data.message || "Failed to create orphan.");
+            }
+          } catch (err) {
+            console.error(err);
+            alert("An error occurred. Please try again.");
+          }
+        });
+    </script>
+  </body>
+</html>

@@ -195,7 +195,7 @@
                         <a
                           class="dropdown-item fw-bold text-capitalize black border-0"
                           href="orphans.html"
-                          >Orphans  & Widows List</a
+                          >Orphans & Widows List</a
                         >
                       </li>
                     </ul>
@@ -439,7 +439,7 @@
       </div>
     </section>
 
-    <!-- Members Section -->
+    <!-- Orphans Section -->
     <section class="py-5">
       <div class="container">
         <div class="text-center mb-5">
@@ -450,19 +450,21 @@
           </p>
         </div>
 
-        <div class="row gy-4">
-          <!-- Member card -->
+        <div class="row gy-4" id="orphansContainer">
+          <!-- Orphan card -->
           <!-- <div class="col-lg-3 col-md-6">
-        <div class="card shadow text-center border-0">
-          <img src="images/member1.jpg" class="card-img-top" alt="Member Photo">
-          <div class="card-body">
-            <h5 class="fw-bold">James Kimani</h5>
-            <small class="text-muted">Board Member</small>
+            <div class="card shadow text-center border-0">
+              <img
+                src="images/member1.jpg"
+                class="card-img-top"
+                alt="Member Photo"
+              />
+              <div class="card-body">
+                <h5 class="fw-bold">James Kimani</h5>
+                <small class="text-muted">Board Member</small>
+              </div>
+            </div>
           </div>
-        </div>
-      </div> -->
-
-          <!-- Add more members by copy-paste -->
           <div class="col-lg-3 col-md-6">
             <div class="card shadow text-center border-0 member-card">
               <img
@@ -571,7 +573,8 @@
                 <h5 class="fw-bold">Jemimah Akinyi</h5>
                 <small class="text-muted">Total Orphan</small>
                 <p class="mt-2 small">
-                  Jemimah is a bright and creative girl who loves painting. Support her education and help her pursue her dreams.
+                  Jemimah is a bright and creative girl who loves painting.
+                  Support her education and help her pursue her dreams.
                 </p>
                 <a
                   href="donation-form.html"
@@ -593,13 +596,15 @@
                 <h5 class="fw-bold">Monicah Atieno</h5>
                 <small class="text-muted">Total Orphan</small>
                 <p class="mt-2 small">
-                  Monicah excels in science and dreams of becoming a doctor. Donations go towards her tuition and learning materials.
-                <a
-                  href="donation-form.html"
-                  class="btn btn-primary btn-sm mt-2"
-                >
-                  Donate
-                </a>
+                  Monicah excels in science and dreams of becoming a doctor.
+                  Donations go towards her tuition and learning materials.
+                  <a
+                    href="donation-form.html"
+                    class="btn btn-primary btn-sm mt-2"
+                  >
+                    Donate
+                  </a>
+                </p>
               </div>
             </div>
           </div>
@@ -614,16 +619,18 @@
                 <h5 class="fw-bold">Dorothy Wesonga</h5>
                 <small class="text-muted">Partial Orphan</small>
                 <p class="mt-2 small">
-                  Dorothy enjoys music and dancing. Help us nurture her talents while supporting her schooling and wellbeing.
-                <a
-                  href="donation-form.html"
-                  class="btn btn-primary btn-sm mt-2"
-                >
-                  Donate
-                </a>
+                  Dorothy enjoys music and dancing. Help us nurture her talents
+                  while supporting her schooling and wellbeing.
+                  <a
+                    href="donation-form.html"
+                    class="btn btn-primary btn-sm mt-2"
+                  >
+                    Donate
+                  </a>
+                </p>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </section>
@@ -746,5 +753,86 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/plugin.js"></script>
     <script src="js/main.js"></script>
+    <!-- <script src="js/api.js"></script>
+    <script>
+      async function loadOrphans() {
+        const res = await getOrphans();
+
+        const list = res.data; // <-- use the 'data' array
+
+        const container = document.getElementById("orphansContainer");
+        container.innerHTML = "";
+
+        list.forEach((orphan) => {
+          container.innerHTML += `
+        <div class="col-lg-3 col-md-6">
+          <div class="card shadow text-center border-0 member-card">
+            <img src="${
+              orphan.image || "images/default.jpg"
+            }" class="card-img-top" />
+            <div class="card-body">
+              <h5 class="fw-bold">${orphan.name}</h5>
+              <small class="text-muted">${orphan.gender}</small>
+              <small class="text-muted">${orphan.age} years</small>
+              <p class="mt-2 small">${orphan.description}</p>
+              <a href="donation-form.html" class="btn btn-primary btn-sm mt-2">Donate</a>
+            </div>
+          </div>
+        </div>
+      `;
+        });
+      }
+
+      loadOrphans();
+    </script> -->
+
+    <script src="js/api.js"></script>
+    <script>
+      async function loadOrphans() {
+        try {
+          const res = await getOrphans();
+          if (!res.success) {
+            console.error("Failed to fetch orphans");
+            return;
+          }
+
+          const orphans = res.data; // the array of orphan objects
+          const container = document.getElementById("orphansContainer");
+          container.innerHTML = "";
+
+          if (orphans.length === 0) {
+            container.innerHTML =
+              "<p class='text-center'>No orphans available at the moment.</p>";
+            return;
+          }
+
+          orphans.forEach((orphan) => {
+            container.innerHTML += `
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card shadow text-center border-0 member-card h-100">
+              <img src="${
+                orphan.image || "images/volunteer-holding-cardboard-box-2021-09-01-15-27-23-utc.jpg"
+              }" class="card-img-top" alt="${orphan.name}">
+              <div class="card-body d-flex flex-column">
+                <h5 class="fw-bold">${orphan.name}</h5>
+                <small class="text-muted">${orphan.gender}</small>
+                <small class="text-muted">${orphan.age} years old</small>
+                <p class="mt-2 small flex-grow-1">${
+                  orphan.description || "No description provided."
+                }</p>
+                <a href="donation-form.html" class="btn btn-primary btn-sm mt-2">Donate</a>
+              </div>
+            </div>
+          </div>
+        `;
+          });
+        } catch (error) {
+          console.error("Error loading orphans:", error);
+        }
+      }
+
+      // Call function on page load
+      loadOrphans();
+    </script>
   </body>
 </html>
