@@ -12,20 +12,34 @@ async function loginUser(email, password) {
 }
 
 // CREATE ORPHAN
-async function createOrphan(data) {
+// async function createOrphan(data) {
+//   const token = localStorage.getItem("token");
+
+//   const response = await fetch(`${API_URL}/orphans`, {
+//     method: "POST",
+//     headers: { 
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`
+//     },
+//     body: JSON.stringify(data)
+//   });
+
+//   return response.json();
+// }
+async function createOrphan(formData) {
   const token = localStorage.getItem("token");
 
   const response = await fetch(`${API_URL}/orphans`, {
     method: "POST",
     headers: { 
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}` // ❗ NO content-type for files
     },
-    body: JSON.stringify(data)
+    body: formData 
   });
 
   return response.json();
 }
+
 
 // GET ORPHANS
 async function getOrphans() {

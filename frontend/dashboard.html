@@ -285,21 +285,32 @@
                 <td>${orphan.gender || "-"}</td>
                 <td>${orphan.description || "-"}</td>
                 <td>
-                    <a href="edit-orphan.html?id=${
-                      orphan._id
-                    }" class="btn btn-sm btn-warning">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
+                    <button class="btn btn-sm btn-warning" onclick='openModal(${JSON.stringify(
+                      orphan
+                    )})'>
+                    <i class="fas fa-edit"></i> Edit
+                    </button>
                 </td>
-                <button onclick='openModal(${JSON.stringify(orphan)})'>Edit</button>
               </tr>
             `;
               });
           }
 
           // Dummy data for Donations and Users (replace with API calls later)
-          document.getElementById("totalDonations").innerText = "KES 120,000";
-          document.getElementById("totalUsers").innerText = 25;
+          // Fetch total donations
+          const donationsRes = await fetch(`${API_URL}/donations/total`);
+          const donationsData = await donationsRes.json();
+          document.getElementById("totalDonations").innerText =
+            donationsData.success
+              ? `KES ${donationsData.total.toLocaleString()}`
+              : "KES 0";
+
+          // Fetch total users
+          const usersRes = await fetch(`${API_URL}/users/total`);
+          const usersData = await usersRes.json();
+          document.getElementById("totalUsers").innerText = usersData.success
+            ? usersData.total
+            : 0;
 
           // Prepare data for charts
           const genderCounts = { Male: 0, Female: 0, Other: 0 };
@@ -312,8 +323,11 @@
           };
 
           orphanData.data.forEach((o) => {
-            if (o.gender)
-              genderCounts[o.gender] = (genderCounts[o.gender] || 0) + 1;
+            const gender = o.gender ? o.gender.trim().toLowerCase() : "Other";
+            if (gender === "male") genderCounts.Male++;
+            else if (gender === "female") genderCounts.Female++;
+            else genderCounts.Other++;
+
             const age = o.age || 0;
             if (age <= 5) ageGroups["0-5"]++;
             else if (age <= 10) ageGroups["6-10"]++;
@@ -326,7 +340,7 @@
           new Chart(document.getElementById("genderChart"), {
             type: "pie",
             data: {
-              labels: Object.keys(genderCounts),
+              labels: Object.keys(genderCounts), // ["Male", "Female", "Other"]
               datasets: [
                 {
                   data: Object.values(genderCounts),
@@ -374,6 +388,45 @@
       function closeModal() {
         document.getElementById("editOrphanModal").style.display = "none";
       }
+    </script>
+    <script>
+      function getToken() {
+        return localStorage.getItem("token");
+      }
+      document
+        .getElementById("editOrphanForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const id = document.getElementById("editOrphanId").value;
+          const name = document.getElementById("editName").value;
+          const age = parseInt(document.getElementById("editAge").value);
+          const gender = document.getElementById("editGender").value;
+          const description = document.getElementById("editDescription").value;
+          const image = document.getElementById("editImage").value;
+
+          try {
+            const res = await fetch(`${API_URL}/orphans/${id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getToken()}` },
+            //   Authorization: `Bearer ${getToken()}`,
+              body: JSON.stringify({ name, age, gender, description, image }),
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+              alert("Orphan updated successfully!");
+              closeModal();
+              loadDashboard(); // refresh table and charts
+            } else {
+              alert("Failed to update orphan: " + data.message);
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Error updating orphan");
+          }
+        });
     </script>
   </body>
 </html>

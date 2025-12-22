@@ -169,20 +169,20 @@
             />
           </div>
 
+          <div class="mb-3">
+            <label class="fw-semibold">Story / Background</label>
+            <textarea
+              id="description"
+              class="form-control"
+              rows="4"
+              placeholder="Write a short story"
+            ></textarea>
+          </div>
+
           <div class="col-md-6 mb-3">
             <label class="fw-semibold">Upload Photo (optional)</label>
             <input type="file" id="image" class="form-control" />
           </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="fw-semibold">Story / Background</label>
-          <textarea
-            id="story"
-            class="form-control"
-            rows="4"
-            placeholder="Write a short story"
-          ></textarea>
         </div>
 
         <div class="text-center">
@@ -200,7 +200,7 @@
       //     name: document.getElementById("name").value,
       //     gender: document.getElementById("gender").value,
       //     age: parseInt(document.getElementById("age").value),
-      //     story: document.getElementById("story").value
+      //     description: document.getElementById("description").value
       //   };
 
       //   try {
@@ -227,35 +227,24 @@
           formData.append("name", document.getElementById("name").value);
           formData.append("gender", document.getElementById("gender").value);
           formData.append("age", document.getElementById("age").value);
-          formData.append("story", document.getElementById("story").value);
+          formData.append(
+            "description",
+            document.getElementById("description").value
+          );
 
-          const imageInput = document.getElementById("image");
-          if (imageInput.files[0]) {
-            formData.append("image", imageInput.files[0]);
+          const imageFile = document.getElementById("image").files[0];
+          if (imageFile) {
+            formData.append("image", imageFile);
           }
 
-          try {
-            const token = localStorage.getItem("token");
+          const res = await createOrphan(formData);
 
-            const res = await fetch(`${API_URL}/orphans`, {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${token}`, // DO NOT set Content-Type, browser will set it
-              },
-              body: formData,
-            });
-
-            const data = await res.json();
-
-            if (data.success) {
-              alert("Orphan created successfully!");
-              document.getElementById("orphanForm").reset();
-            } else {
-              alert(data.message || "Failed to create orphan.");
-            }
-          } catch (err) {
-            console.error(err);
-            alert("An error occurred. Please try again.");
+          if (res.success) {
+            alert("Orphan created successfully!");
+            document.getElementById("orphanForm").reset();
+          } else {
+            // alert(res.message || "Failed to create orphan");
+            alert("Error: " + res.message);
           }
         });
     </script>

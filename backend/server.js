@@ -7,6 +7,7 @@ require("dotenv").config();
 const mpesaRoutes = require("./routes/mpesaRoutes");
 const orphanRoutes = require("./routes/orphanRoutes");
 const authRoutes = require("./routes/authRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const mongoose = require("mongoose");
 
@@ -33,13 +34,15 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-
+app.use(express.json());
 app.use("/api/mpesa", mpesaRoutes);
 app.use("/api/orphans", orphanRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api", dashboardRoutes);
+app.use(express.urlencoded({ extended: true }));
 // app.use("/uploads", express.static("uploads"));
 // Serve the uploads folder
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 app.get("/", (req, res) => {
