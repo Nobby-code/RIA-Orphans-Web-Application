@@ -46,3 +46,9 @@ async function getOrphans() {
   const response = await fetch(`${API_URL}/orphans`);
   return response.json();
 }
+
+// GET WIDOWS
+async function getWidows() {
+  const response = await fetch(`${API_URL}/widows`);
+  return response.json();
+}

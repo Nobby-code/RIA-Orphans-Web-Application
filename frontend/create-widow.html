@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Widow</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: #eef1f5;
+        padding: 40px 0;
+      }
+      .form-card {
+        max-width: 650px;
+        margin: auto;
+        background: #fff;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+      }
+      .btn-primary {
+        border-radius: 30px;
+        padding: 10px 18px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="form-card">
+      <h3 class="fw-bold text-center mb-2">Create New Widow</h3>
+      <p class="text-muted text-center mb-4">
+        Fill the details below to add widow information
+      </p>
+
+      <form id="widowForm">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              class="form-control"
+              placeholder="Enter full name"
+              required
+            />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold">Age</label>
+            <input
+              type="number"
+              id="age"
+              class="form-control"
+              placeholder="Enter age"
+              required
+            />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold">Number of Children</label>
+            <input
+              type="number"
+              id="childrenCount"
+              class="form-control"
+              placeholder="Enter number of children"
+              required
+            />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold">Location</label>
+            <input
+              type="text"
+              id="location"
+              class="form-control"
+              placeholder="Enter location"
+              required
+            />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold">Description</label>
+            <input
+              type="text"
+              id="description"
+              class="form-control"
+              placeholder="Enter description"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button class="btn btn-primary mt-3">Save Widow</button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:5000/api";
+
+      document
+        .getElementById("widowForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const widowData = {
+            name: document.getElementById("name").value,
+            age: document.getElementById("age").value,
+            location: document.getElementById("location").value,
+            numberOfChildren: document.getElementById("childrenCount").value,
+            description: document.getElementById("description").value,
+          };
+
+          try {
+            const res = await fetch(`${API_URL}/widows`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              body: JSON.stringify(widowData),
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+              alert("Widow added successfully");
+              window.location.href = "dashboard.html";
+            } else {
+              alert(data.message);
+            }
+          } catch (err) {
+            console.error(err.message);
+            alert("Error adding widow");
+          }
+        });
+    </script>
+  </body>
+</html>

@@ -366,10 +366,11 @@
       </div>
     </section>
 
-    <!-- Founders Section -->
+    <!-- Widows Section -->
     <section class="py-5 bg-light">
-      <div class="container">
-        <div class="text-center mb-5">
+      <div class="container widows-section" id="widowsContainer">
+        
+        <!-- <div class="text-center mb-5">
           <h2 class="secondary">Meet Our Widows</h2>
           <p class="w-md-75 m-auto">
             The visionaries behind RIA Orphans Foundation has made it possible
@@ -378,7 +379,6 @@
         </div>
 
         <div class="row gy-4">
-          <!-- Founder Card -->
           <div class="col-lg-4 col-md-6">
             <div class="card shadow border-0 text-center">
               <img
@@ -398,7 +398,6 @@
             </div>
           </div>
 
-          <!-- Add more founders by copy-paste -->
           <div class="col-lg-4 col-md-6">
             <div class="card shadow border-0 text-center">
               <img
@@ -435,7 +434,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </section>
 
@@ -833,6 +832,53 @@
 
       // Call function on page load
       loadOrphans();
+    </script>
+    <script>
+      async function loadWidows() {
+        try {
+          const res = await getWidows();
+          if (!res.success) {
+            console.error("Failed to fetch widows");
+            return;
+          }
+
+          const widows = res.data; // the array of widow objects
+          const container = document.getElementById("widowsContainer");
+          container.innerHTML = "";
+
+          if (widows.length === 0) {
+            container.innerHTML =
+              "<p class='text-center'>No widows available at the moment.</p>";
+            return;
+          }
+
+          widows.forEach((widow) => {
+            container.innerHTML += `
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card shadow text-center border-0 member-card h-100">
+              <img src="${
+                widow.image || "images/volunteer-holding-cardboard-box-2021-09-01-15-27-23-utc.jpg"
+              }" class="card-img-top" alt="${widow.name}">
+              <div class="card-body d-flex flex-column">
+                <h5 class="fw-bold">${widow.age} years</h5>
+                <small class="text-muted">${widow.gender}</small>
+                <small class="text-muted">${widow.numberOfChildren} children</small>
+                <p class="mt-2 small flex-grow-1">${
+                  widow.description || "No description provided."
+                }</p>
+                <a href="donation-form.html" class="btn btn-primary btn-sm mt-2">Donate</a>
+              </div>
+            </div>
+          </div>
+        `;
+          });
+        } catch (error) {
+          console.error("Error loading orphans:", error);
+        }
+      }
+
+      // Call function on page load
+      loadWidows();
     </script>
   </body>
 </html>

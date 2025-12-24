@@ -63,7 +63,7 @@ router.get("/", orphanController.getOrphans);
 router.get("/:id", orphanController.getOrphanById);
 
 // UPDATE orphan → admin only
-router.put("/:id", protect, admin, orphanController.updateOrphan);
+router.put("/:id", protect, admin, upload.single("image"), orphanController.updateOrphan);
 
 
 module.exports = router;
