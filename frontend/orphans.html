@@ -368,13 +368,14 @@
 
     <!-- Widows Section -->
     <section class="py-5 bg-light">
-      <div class="container widows-section" id="widowsContainer">
-        <div id="widowsSpinner" class="text-center py-5">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-          <p class="mt-2">Loading widows...</p>
+      <div id="widowsSpinner" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
+        <p class="mt-2">Loading widows...</p>
+      </div>
+
+      <div class="container widows-section" id="widowsContainer">
         <!-- <div class="text-center mb-5">
           <h2 class="secondary">Meet Our Widows</h2>
           <p class="w-md-75 m-auto">
@@ -441,6 +442,9 @@
           </div>
         </div> -->
       </div>
+      <div class="d-flex justify-content-center mt-4">
+        <ul class="pagination" id="widowsPagination"></ul>
+      </div>
     </section>
 
     <!-- Orphans Section -->
@@ -454,13 +458,13 @@
           </p>
         </div>
 
-        <div class="row gy-4" id="orphansContainer">
-          <div id="orphansSpinner" class="text-center py-5">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-2">Loading orphans...</p>
+        <div id="orphansSpinner" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
           </div>
+          <p class="mt-2">Loading orphans...</p>
+        </div>
+        <div class="row gy-4" id="orphansContainer">
           <!-- Orphan card -->
           <!-- <div class="col-lg-3 col-md-6">
             <div class="card shadow text-center border-0">
@@ -640,8 +644,11 @@
                 </p>
               </div>
             </div>
-          </div> -->
+          </div> <!-- End of orphan cards -->
         </div>
+      </div>
+      <div class="d-flex justify-content-center mt-4">
+        <ul class="pagination" id="orphansPagination"></ul>
       </div>
     </section>
     <!-- Founders Section Ends -->
@@ -798,14 +805,19 @@
 
     <script src="js/api.js"></script>
     <script>
-      async function loadOrphans() {
+      async function loadOrphans(page = 1) {
+        orphanCurrentPage = page;
         const spinner = document.getElementById("orphansSpinner");
         // spinner.style.display = "block";
 
         try {
-          spinner.style.display = "block";
-          const res = await getOrphans();
-          spinner.style.display = "none";
+          if (spinner) spinner.style.display = "block";
+          document.getElementById("orphansPagination").style.pointerEvents =
+            "none";
+          const res = await getOrphans(page);
+          if (spinner) spinner.style.display = "none";
+          document.getElementById("orphansPagination").style.pointerEvents =
+            "auto";
           if (!res.success) {
             console.error("Failed to fetch orphans");
             return;
@@ -842,7 +854,10 @@
           </div>
         `;
           });
+          renderPagination("orphansPagination", res.pagination, loadOrphans);
+          console.log("Loading orphans page:", page);
         } catch (error) {
+          spinner.style.display = "none";
           console.error("Error loading orphans:", error);
         }
       }
@@ -851,13 +866,17 @@
       loadOrphans();
     </script>
     <script>
-      async function loadWidows() {
+      async function loadWidows(page = 1) {
+        document.getElementById("widowsPagination").style.pointerEvents =
+          "none";
         const spinner = document.getElementById("widowsSpinner");
         // spinner.style.display = "block";
         try {
-          spinner.style.display = "block";
-          const res = await getWidows();
-          spinner.style.display = "none";
+          if (spinner) spinner.style.display = "block";
+          const res = await getWidows(page);
+          document.getElementById("widowsPagination").style.pointerEvents =
+            "auto";
+          if (spinner) spinner.style.display = "none";
           if (!res.success) {
             console.error("Failed to fetch widows");
             return;
@@ -896,13 +915,116 @@
           </div>
         `;
           });
+          renderPagination("widowsPagination", res.pagination, loadWidows);
         } catch (error) {
-          console.error("Error loading orphans:", error);
+          console.error("Error loading widows:", error);
         }
       }
 
       // Call function on page load
       loadWidows();
+    </script>
+    <script>
+      //   function renderPagination(containerId, pagination, callback) {
+      //     const container = document.getElementById(containerId);
+      //     container.innerHTML = "";
+
+      //     if (pagination.totalPages <= 1) return;
+
+      //     for (let i = 1; i <= pagination.totalPages; i++) {
+      //       container.innerHTML += `
+      //   <li class="page-item ${i === pagination.currentPage ? "active" : ""}">
+      //     <a class="page-link" href="#"
+      //       onclick="event.preventDefault(); ${callback.name}(${i})">
+      //       ${i}
+      //     </a>
+      //   </li>
+      // `;
+      //     }
+      //   }
+
+      //     let orphanCurrentPage = 1;
+      //     let widowCurrentPage = 1;
+      //     function renderPagination(containerId, pagination, callback) {
+      //       const container = document.getElementById(containerId);
+      //       container.innerHTML = "";
+
+      //       const { currentPage, totalPages } = pagination;
+
+      //       if (totalPages <= 1) return;
+
+      //       // Previous button
+      //       container.innerHTML += `
+      //   <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
+      //     <a class="page-link" href="#"
+      //       onclick="event.preventDefault(); ${
+      //         currentPage > 1 ? callback.name + "(" + (currentPage - 1) + ")" : ""
+      //       }">
+      //       Previous
+      //     </a>
+      //   </li>
+      // `;
+
+      //       // Page numbers
+      //       for (let i = 1; i <= totalPages; i++) {
+      //         container.innerHTML += `
+      //     <li class="page-item ${i === currentPage ? "active" : ""}">
+      //       <a class="page-link" href="#"
+      //         onclick="event.preventDefault(); ${callback.name}(${i})">
+      //         ${i}
+      //       </a>
+      //     </li>
+      //   `;
+      //       }
+
+      //       // Next button
+      //       container.innerHTML += `
+      //   <li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
+      //     <a class="page-link" href="#"
+      //       onclick="event.preventDefault(); ${
+      //         currentPage < totalPages
+      //           ? callback.name + "(" + (currentPage + 1) + ")"
+      //           : ""
+      //       }">
+      //       Next
+      //     </a>
+      //   </li>
+      // `;
+      //     }
+
+      function renderPagination(containerId, pagination, callback) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = "";
+
+        const { currentPage, totalPages } = pagination;
+        if (totalPages <= 1) return;
+
+        // Previous
+        const prev = document.createElement("li");
+        prev.className = `page-item ${currentPage === 1 ? "disabled" : ""}`;
+        prev.innerHTML = `<a class="page-link" href="#">Previous</a>`;
+        prev.onclick = () => currentPage > 1 && callback(currentPage - 1);
+        container.appendChild(prev);
+
+        // Pages
+        for (let i = 1; i <= totalPages; i++) {
+          const li = document.createElement("li");
+          li.className = `page-item ${i === currentPage ? "active" : ""}`;
+          li.innerHTML = `<button type="button" class="page-link">${i}</button>`;
+          li.onclick = () => callback(i);
+          container.appendChild(li);
+        }
+
+        // Next
+        const next = document.createElement("li");
+        next.className = `page-item ${
+          currentPage === totalPages ? "disabled" : ""
+        }`;
+        next.innerHTML = `<a class="page-link" href="#">Next</a>`;
+        next.onclick = () =>
+          currentPage < totalPages && callback(currentPage + 1);
+        container.appendChild(next);
+      }
     </script>
   </body>
 </html>

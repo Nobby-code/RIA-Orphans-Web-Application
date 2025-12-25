@@ -30,8 +30,29 @@ exports.createOrphan = async (req, res) => {
 // Get all orphans (anyone can view)
 exports.getOrphans = async (req, res) => {
   try {
-    const orphans = await Orphan.find().populate("createdBy", "name email");
-    res.json({ success: true, data: orphans });
+    // const orphans = await Orphan.find().populate("createdBy", "name email");
+    // res.json({ success: true, data: orphans });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const total = await Orphan.countDocuments();
+
+    const orphans = await Orphan.find()
+      .populate("createdBy", "name email")
+      .skip(skip)
+      .limit(limit)
+      .populate("createdBy", "name email");
+
+    res.json({
+      success: true,
+      data: orphans,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        pageSize: limit,
+      },
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: "Server error" });

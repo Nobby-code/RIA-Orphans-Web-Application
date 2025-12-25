@@ -32,8 +32,30 @@ exports.createWidow = async (req, res) => {
 // Get all widows (public)
 exports.getWidows = async (req, res) => {
   try {
-    const widows = await Widow.find().populate("createdBy", "name email");
-    res.json({ success: true, data: widows });
+    // const widows = await Widow.find().populate("createdBy", "name email");
+    // res.json({ success: true, data: widows });
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const total = await Widow.countDocuments();
+
+    const widows = await Widow.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("createdBy", "name email");
+
+    res.json({
+      success: true,
+      data: widows,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        pageSize: limit,
+      },
+    });
   } catch (error) {
     console.error("Get widows error:", error);
     res.status(500).json({ message: "Server error" });

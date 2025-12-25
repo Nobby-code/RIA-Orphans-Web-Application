@@ -42,13 +42,23 @@ async function createOrphan(formData) {
 
 
 // GET ORPHANS
-async function getOrphans() {
-  const response = await fetch(`${API_URL}/orphans`);
-  return response.json();
+// async function getOrphans() {
+//   const response = await fetch(`${API_URL}/orphans`);
+//   return response.json();
+// }
+
+async function getOrphans(page = 1, limit = 8) {
+  return fetch(`${API_URL}/orphans?page=${page}&limit=${limit}`)
+    .then(res => res.json());
 }
 
 // GET WIDOWS
-async function getWidows() {
-  const response = await fetch(`${API_URL}/widows`);
-  return response.json();
+// async function getWidows() {
+//   const response = await fetch(`${API_URL}/widows`);
+//   return response.json();
+// }
+
+async function getWidows(page = 1, limit = 8) {
+  return fetch(`${API_URL}/widows?page=${page}&limit=${limit}`)
+    .then(res => res.json());
 }
