@@ -968,5 +968,61 @@
           mpesaBtn.disabled = false;
         });
     </script>
+    <!-- <script>
+      // Currency symbol update
+      document.getElementById("currency").addEventListener("change", function () {
+        const currency = this.value;
+        let symbol = "$"; // Default USD
+
+        switch (currency) {
+          case "EUR":
+            symbol = "€";
+            break;
+          case "GBP":
+            symbol = "£";
+            break;
+          case "NPR":
+            symbol = "₨";
+            break;
+          case "INR":
+            symbol = "₹";
+            break;
+          // Add more currencies as needed
+        }
+
+        document.getElementById("currencySymbol").innerText = symbol;
+      });
+    </script> -->
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const type = params.get("type"); // orphan | widow
+      const id = params.get("id");
+
+      if (!type || !id) {
+        alert("Invalid donation link");
+        window.location.href = "orphans.html";
+      }
+
+      async function loadDonationTarget() {
+        let res;
+
+        if (type === "orphan") {
+          res = await getOrphanById(id);
+        } else if (type === "widow") {
+          res = await getWidowById(id);
+        }
+
+        if (!res.success) {
+          alert("Failed to load donation details");
+          return;
+        }
+
+        const person = res.data;
+
+        document.getElementById("donationName").innerText = person.name;
+        document.getElementById("donationImage").src = person.image;
+      }
+      loadDonationTarget();
+    </script>
   </body>
 </html>

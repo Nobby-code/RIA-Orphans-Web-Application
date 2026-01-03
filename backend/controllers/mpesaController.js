@@ -8,12 +8,21 @@ const sendSMS = require("../config/smsService");
 
 exports.stkPush = async (req, res) => {
   try {
-    const { amount, phone } = req.body;
+    // const { amount, phone } = req.body;
+    const {
+      amount,
+      phone,
+      fullName,
+      email,
+      beneficiaryId,
+      beneficiaryType,
+      sponsorshipType,
+    } = req.body;
 
-    if (!amount || !phone) {
+    if (!amount || !phone || !beneficiaryId || !beneficiaryType) {
       return res
         .status(400)
-        .json({ success: false, message: "Amount and phone are required" });
+        .json({ success: false, message: "Missing required donation fields" });
     }
 
     // Ensure phone number is in 2547XXXXXXXX format
@@ -60,6 +69,11 @@ exports.stkPush = async (req, res) => {
       amount,
       checkoutRequestID: response.data.CheckoutRequestID,
       merchantRequestID: response.data.MerchantRequestID,
+      fullName,
+      email,
+      beneficiaryId,
+      beneficiaryType,
+      sponsorshipType,
       status: "pending",
     });
 

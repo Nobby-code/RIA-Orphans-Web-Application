@@ -5,7 +5,30 @@ const transactionsSchema = new mongoose.Schema({
   amount: { type: Number, required: true },
   checkoutRequestID: { type: String }, // from STK push response
   merchantRequestID: { type: String }, // from STK push response
-  status: { type: String, default: 'pending' }, // pending, success, failed
+   // Sponsor info
+  fullName: { type: String },
+  email: { type: String },
+   // Beneficiary info
+  beneficiaryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    refPath: "beneficiaryType",
+  },
+  beneficiaryType: {
+    type: String,
+    enum: ["orphan", "widow"],
+    required: true,
+  },
+  sponsorshipType: {
+    type: String,
+    enum: ["monthly", "one-time"],
+    default: "one-time",
+  },
+  status: { 
+    type: String,
+    enum: ["pending", "success", "failed"], 
+    default: 'pending' 
+  }, // pending, success, failed
   resultCode: { type: Number },
   resultDesc: { type: String },
   createdAt: { type: Date, default: Date.now },

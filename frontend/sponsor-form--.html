@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sponsor an Orphan | RIA Orphans Foundation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+
+  <style>
+    body { background: #f8f9fa; }
+    .sponsor-card { max-width: 500px; margin: 40px auto; }
+    .form-section-title { font-weight: 600; margin-bottom: 15px; }
+    .amount-btn { cursor: pointer; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="py-4 bg-primary text-white text-center">
+    <h2>Sponsor an Orphan</h2>
+    <p class="mb-0">Your support changes a life ❤️</p>
+  </div>
+
+  <!-- Sponsor Form -->
+  <section class="py-5">
+    <div class="container">
+      <div class="card sponsor-card shadow border-0">
+        <div class="card-body p-4">
+
+          <!-- Beneficiary Info -->
+          <div class="mb-4">
+            <h5 class="form-section-title">Beneficiary Details</h5>
+            <p><strong>Name:</strong> <span id="beneficiaryName">Loading...</span></p>
+            <p><strong>Age:</strong> <span id="beneficiaryAge">Loading...</span></p>
+          </div>
+
+          <hr />
+
+          <!-- Sponsor Form -->
+          <h5 class="form-section-title">Sponsor Information</h5>
+          <form id="sponsorForm">
+            <div class="mb-3">
+              <label class="form-label">Full Name *</label>
+              <input type="text" class="form-control" name="fullName" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email *</label>
+              <input type="email" class="form-control" name="email" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Phone *</label>
+              <input type="tel" class="form-control" name="phone" placeholder="+254..." required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Select Amount (KES) *</label>
+              <div class="mb-2">
+                <button type="button" class="btn btn-outline-primary me-2 amount-btn" data-amount="1000">KES 1,000</button>
+                <button type="button" class="btn btn-outline-primary me-2 amount-btn" data-amount="3000">KES 3,000</button>
+                <button type="button" class="btn btn-outline-primary me-2 amount-btn" data-amount="5000">KES 5,000</button>
+              </div>
+              <input type="number" class="form-control" name="amount" placeholder="Other amount" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Message (Optional)</label>
+              <textarea class="form-control" name="message" rows="3" placeholder="Write a message or prayer..."></textarea>
+            </div>
+
+            <!-- Hidden beneficiary info -->
+            <input type="hidden" name="beneficiaryId" id="hiddenId" />
+            <input type="hidden" name="beneficiaryName" id="hiddenName" />
+            <input type="hidden" name="beneficiaryAge" id="hiddenAge" />
+
+            <button type="submit" class="btn btn-primary w-100 py-2">Proceed to Payment</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API_URL = "http://localhost:5000/api"; // use config.js later
+
+    // Load beneficiary details
+    async function loadBeneficiaryDetails() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      const type = params.get("type");
+      if (!id || !type) return;
+
+      try {
+        const res = await fetch(`${API_URL}/${type}s/${id}`);
+        const data = await res.json();
+        const orphan = data.data;
+
+        if (!orphan) throw new Error("Beneficiary not found");
+
+        document.getElementById("beneficiaryName").innerText = orphan.name;
+        document.getElementById("beneficiaryAge").innerText = orphan.age + " years";
+
+        // Fill hidden inputs
+        document.getElementById("hiddenId").value = id;
+        document.getElementById("hiddenName").value = orphan.name;
+        document.getElementById("hiddenAge").value = orphan.age;
+
+      } catch (err) {
+        alert(err.message);
+        document.getElementById("beneficiaryName").innerText = "N/A";
+        document.getElementById("beneficiaryAge").innerText = "N/A";
+      }
+    }
+    loadBeneficiaryDetails();
+
+    // Amount buttons
+    document.querySelectorAll(".amount-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelector("input[name='amount']").value = btn.dataset.amount;
+      });
+    });
+
+    // Handle form submit
+    document.getElementById("sponsorForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const formData = Object.fromEntries(new FormData(e.target).entries());
+      console.log("Sponsor Data:", formData);
+
+      // TODO: Send to backend, get payment link
+      alert("Form submitted! Redirect to payment gateway...");
+    });
+  </script>
+</body>
+</html>
