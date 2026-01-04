@@ -3,6 +3,7 @@ const getMpesaToken = require("../utils/mpesaToken");
 require("dotenv").config();
 
 const Transaction = require("../models/transactions");
+const donors = require("../models/donors");
 const sms = require("../config/africasTalking");
 const sendSMS = require("../config/smsService");
 
@@ -139,7 +140,7 @@ exports.mpesaCallback = async (req, res) => {
     });
 
     // SUCCESS → Update transaction
-    await Transaction.findOneAndUpdate(
+    const updatedTransaction = await Transaction.findOneAndUpdate(
       { checkoutRequestID: CheckoutRequestID },
       {
         status: "success",
@@ -149,12 +150,44 @@ exports.mpesaCallback = async (req, res) => {
         phone: Phone,
         mpesaReceiptNumber: MpesaReceiptNumber,
         transactionDate: TransactionDate,
-      }
+      },
+      { new: true }
     );
 
+    if (!updatedTransaction) {
+      return res
+        .status(404)
+        .json({ error: "Transaction not found" });
+    }
+
+    // Save donor information
+    await donors.create({
+      fullName: updatedTransaction.fullName,
+      email: updatedTransaction.email,
+      phone: updatedTransaction.phone,
+      amount: updatedTransaction.amount,
+      beneficiaryId: updatedTransaction.beneficiaryId,
+      beneficiaryType: updatedTransaction.beneficiaryType,
+      sponsorshipType: updatedTransaction.sponsorshipType,
+      mpesaReceiptNumber: updatedTransaction.mpesaReceiptNumber,
+      transactionDate: updatedTransaction.transactionDate,
+    });
+
+    // Emit real-time update via Socket.io
+    // 🔔 notify frontend
+    const io = req.app.get("io");
+    io.emit("paymentSuccess", {
+      checkoutRequestID: updatedTransaction.checkoutRequestID,
+      donorName: updatedTransaction.fullName,
+      amount: updatedTransaction.amount,
+      message: "Payment successful",
+    });
+
     // Send SMS confirmation to donor
-    const message = `Dear donor, your donation of KES ${Amount} was successful. Mpesa Receipt: ${MpesaReceiptNumber}. Thank you for supporting orphans.`;
+    const message = `Dear ${updatedTransaction.fullName}, your donation of KES ${Amount} was successful. Mpesa Receipt: ${MpesaReceiptNumber}. Thank you for supporting orphans.`;
     await sendSMS({ to: Phone, message });
+
+    res.status(200).json({ message: "Callback saved (SUCCESS), SMS sent" });
     // sms
     //   .send({
     //     to: [Phone.toString()], // Make sure phone is in 2547XXXXXXXX format

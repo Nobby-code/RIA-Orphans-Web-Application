@@ -1,3 +1,5 @@
+const http = require("http");
+const { Server } = require("socket.io");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -13,7 +15,8 @@ const widowRoutes = require("./routes/widowRoutes");
 const mongoose = require("mongoose");
 
 // MongoDB URI
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/donationsDB";
+const MONGO_URI =
+  process.env.MONGO_URI || "mongodb://localhost:27017/donationsDB";
 
 const connectDB = async () => {
   try {
@@ -24,7 +27,6 @@ const connectDB = async () => {
   }
 };
 connectDB();
-
 
 // mongoose
 //   .connect(MONGO_URI)
@@ -46,12 +48,30 @@ app.use(express.urlencoded({ extended: true }));
 // Serve the uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-
 app.get("/", (req, res) => {
   res.send("M-Pesa Backend Running");
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: { origin: "*", methods: ["GET", "POST"] },
+});
+
+io.on("connection", (socket) => {
+  console.log("New client connected:", socket.id);
+  socket.on("disconnect", () => {
+    console.log("Client disconnected", socket.id);
+  });
+});
+
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+app.set("io", io);
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });

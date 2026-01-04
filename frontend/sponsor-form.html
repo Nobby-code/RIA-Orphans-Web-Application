@@ -156,17 +156,94 @@
               <input type="hidden" name="beneficiaryName" id="hiddenName" />
               <input type="hidden" name="beneficiaryAge" id="hiddenAge" />
 
-              <button type="submit" class="btn btn-primary w-100 py-2 mt-3">
-                Proceed to Sponsor
+              <button type="submit" id = "submitBtn" class="btn btn-primary w-100 py-2 mt-3">
+                 <span id="btnText">Proceed to Sponsor</span>
+                  <span
+                    id="btnSpinner"
+                    class="spinner-border spinner-border-sm ms-2 d-none"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
               </button>
+              <!-- Loading -->
+            <div id="paymentLoading" style="display:none; color:blue;">
+              ⏳ Waiting for M-Pesa payment confirmation...
+            </div>
+
+            <!-- Success -->
+            <div id="paymentSuccess" style="display:none; color:green;">
+              ✅ Payment Received! Thank you for your support.
+            </div>
+
+            <!-- Error -->
+            <div id="paymentError" style="display:none; color:red;"></div>
             </form>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- Payment Success Modal -->
+    <div
+      class="modal fade"
+      id="paymentSuccessModal"
+      tabindex="-1"
+      aria-labelledby="paymentSuccessLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="paymentSuccessLabel">
+              Payment Successful
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body text-center">
+            <p class="mb-2">
+              Thank you for sponsoring an orphan ❤️
+            </p>
+            <p class="text-muted">
+              Your payment has been received successfully.
+            </p>
+            <p class="fw-bold">
+              <!-- Receipt Number: -->
+               Paid Amount:
+              <span id="receiptNumber" class="text-success"></span>
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-success w-100"
+              data-bs-dismiss="modal"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Scripts -->
     <script src="js/bootstrap.bundle.min.js"></script>
+    <script>
+      const IS_LOCAL =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1";
+
+      const API_BASE_URL = IS_LOCAL
+        ? "http://localhost:5000/api"
+        : "https://riaorphansfoundation.org/api";
+
+      const SOCKET_URL = IS_LOCAL
+        ? "http://localhost:5000"
+        : "https://riaorphansfoundation.org";
+    </script>
 
     <script>
             async function loadBeneficiaryDetails() {
@@ -180,6 +257,7 @@
               document.getElementById("beneficiaryId").innerText = id || "N/A";
                 // Fetch additional details from API if needed
                 const API_URL = "http://localhost:5000/api";
+                
                 const response = await fetch(`${API_URL}/${type}s/${id}`);
                 const data = await response.json();
                 console.log("API response:", data);
@@ -306,8 +384,39 @@
       //   console.log("Sponsor payload:", payload);
       // });
 
+      const successModal = new bootstrap.Modal(
+        document.getElementById("paymentSuccessModal")
+      );
+      
+      const loading = document.getElementById("paymentLoading");
+      const success = document.getElementById("paymentSuccess");
+      const errorBox = document.getElementById("paymentError");
+
+      // const submitBtn = document.getElementById("submitBtn");
+      const btnText = document.getElementById("btnText");
+      const btnSpinner = document.getElementById("btnSpinner");
+
+      function setButtonLoading(isLoading) {
+        if (isLoading) {
+          submitBtn.disabled = true;
+          btnSpinner.classList.remove("d-none");
+          btnText.textContent = "Waiting for payment";
+        } else {
+          submitBtn.disabled = false;
+          btnSpinner.classList.add("d-none");
+          btnText.textContent = "Proceed to Sponsor";
+        }
+      }
+
       document.getElementById("sponsorForm").addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        loading.style.display = "block";
+        success.style.display = "none";
+        errorBox.style.display = "none";
+        submitBtn.disabled = true;
+
+        setButtonLoading(true);
 
         const formData = new FormData(e.target);
         const payload = Object.fromEntries(formData.entries());
@@ -335,17 +444,67 @@
 
             const data = await res.json();
 
+            // setButtonLoading(false);
+
             if (!res.ok) {
               alert(data.message || "Failed to initiate MPESA payment");
+              setButtonLoading(false);
               return;
             }
 
             alert("MPESA prompt sent 📲 Enter your PIN on your phone");
           } catch (err) {
-            console.log(err.message);
-            alert("Error initiating MPESA payment");
+            // console.log(err.message);
+            // alert("Error initiating MPESA payment");
+            loading.style.display = "none";
+            submitBtn.disabled = false;
+            errorBox.textContent = err.message;
+            errorBox.style.display = "block";
           }
         }
+      });
+    </script>
+    <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io("http://localhost:5000");
+      let paymentTimeout;
+
+      socket.on("paymentSuccess", (data) => {
+        // alert("Payment successful. Thank you!");
+        // alert(data.message + "\nDonor: " + data.donorName + "\nAmount: " + data.amount);
+        paymentTimeout = setTimeout(() => {
+          loading.style.display = "none";
+          submitBtn.disabled = false;
+
+          errorBox.textContent =
+            "⏱ Payment timed out. Please check your phone or try again.";
+          errorBox.style.display = "block";
+        }, 60000); // 60 seconds
+
+        clearTimeout(paymentTimeout);
+
+        // document.getElementById("receiptNumber").innerText = data.mpesaReceiptNumber || "N/A";
+        document.getElementById("receiptNumber").innerText = data.amount || "N/A";
+
+
+        setButtonLoading(false);
+        
+        loading.style.display = "none";
+        success.style.display = "block";
+        submitBtn.disabled = false;
+
+        //show modal
+        successModal.show();
+
+        sponsorForm.reset();
+
+         // Optional: auto-hide success message
+        // setTimeout(() => {
+        //   success.style.display = "none";
+        // }, 5000);
+
+        // optionally redirect
+        // window.location.href = "/thank-you.html";
       });
     </script>
 
