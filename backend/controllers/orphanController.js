@@ -3,26 +3,47 @@ const Orphan = require("../models/Orphan");
 // Create new orphan (admin only)
 exports.createOrphan = async (req, res) => {
   try {
-    const { name, age, gender, description } = req.body;
+    const { name, dob, age, gender, orphanType, deceasedParent, description } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: "Name is required" });
     }
 
+    if (orphanType === "partial" && !deceasedParent) {
+      return res
+        .status(400)
+        .json({ message: "Deceased parent is required for partial orphans" });
+    }
+
+    if (orphanType === "total") {
+      req.body.deceasedParent = null; // Ensure deceasedParent is null for total orphans
+    }
+    // if (orphanType === "total" && deceasedParent) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Total orphan should not have deceased parent",
+    //   });
+    // }
+
     const baseURL = req.protocol + "://" + req.get("host");
     const orphan = await Orphan.create({
       name,
+      dob,
       age,
       gender,
+      orphanType,
+      deceasedParent,
       description,
       // image: req.file ? `/uploads/${req.file.filename}` : null,
       image: req.file ? `${baseURL}/uploads/${req.file.filename}` : null,
       createdBy: req.user._id,
     });
 
+    await orphan.save();
+
     res.status(201).json({ success: true, data: orphan });
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };

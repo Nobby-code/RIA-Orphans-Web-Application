@@ -1528,3 +1528,91 @@ footer .overlay{
     height: 200px;        /* Slightly smaller height for small screens */
   }
 }
+
+
+/* ========================================= */
+/*              Sponsor page      */
+/* ========================================= */
+
+/* Improve input visibility */
+.sponsor-form .form-control,
+.sponsor-form .form-select,
+.sponsor-form textarea {
+  border: 1.5px solid #b0b0b0; /* darker than default */
+  border-radius: 6px;
+  background-color: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Focus state */
+.sponsor-form .form-control:focus,
+.sponsor-form .form-select:focus,
+.sponsor-form textarea:focus {
+  border-color: #0d6efd; /* Bootstrap primary */
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+}
+
+.sponsor-form .form-label {
+  font-weight: 500;
+  color: #333;
+}
+
+/* ========================================= */
+/*              Sponsor page      */
+/* ========================================= */
+/* ===== Form Visibility Fix ===== */
+.form-card .form-control,
+.form-card .form-select,
+.form-card textarea {
+  border: 1.5px solid #b5b5b5; /* darker border */
+  border-radius: 8px;
+  background-color: #ffffff;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.95rem;
+  color: #333;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* File input fix */
+.form-card input[type="file"] {
+  border: 1.5px dashed #b5b5b5;
+  padding: 0.5rem;
+  background: #fafafa;
+}
+
+/* Focus state */
+.form-card .form-control:focus,
+.form-card .form-select:focus,
+.form-card textarea:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+  outline: none;
+}
+
+/* Labels */
+.form-card label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.3rem;
+}
+
+.form-card hr {
+  margin: 1.5rem 0;
+  border-color: #e0e0e0;
+}
+
+.form-card .btn-primary {
+  font-weight: 600;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-card .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.35);
+}
+
+@media (max-width: 576px) {
+  .form-card {
+    padding: 25px;
+  }
+}

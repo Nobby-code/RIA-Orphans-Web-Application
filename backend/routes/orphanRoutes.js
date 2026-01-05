@@ -53,7 +53,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// ✔️ Only ONE POST route
+// ✔️ Create orphan → admin only
 router.post("/", protect, admin, upload.single("image"), orphanController.createOrphan);
 
 // Get all orphans
