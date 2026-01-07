@@ -11,8 +11,11 @@
 */
 
 /* Header */
-header .header-nav .header-logo img {
+/* header .header-nav .header-logo img {
   width: 208px;
+} */
+header .header-nav .header-logo img {
+  width: 190px;
 }
 
 .navbar-nav .nav-link{

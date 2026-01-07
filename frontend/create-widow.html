@@ -10,6 +10,39 @@
       rel="stylesheet"
     />
 
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="images/cropped-favicon-32x32.png"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+
+    <!--CSS Plugins-->
+    <link rel="stylesheet" href="css/plugin.css" />
+    <!-- Default CSS-->
+    <link rel="stylesheet" href="css/default.css" />
+    <!--Custom CSS-->
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <!-- Font Awesome 4.7.0 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <!-- Font Awesome 5 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <!-- Include lightGallery CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/lightgallery/css/lightgallery-bundle.min.css"
+    />
+
     <style>
       body {
         background: #eef1f5;
@@ -17,7 +50,7 @@
       }
       .form-card {
         max-width: 650px;
-        margin: auto;
+        margin: 10px auto;
         background: #fff;
         border-radius: 20px;
         padding: 40px;
@@ -31,6 +64,7 @@
   </head>
 
   <body>
+    <div id="site-header"></div>
     <div class="form-card">
       <h3 class="fw-bold text-center mb-2">Create New Widow</h3>
       <p class="text-muted text-center mb-4">
@@ -100,7 +134,9 @@
         </div>
       </form>
     </div>
+    <!-- <div id="site-footer"></div> -->
 
+    <script src="js/layout.js"></script>
     <script>
       const API_URL = "http://localhost:5000/api";
 
