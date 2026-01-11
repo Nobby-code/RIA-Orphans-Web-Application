@@ -476,6 +476,18 @@
             errorBox.textContent = err.message;
             errorBox.style.display = "block";
           }
+        } else if (payload.paymentMethod === "card") {
+          alert("Card payment method selected. Integration pending.");
+          loading.style.display = "none";
+          submitBtn.disabled = false;
+        } else if (payload.paymentMethod === "paypal") {
+          alert("PayPal payment method selected. Integration pending.");
+          loading.style.display = "none";
+          submitBtn.disabled = false;
+        } else {
+          alert("Please select a valid payment method.");
+          loading.style.display = "none";
+          submitBtn.disabled = false;
         }
       });
     </script>

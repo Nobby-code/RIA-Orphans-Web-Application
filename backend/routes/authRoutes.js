@@ -15,7 +15,7 @@ router.post("/create-admin", async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: "admin"
+      role: "admin",
     });
 
     res.json({ success: true, adminUser });
@@ -30,16 +30,26 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ message: "Invalid credentials" });
+  if (!user) return res.status(400).json({ message: "Invalid credentials!" });
+
+  //  block to prevent login for non-admin users
+  if (user.role !== "admin") {
+    return res.status(403).json({ message: "Access denied: Admins only" });
+  }
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+  if (!isMatch)
+    return res.status(400).json({ message: "Invalid credentials!" });
 
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 
-  res.json({ success: true, token });
+  res.json({
+    success: true,
+    token,
+    user: { id: user._id, name: user.name, email: user.email, role: user.role },
+  });
 });
 
 module.exports = router;

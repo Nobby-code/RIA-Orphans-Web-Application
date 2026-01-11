@@ -13,4 +13,6 @@ router.post("/callback", mpesaController.mpesaCallback);
 //   res.status(200).json({ message: "Callback received successfully" });
 // });
 
+router.get("/", mpesaController.getTransactions);
+
 module.exports = router;

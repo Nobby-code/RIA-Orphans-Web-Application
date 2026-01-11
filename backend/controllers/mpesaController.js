@@ -204,3 +204,14 @@ exports.mpesaCallback = async (req, res) => {
     res.status(500).json({ error: "Callback processing error" });
   }
 };
+
+// Get all transactions
+exports.getTransactions = async (req, res) => {
+  try {
+    const transactions = await Transaction.find().sort({ createdAt: -1 }); // Newest first
+    res.json({ success: true, data: transactions });
+  } catch (err) {
+    console.error("Error fetching transactions:", err);
+    res.status(500).json({ success: false, message: "Failed to fetch transactions" });
+  }
+};

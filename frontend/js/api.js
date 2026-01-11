@@ -1,45 +1,43 @@
 const API_URL = "http://localhost:5000/api"; // change if deployed
 
+// HANDLE AUTH ERRORS
+async function handleResponse(response) {
+  if (response.status === 401 || response.status === 403) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = "login.html";
+    return;
+  }
+  return response.json();
+}
+
 // LOGIN FUNCTION
 async function loginUser(email, password) {
   const response = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({ email, password }),
   });
 
-  return response.json();
+  // return response.json();
+  return handleResponse(response);
 }
 
-// CREATE ORPHAN
-// async function createOrphan(data) {
-//   const token = localStorage.getItem("token");
-
-//   const response = await fetch(`${API_URL}/orphans`, {
-//     method: "POST",
-//     headers: { 
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`
-//     },
-//     body: JSON.stringify(data)
-//   });
-
-//   return response.json();
-// }
+// CREATE ORPHAN FUNCTION
 async function createOrphan(formData) {
   const token = localStorage.getItem("token");
 
   const response = await fetch(`${API_URL}/orphans`, {
     method: "POST",
-    headers: { 
-      Authorization: `Bearer ${token}` // ❗ NO content-type for files
+    headers: {
+      Authorization: `Bearer ${token}`, // ❗ NO content-type for files
     },
-    body: formData 
+    body: formData,
   });
 
-  return response.json();
+  // return response.json();
+  return handleResponse(response);
 }
-
 
 // GET ORPHANS
 // async function getOrphans() {
@@ -47,9 +45,14 @@ async function createOrphan(formData) {
 //   return response.json();
 // }
 
+// async function getOrphans(page = 1, limit = 8) {
+//   return fetch(`${API_URL}/orphans?page=${page}&limit=${limit}`).then((res) =>
+//     res.json()
+//   );
+// }
+
 async function getOrphans(page = 1, limit = 8) {
-  return fetch(`${API_URL}/orphans?page=${page}&limit=${limit}`)
-    .then(res => res.json());
+  return fetch(`${API_URL}/orphans?page=${page}&limit=${limit}`).then(handleResponse);
 }
 
 // GET WIDOWS
@@ -58,7 +61,12 @@ async function getOrphans(page = 1, limit = 8) {
 //   return response.json();
 // }
 
+// async function getWidows(page = 1, limit = 8) {
+//   return fetch(`${API_URL}/widows?page=${page}&limit=${limit}`).then((res) =>
+//     res.json()
+//   );
+// }
+
 async function getWidows(page = 1, limit = 8) {
-  return fetch(`${API_URL}/widows?page=${page}&limit=${limit}`)
-    .then(res => res.json());
+  return fetch(`${API_URL}/widows?page=${page}&limit=${limit}`).then(handleResponse);
 }

@@ -15,23 +15,32 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
     }
     .login-card {
       max-width: 430px;
       width: 100%;
       padding: 30px;
-      border-radius: 15px;
+      border-radius: 8px;
       background: #fff;
       box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
     }
     .btn-primary {
       /* border-radius: 30px; */
+      background-color: #FF6D12;
       padding: 10px;
+    }
+    .loginMessage {
+      /* max-width: 430px;
+      margin-bottom: 20px; */
+      max-width: 430px;
+      width: 100%;
     }
   </style>
 </head>
 
 <body>
+  <div id="loginMessage" class="alert d-none loginMessage" role="alert"></div>
   <div class="login-card">
     <h3 class="text-center fw-bold mb-3">ADMIN LOGIN</h3>
     <p class="text-center text-muted">Login to access the admin dashboard</p>
@@ -47,14 +56,25 @@
         <input type="password" id="password" class="form-control" placeholder="Enter password" required>
       </div>
 
-      <button class="btn btn-primary w-100 mt-2" type="submit">Login</button>
+      <button id="loginBtn" class="btn btn-primary w-100 mt-2 " type="submit">Login</button>
     </form>
   </div>
 
   <script src="js/api.js"></script>
   <script>
+    const messageBox = document.getElementById("loginMessage");
+
+    function showMessage(message, type = "danger") {
+      messageBox.textContent = message;
+      messageBox.className = `alert alert-${type}`;
+      messageBox.classList.remove("d-none");
+    }
+
+
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      messageBox.classList.add("d-none");
 
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
@@ -62,16 +82,24 @@
       try {
         const res = await loginUser(email, password);
 
-        if (res.token) {
+        if (res.token && res.user && res.user.role === "admin") {
           localStorage.setItem("token", res.token);
-          alert("Login successful!");
-          window.location.href = "dashboard.html"; // Redirect to create orphan page
+          localStorage.setItem("role", res.user.role);
+          // alert("Login successful!");
+          showMessage("Login successful!", "success");
+          // window.location.href = "dashboard.html"; 
+          document.getElementById("loginBtn").disabled = true;
+          document.getElementById("loginBtn").textContent = "redirecting to dashboard...";
+          setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1200);
         } else {
-          alert(res.message || "Invalid login");
+          // alert(res.message || "Invalid login");
+          showMessage(res.message || "Invalid login");
         }
       } catch (err) {
         console.error(err);
-        alert("An error occurred. Please try again.");
+        showMessage("danger", "Server error. Please try again.");
       }
     });
   </script>

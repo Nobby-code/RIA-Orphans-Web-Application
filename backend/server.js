@@ -11,6 +11,8 @@ const orphanRoutes = require("./routes/orphanRoutes");
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const widowRoutes = require("./routes/widowRoutes");
+const donorsRoutes = require("./routes/donorRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const mongoose = require("mongoose");
 
@@ -43,6 +45,9 @@ app.use("/api/orphans", orphanRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api", dashboardRoutes);
 app.use("/api/widows", widowRoutes);
+app.use("/api/donors", donorsRoutes);
+app.use("/api/donations", mpesaRoutes);
+app.use("/api/users", userRoutes);
 app.use(express.urlencoded({ extended: true }));
 // app.use("/uploads", express.static("uploads"));
 // Serve the uploads folder
