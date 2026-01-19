@@ -13,12 +13,14 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const widowRoutes = require("./routes/widowRoutes");
 const donorsRoutes = require("./routes/donorRoutes");
 const userRoutes = require("./routes/userRoutes");
+const programRoutes = require("./routes/programRoutes");
+const eventsRoutes = require("./routes/eventRoutes");
 
 const mongoose = require("mongoose");
 
 // MongoDB URI
 const MONGO_URI =
-  process.env.MONGO_URI || "mongodb://localhost:27017/donationsDB";
+  process.env.MONGO_URI || process.env.MONGO_URI_LOCAL;
 
 const connectDB = async () => {
   try {
@@ -37,7 +39,10 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "*", // later we can restrict to your domain
+  credentials: true,
+}));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use("/api/mpesa", mpesaRoutes);
@@ -48,6 +53,8 @@ app.use("/api/widows", widowRoutes);
 app.use("/api/donors", donorsRoutes);
 app.use("/api/donations", mpesaRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/programs", programRoutes);
+app.use("/api/events", eventsRoutes);
 app.use(express.urlencoded({ extended: true }));
 // app.use("/uploads", express.static("uploads"));
 // Serve the uploads folder

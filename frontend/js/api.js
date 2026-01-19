@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:5000/api"; // change if deployed
+const API_URL = window.API_BASE_URL;
+
 
 // HANDLE AUTH ERRORS
 async function handleResponse(response) {

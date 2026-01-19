@@ -113,6 +113,7 @@
                     required
                   />
                 </div>
+              </div>
               <div class="col-md-6 mb-3">
                 <label class="form-label">Phone Number *</label>
                 <input
@@ -150,7 +151,12 @@
 
               <div class="mb-3">
                 <label class="form-label">Select Currency *</label>
-                <select class="form-select" id="currencySelect" name="currency" required>
+                <select
+                  class="form-select"
+                  id="currencySelect"
+                  name="currency"
+                  required
+                >
                   <option value="">Select currency</option>
                   <option value="KES">KES</option>
                   <option value="USD">USD</option>
@@ -160,7 +166,13 @@
               <div class="mb-3">
                 <label class="form-label">Select Amount *</label>
                 <div class="mb-2" id="presetAmounts"></div>
-                <input type="number" class="form-control" name="amount" placeholder="Other amount" required />
+                <input
+                  type="number"
+                  class="form-control"
+                  name="amount"
+                  placeholder="Other amount"
+                  required
+                />
               </div>
 
               <div class="mb-3">
@@ -184,27 +196,31 @@
               <input type="hidden" name="beneficiaryName" id="hiddenName" />
               <input type="hidden" name="beneficiaryAge" id="hiddenAge" />
 
-              <button type="submit" id = "submitBtn" class="btn btn-primary w-100 py-2 mt-3">
-                 <span id="btnText">Proceed to Sponsor</span>
-                  <span
-                    id="btnSpinner"
-                    class="spinner-border spinner-border-sm ms-2 d-none"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
+              <button
+                type="submit"
+                id="submitBtn"
+                class="btn btn-primary w-100 py-2 mt-3"
+              >
+                <span id="btnText">Proceed to Sponsor</span>
+                <span
+                  id="btnSpinner"
+                  class="spinner-border spinner-border-sm ms-2 d-none"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
               </button>
               <!-- Loading -->
-            <div id="paymentLoading" style="display:none; color:blue;">
-              ⏳ Waiting for M-Pesa payment confirmation...
-            </div>
+              <div id="paymentLoading" style="display: none; color: blue">
+                ⏳ Waiting for M-Pesa payment confirmation...
+              </div>
 
-            <!-- Success -->
-            <div id="paymentSuccess" style="display:none; color:green;">
-              ✅ Payment Received! Thank you for your support.
-            </div>
+              <!-- Success -->
+              <div id="paymentSuccess" style="display: none; color: green">
+                ✅ Payment Received! Thank you for your support.
+              </div>
 
-            <!-- Error -->
-            <div id="paymentError" style="display:none; color:red;"></div>
+              <!-- Error -->
+              <div id="paymentError" style="display: none; color: red"></div>
             </form>
           </div>
         </div>
@@ -232,15 +248,13 @@
             ></button>
           </div>
           <div class="modal-body text-center">
-            <p class="mb-2">
-              Thank you for sponsoring an orphan ❤️
-            </p>
+            <p class="mb-2">Thank you for sponsoring an orphan ❤️</p>
             <p class="text-muted">
               Your payment has been received successfully.
             </p>
             <p class="fw-bold">
               <!-- Receipt Number: -->
-               Paid Amount:
+              Paid Amount:
               <span id="receiptNumber" class="text-success"></span>
             </p>
           </div>
@@ -262,73 +276,58 @@
     <!-- Footer Ends -->
 
     <!-- Scripts -->
-     <script src="js/layout.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
-    <!-- <script>
-      const IS_LOCAL =
-        window.location.hostname === "localhost" ||
-        window.location.hostname === "127.0.0.1";
-
-      const API_BASE_URL = IS_LOCAL
-        ? "http://localhost:5000/api"
-        : "https://riaorphansfoundation.org/api";
-
-      const SOCKET_URL = IS_LOCAL
-        ? "http://localhost:5000"
-        : "https://riaorphansfoundation.org";
-    </script> -->
-
     <script>
-            async function loadBeneficiaryDetails() {
-              const params = new URLSearchParams(window.location.search);
-              const type = params.get("type");
-              const id = params.get("id");
-              // const type = params.get("beneficiaryType");
-              // const id = params.get("beneficiaryId");
+      async function loadBeneficiaryDetails() {
+        const params = new URLSearchParams(window.location.search);
+        const type = params.get("type");
+        const id = params.get("id");
+        document.getElementById("beneficiaryType").innerText = type || "N/A";
+        // Fetch additional details from API if needed
+        // const API_URL = "http://localhost:5000/api";
+        const API_URL = window.API_BASE_URL;
 
-              document.getElementById("beneficiaryType").innerText = type || "N/A";
-              // document.getElementById("beneficiaryId").innerText = id || "N/A";
-                // Fetch additional details from API if needed
-                const API_URL = "http://localhost:5000/api";
+        const response = await fetch(`${API_URL}/${type}s/${id}`);
+        const data = await response.json();
+        console.log("API response:", data);
+        if (!data.data) {
+          alert("Beneficiary not found!");
+          document.getElementById("beneficiaryName").innerText = "N/A";
+          document.getElementById("beneficiaryAge").innerText = "N/A";
+          document.getElementById("beneficiaryNo").innerText = "N/A";
+          return;
+        }
+        const orphans = data.data;
 
-                const response = await fetch(`${API_URL}/${type}s/${id}`);
-                const data = await response.json();
-                console.log("API response:", data);
-                if (!data.data) {
-                    alert("Beneficiary not found!");
-                    document.getElementById("beneficiaryName").innerText = "N/A";
-                    document.getElementById("beneficiaryAge").innerText = "N/A";
-                    document.getElementById("beneficiaryNo").innerText = "N/A";
-                    return;
-                }
-                const orphans = data.data;
+        // Display
+        document.getElementById("beneficiaryName").innerText = orphans.name;
+        document.getElementById("beneficiaryAge").innerText =
+          orphans.age + " years";
+        document.getElementById("beneficiaryNo").innerText =
+          orphans.programNumber || "N/A";
 
-                // Display
-                document.getElementById("beneficiaryName").innerText = orphans.name;
-                document.getElementById("beneficiaryAge").innerText = orphans.age + " years";
-                document.getElementById("beneficiaryNo").innerText = orphans.programNumber || "N/A";
-
-                // Hidden inputs for payload
-                 document.getElementById("hiddenType").value = type;
-                    // document.getElementById("hiddenId").value = id;
-                    document.getElementById("hiddenName").value = orphans.name;
-                    document.getElementById("hiddenAge").value = orphans.age ;
-                    document.getElementById("hiddenNo").value = orphans.programNumber;
-            }
-            // window.onload = loadBeneficiaryDetails;
-            loadBeneficiaryDetails();
+        // Hidden inputs for payload
+        document.getElementById("hiddenType").value = type;
+        // document.getElementById("hiddenId").value = id;
+        document.getElementById("hiddenName").value = orphans.name;
+        document.getElementById("hiddenAge").value = orphans.age;
+        // document.getElementById("hiddenNo").value = orphans.programNumber;
+      }
+      // window.onload = loadBeneficiaryDetails;
+      loadBeneficiaryDetails();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"></script>
 
-
     <script>
       const PAYMENT_RULES = {
-        ke: ["mpesa", "card"],
+        ke: ["mpesa", "card", "paypal"],
         us: ["card", "paypal"],
         gb: ["card", "paypal"],
         default: ["paypal"],
-        };
+      };
 
       const phoneInput = document.querySelector("#phone");
       const countryInput = document.querySelector("#country");
@@ -354,12 +353,6 @@
         renderPaymentMethods(countryData.iso2);
       }, 500);
 
-      // Update country field when user changes country
-      // phoneInput.addEventListener("countrychange", () => {
-      //   const countryData = iti.getSelectedCountryData();
-      //   countryInput.value = countryData.name;
-      // });
-
       // Ensure full phone number is submitted
       document.getElementById("sponsorForm").addEventListener("submit", () => {
         phoneInput.value = iti.getNumber(); // +254712345678
@@ -367,8 +360,7 @@
 
       // Dynamic rendering of payment methods based on country
       function renderPaymentMethods(countryCode) {
-        const methods =
-          PAYMENT_RULES[countryCode] || PAYMENT_RULES.default;
+        const methods = PAYMENT_RULES[countryCode] || PAYMENT_RULES.default;
 
         const container = document.getElementById("paymentMethods");
         container.innerHTML = "";
@@ -390,19 +382,10 @@
         renderPaymentMethods(countryData.iso2);
       });
 
-      // document.getElementById("sponsorForm").addEventListener("submit", (e) => {
-      //   e.preventDefault();
-
-      //   const formData = new FormData(e.target);
-      //   const payload = Object.fromEntries(formData.entries());
-
-      //   console.log("Sponsor payload:", payload);
-      // });
-
       const successModal = new bootstrap.Modal(
         document.getElementById("paymentSuccessModal")
       );
-      
+
       const loading = document.getElementById("paymentLoading");
       const success = document.getElementById("paymentSuccess");
       const errorBox = document.getElementById("paymentError");
@@ -423,73 +406,73 @@
         }
       }
 
-      document.getElementById("sponsorForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
+      document
+        .getElementById("sponsorForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-        loading.style.display = "block";
-        success.style.display = "none";
-        errorBox.style.display = "none";
-        submitBtn.disabled = true;
+          loading.style.display = "block";
+          success.style.display = "none";
+          errorBox.style.display = "none";
+          submitBtn.disabled = true;
 
-        setButtonLoading(true);
+          setButtonLoading(true);
 
-        const formData = new FormData(e.target);
-        const payload = Object.fromEntries(formData.entries());
+          const formData = new FormData(e.target);
+          const payload = Object.fromEntries(formData.entries());
 
-        console.log("Sponsor payload:", payload);
+          console.log("Sponsor payload:", payload);
 
-        if (payload.paymentMethod === "mpesa") {
-          try {
-            const res = await fetch("http://localhost:5000/api/mpesa/stkpush", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                phone: payload.phone,
-                amount: payload.amount,
-                fullName: payload.fullName,
-                email: payload.email,
-                beneficiaryId: payload.beneficiaryId,
-                beneficiaryType: payload.beneficiaryType,
-                sponsorshipType: payload.sponsorshipType,
-                description: `Sponsorship for ${payload.beneficiaryName}`,
-              }),
-            });
+          if (payload.paymentMethod === "mpesa") {
+            try {
+              const res = await fetch(`${API_URL}/mpesa/stkpush`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  phone: payload.phone,
+                  amount: payload.amount,
+                  fullName: payload.fullName,
+                  email: payload.email,
+                  beneficiaryId: payload.beneficiaryId,
+                  beneficiaryType: payload.beneficiaryType,
+                  sponsorshipType: payload.sponsorshipType,
+                  description: `Sponsorship for ${payload.beneficiaryName}`,
+                }),
+              });
 
-            const data = await res.json();
+              const data = await res.json();
 
-            // setButtonLoading(false);
+              // setButtonLoading(false);
 
-            if (!res.ok) {
-              alert(data.message || "Failed to initiate MPESA payment");
-              setButtonLoading(false);
-              return;
+              if (!res.ok) {
+                alert(data.message || "Failed to initiate MPESA payment");
+                setButtonLoading(false);
+                return;
+              }
+
+              alert("MPESA prompt sent 📲 Enter your PIN on your phone");
+            } catch (err) {
+              loading.style.display = "none";
+              submitBtn.disabled = false;
+              errorBox.textContent = err.message;
+              errorBox.style.display = "block";
             }
-
-            alert("MPESA prompt sent 📲 Enter your PIN on your phone");
-          } catch (err) {
-            // console.log(err.message);
-            // alert("Error initiating MPESA payment");
+          } else if (payload.paymentMethod === "card") {
+            alert("Card payment method selected. Integration pending.");
             loading.style.display = "none";
             submitBtn.disabled = false;
-            errorBox.textContent = err.message;
-            errorBox.style.display = "block";
+          } else if (payload.paymentMethod === "paypal") {
+            alert("PayPal payment method selected. Integration pending.");
+            loading.style.display = "none";
+            submitBtn.disabled = false;
+          } else {
+            alert("Please select a valid payment method.");
+            loading.style.display = "none";
+            submitBtn.disabled = false;
           }
-        } else if (payload.paymentMethod === "card") {
-          alert("Card payment method selected. Integration pending.");
-          loading.style.display = "none";
-          submitBtn.disabled = false;
-        } else if (payload.paymentMethod === "paypal") {
-          alert("PayPal payment method selected. Integration pending.");
-          loading.style.display = "none";
-          submitBtn.disabled = false;
-        } else {
-          alert("Please select a valid payment method.");
-          loading.style.display = "none";
-          submitBtn.disabled = false;
-        }
-      });
+        });
     </script>
     <script src="http://localhost:5000/socket.io/socket.io.js"></script>
     <script>
@@ -497,8 +480,6 @@
       let paymentTimeout;
 
       socket.on("paymentSuccess", (data) => {
-        // alert("Payment successful. Thank you!");
-        // alert(data.message + "\nDonor: " + data.donorName + "\nAmount: " + data.amount);
         paymentTimeout = setTimeout(() => {
           loading.style.display = "none";
           submitBtn.disabled = false;
@@ -510,12 +491,11 @@
 
         clearTimeout(paymentTimeout);
 
-        // document.getElementById("receiptNumber").innerText = data.mpesaReceiptNumber || "N/A";
-        document.getElementById("receiptNumber").innerText = data.amount || "N/A";
-
+        document.getElementById("receiptNumber").innerText =
+          data.amount || "N/A";
 
         setButtonLoading(false);
-        
+
         loading.style.display = "none";
         success.style.display = "block";
         submitBtn.disabled = false;
@@ -524,16 +504,7 @@
         successModal.show();
 
         sponsorForm.reset();
-
-         // Optional: auto-hide success message
-        // setTimeout(() => {
-        //   success.style.display = "none";
-        // }, 5000);
-
-        // optionally redirect
-        // window.location.href = "/thank-you.html";
       });
     </script>
-
   </body>
 </html>

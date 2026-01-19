@@ -1,10 +1,12 @@
-const API_URL = "http://localhost:5000/api"; // change if deployed
+// const API_URL = "http://localhost:5000/api"; 
+
+const API_URL = window.API_BASE_URL;
 
 async function login() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    const res = await fetch("http://localhost:5000/api/auth/login", {
+    const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })

@@ -1,5 +1,4 @@
-const API_URL = "http://localhost:5000/api"; // change if deployed
-
+const API_URL = window.API_BASE_URL;
 async function createOrphan() {
     const token = localStorage.getItem("token");
 
@@ -10,7 +9,7 @@ async function createOrphan() {
         photo: document.getElementById("photo").value
     };
 
-    const res = await fetch("http://localhost:5000/api/orphans", {
+    const res = await fetch(`${API_URL}/orphans`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -29,7 +28,7 @@ async function createOrphan() {
 }
 
 async function loadOrphans() {
-    const res = await fetch("http://localhost:5000/api/orphans");
+    const res = await fetch(`${API_URL}/orphans`);
     const data = await res.json();
 
     const container = document.getElementById("orphans-container");

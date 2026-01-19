@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create Event</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-light">
+    <div class="container mt-5">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h4 class="mb-4">Create Event</h4>
+
+          <form id="eventForm">
+            <div class="mb-3">
+              <label class="form-label">Event Title</label>
+              <input type="text" id="title" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea
+                id="description"
+                class="form-control"
+                rows="4"
+                required
+              ></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Event Date</label>
+              <input type="date" id="eventDate" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Location</label>
+              <input type="text" id="location" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Event Image</label>
+              <input
+                type="file"
+                id="image"
+                class="form-control"
+                accept="image/*"
+              />
+            </div>
+
+            <button id="submitBtn" class="btn btn-primary w-100" type="submit">
+              Add Event
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <h5 class="text-success">Success 🎉</h5>
+            <p id="successMessage"></p>
+            <button class="btn btn-success mt-2" data-bs-dismiss="modal">
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS (IMPORTANT) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Event Script -->
+    <script src="js/config.js"></script>
+    <script>
+      const API_URL = window.API_BASE_URL;
+
+      const form = document.getElementById("eventForm");
+      const submitBtn = document.getElementById("submitBtn");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Adding event...";
+
+        const formData = new FormData();
+        formData.append("title", document.getElementById("title").value);
+        formData.append(
+          "description",
+          document.getElementById("description").value
+        );
+        formData.append("location", document.getElementById("location").value);
+        formData.append(
+          "eventDate",
+          document.getElementById("eventDate").value
+        );
+
+        const file = document.getElementById("image").files[0];
+        if (file) formData.append("image", file);
+
+        try {
+          const res = await fetch(`${API_URL}/events`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: formData,
+          });
+
+          if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.message || "Failed to add event");
+          }
+
+          submitBtn.innerText = "Event Added!";
+          submitBtn.classList.replace("btn-primary", "btn-success");
+
+          document.getElementById("successMessage").innerText =
+            "Event created successfully.";
+
+          const modal = new bootstrap.Modal(
+            document.getElementById("successModal")
+          );
+          modal.show();
+
+          form.reset();
+
+          document
+            .getElementById("successModal")
+            .addEventListener("hidden.bs.modal", () => {
+              submitBtn.disabled = false;
+              submitBtn.innerText = "Add Event";
+              submitBtn.classList.replace("btn-success", "btn-primary");
+            });
+        } catch (err) {
+          console.error(err);
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Add Event";
+          alert(err.message);
+        }
+      });
+    </script>
+  </body>
+</html>

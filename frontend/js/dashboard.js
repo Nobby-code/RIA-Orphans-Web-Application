@@ -229,6 +229,95 @@ async function loadDonationsPage() {
   }
 }
 
+// Load Programs Page
+async function loadProgramsPage() {
+  const tableBody = document.getElementById("programsTableBody");
+  if (!tableBody) return;
+
+  tableBody.innerHTML = `<div class="d-flex justify-content-center align-items-center gap-2">
+  <div class="spinner-border text-primary" role="status"></div>
+  <span>Loading data, please wait...</span>
+</div>`;
+
+  try {
+    const res = await fetch(`${API_URL}/programs`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const data = await res.json();
+    tableBody.innerHTML = "";
+
+    if (!data.success || data.data.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="6" class="text-center">No programs found</td></tr>`;
+      return;
+    }
+
+    data.data.forEach((program, index) => {
+      tableBody.innerHTML += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${program.title}</td>
+          <td>${program.description || "-"}</td>
+          <td>${program.startDate ? new Date(program.startDate).toLocaleDateString() : "-"}</td>
+          <td>${program.endDate ? new Date(program.endDate).toLocaleDateString() : "-"}</td>
+          <td>
+            <button class="btn btn-sm btn-warning">Edit</button>
+          </td>
+        </tr>
+      `;
+    });
+  } catch (err) {
+    console.error(err);
+    tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Failed to load programs</td></tr>`;
+  }
+}
+
+// Load Events Page
+async function loadEventsPage() {
+  const tableBody = document.getElementById("eventsTableBody");
+  if (!tableBody) return;
+
+  tableBody.innerHTML = `<div class="d-flex justify-content-center align-items-center gap-2">
+  <div class="spinner-border text-primary" role="status"></div>
+  <span>Loading data, please wait...</span>
+</div>`;
+
+  try {
+    const res = await fetch(`${API_URL}/events`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const data = await res.json();
+    tableBody.innerHTML = "";
+
+    if (!data.success || data.events.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="6" class="text-center">No events found</td></tr>`;
+      return;
+    }
+
+    data.events.forEach((event, index) => {
+      tableBody.innerHTML += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${event.title}</td>
+          <td>${event.description || "-"}</td>
+          <td>${event.location || "-"}</td>
+          <td>${event.eventDate ? new Date(event.eventDate).toLocaleDateString() : "-"}</td>
+          <td>${event.program ? event.program.title : "-"}</td>
+          <td>
+            <button class="btn btn-sm btn-warning">Edit</button>
+          </td>
+        </tr>
+      `;
+    });
+  } catch (err) {
+    console.error(err);
+    tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Failed to load events</td></tr>`;
+  }
+}
+
 // Load Users Page
 async function loadUsersPage() {
   const tableBody = document.getElementById("usersTableBody");
@@ -278,5 +367,7 @@ const PAGE_LOADERS = {
   widows: loadWidowsPage,
   donors: loadDonorsPage,
   donations: loadDonationsPage,
+  programs: loadProgramsPage,
+  events: loadEventsPage,
   users: loadUsersPage,
 };
