@@ -2,6 +2,16 @@ const API_URL = window.API_BASE_URL;
 
 
 // HANDLE AUTH ERRORS
+// async function handleResponse(response) {
+//   if (response.status === 401 || response.status === 403) {
+//     localStorage.removeItem("token");
+//     localStorage.removeItem("role");
+//     window.location.href = "login.html";
+//     return;
+//   }
+//   return response.json();
+// }
+
 async function handleResponse(response) {
   if (response.status === 401 || response.status === 403) {
     localStorage.removeItem("token");
@@ -9,7 +19,19 @@ async function handleResponse(response) {
     window.location.href = "login.html";
     return;
   }
-  return response.json();
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || "Request failed");
+  }
+
+  // Handle empty responses safely
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    return response.json();
+  }
+
+  return null;
 }
 
 // LOGIN FUNCTION
@@ -27,6 +49,11 @@ async function loginUser(email, password) {
 // CREATE ORPHAN FUNCTION
 async function createOrphan(formData) {
   const token = localStorage.getItem("token");
+
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
 
   const response = await fetch(`${API_URL}/orphans`, {
     method: "POST",

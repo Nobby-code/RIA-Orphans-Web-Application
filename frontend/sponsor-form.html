@@ -276,10 +276,11 @@
     <!-- Footer Ends -->
 
     <!-- Scripts -->
-    <script src="js/layout.js"></script>
     <script src="js/config.js"></script>
+    <script src="js/layout.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script>
+      const API_URL = window.API_BASE_URL;
       async function loadBeneficiaryDetails() {
         const params = new URLSearchParams(window.location.search);
         const type = params.get("type");
@@ -287,7 +288,6 @@
         document.getElementById("beneficiaryType").innerText = type || "N/A";
         // Fetch additional details from API if needed
         // const API_URL = "http://localhost:5000/api";
-        const API_URL = window.API_BASE_URL;
 
         const response = await fetch(`${API_URL}/${type}s/${id}`);
         const data = await response.json();
@@ -310,7 +310,7 @@
 
         // Hidden inputs for payload
         document.getElementById("hiddenType").value = type;
-        // document.getElementById("hiddenId").value = id;
+        document.getElementById("hiddenId").value = id;
         document.getElementById("hiddenName").value = orphans.name;
         document.getElementById("hiddenAge").value = orphans.age;
         // document.getElementById("hiddenNo").value = orphans.programNumber;
@@ -320,7 +320,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"></script>
-
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
       const PAYMENT_RULES = {
         ke: ["mpesa", "card", "paypal"],
@@ -447,10 +447,39 @@
               // setButtonLoading(false);
 
               if (!res.ok) {
-                alert(data.message || "Failed to initiate MPESA payment");
+                // alert(data.message || "Failed to initiate MPESA payment");
+                throw new Error(
+                  data.message || "Failed to initiate MPESA payment"
+                );
                 setButtonLoading(false);
                 return;
               }
+
+              // Join Socket.IO room for real-time updates
+              socket.emit("joinPaymentRoom", data.data.CheckoutRequestID);
+
+              // Timeout for payment
+              let paymentTimeout = setTimeout(() => {
+                loading.style.display = "none";
+                setButtonLoading(false);
+                errorBox.textContent =
+                  "⏱ Payment timed out. Please check your phone.";
+                errorBox.style.display = "block";
+              }, 60000);
+
+              socket.on("paymentSuccess", (paymentData) => {
+                if (
+                  paymentData.checkoutRequestID !== data.data.CheckoutRequestID
+                )
+                  return;
+                clearTimeout(paymentTimeout);
+                loading.style.display = "none";
+                setButtonLoading(false);
+                document.getElementById("receiptNumber").innerText =
+                  paymentData.amount || "N/A";
+                success.style.display = "block";
+                sponsorForm.reset();
+              });
 
               alert("MPESA prompt sent 📲 Enter your PIN on your phone");
             } catch (err) {
@@ -474,8 +503,32 @@
           }
         });
     </script>
-    <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+    <!-- <script src="http://localhost:5000/socket.io/socket.io.js"></script> -->
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+
     <script>
+      const socket = io(window.API_BASE_URL.replace("/api", "")); // connect to backend;
+      let paymentTimeout = setTimeout(() => {
+        loading.style.display = "none";
+        setButtonLoading(false);
+
+        errorBox.textContent =
+          "⏱ Payment timed out. Please check your phone or try again.";
+        errorBox.style.display = "block";
+      }, 60000);
+
+      socket.on("paymentSuccess", (data) => {
+        clearTimeout(paymentTimeout);
+
+        document.getElementById("receiptNumber").innerText =
+          data.amount || "N/A";
+
+        loading.style.display = "none";
+        setButtonLoading(false);
+        successModal.show();
+      });
+    </script>
+    <!-- <script>
       const socket = io("http://localhost:5000");
       let paymentTimeout;
 
@@ -487,7 +540,7 @@
           errorBox.textContent =
             "⏱ Payment timed out. Please check your phone or try again.";
           errorBox.style.display = "block";
-        }, 60000); // 60 seconds
+        }, 60000);
 
         clearTimeout(paymentTimeout);
 
@@ -500,11 +553,10 @@
         success.style.display = "block";
         submitBtn.disabled = false;
 
-        //show modal
         successModal.show();
 
         sponsorForm.reset();
       });
-    </script>
+    </script> -->
   </body>
 </html>

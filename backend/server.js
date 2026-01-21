@@ -72,8 +72,18 @@ const io = new Server(server, {
   cors: { origin: "*", methods: ["GET", "POST"] },
 });
 
+// Make Socket.IO instance available in routes/controllers
+app.set("io", io);
+
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
+
+  // Join a room for a specific transaction
+  socket.on("joinPaymentRoom", (checkoutRequestID) => {
+    socket.join(checkoutRequestID);
+    console.log(`Socket ${socket.id} joined room ${checkoutRequestID}`);
+  });
+
   socket.on("disconnect", () => {
     console.log("Client disconnected", socket.id);
   });

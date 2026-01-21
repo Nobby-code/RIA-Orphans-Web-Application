@@ -1,5 +1,5 @@
 // controllers/dashboardController.js
-const Donation = require("../models/transactions");
+const Donation = require("../models/Transactions");
 const User = require("../models/User");
 
 // Total donations

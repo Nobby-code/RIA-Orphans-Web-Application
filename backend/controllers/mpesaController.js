@@ -2,7 +2,7 @@ const axios = require("axios");
 const getMpesaToken = require("../utils/mpesaToken");
 require("dotenv").config();
 
-const Transaction = require("../models/transactions");
+const Transaction = require("../models/Transactions");
 const donors = require("../models/donors");
 const sms = require("../config/africasTalking");
 const sendSMS = require("../config/smsService");
@@ -176,7 +176,7 @@ exports.mpesaCallback = async (req, res) => {
     // Emit real-time update via Socket.io
     // 🔔 notify frontend
     const io = req.app.get("io");
-    io.emit("paymentSuccess", {
+    io.to(updatedTransaction.checkoutRequestID).emit("paymentSuccess", {
       checkoutRequestID: updatedTransaction.checkoutRequestID,
       donorName: updatedTransaction.fullName,
       amount: updatedTransaction.amount,
