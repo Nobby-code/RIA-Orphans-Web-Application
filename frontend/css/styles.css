@@ -14,12 +14,22 @@
 /* header .header-nav .header-logo img {
   width: 208px;
 } */
+
+body {
+  padding-top: 1px; 
+}
+
 header .header-nav .header-logo img {
-  width: 190px;
+  width: 110px;
 }
 
 .navbar-nav .nav-link{
-  padding: 13px 15px;
+  /* padding: 13px 15px; */
+  padding: 10px 14px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: color 0.2s ease, transform 0.2s ease;
+  /* position: relative; */
 }
 
 .navbar-nav .nav-item.no-after::after {
@@ -35,6 +45,7 @@ header .header-nav .header-logo img {
 
 .navbar-nav .nav-link:hover, .navbar-nav .nav-link.show{
   color: #FF6D12;
+  transform: translateY(-1px);
 }
 
 .dropdown-menu>li>a:hover{
@@ -48,16 +59,48 @@ header .header-nav .header-logo img {
     top: auto;
   }
 
+  /* Fix nav spacing */
+.navbar-nav {
+  justify-content: center !important;
+  width: auto;
+}
+
+/* Anchor dropdowns correctly */
+.navbar-nav .nav-item {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+/* Proper floating dropdown */
+.navbar-nav .dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 220px;
+  z-index: 9999;
+}
+
+/* Prevent header bloat */
+.header-nav-menu {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}
+
+
   .dropdown-menu{
     display: block;
     opacity: 0;
     visibility:hidden;
+    transform: translateY(10px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
   }
 
   .dropdown:hover>.dropdown-menu {
     opacity: 1 ;
     visibility: visible;
     transition:all .3s ease-in-out;
+    transform: translateY(0);
   }
   
   .dropdown>.dropdown-toggle:active {
@@ -93,8 +136,26 @@ header .header-nav .header-logo img {
   }
 
   .header-top, .mt_search ,.slicknav_nav .slicknav_arrow,  .navbar-button, .navbar-sticky-in, #responsive-menu {
-    display: none;
+    /* display: none; */
+     display: block !important;
+     flex-wrap: wrap; 
   }
+
+  .navbar-sticky-in {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Smooth transition */
+.header-nav-menu {
+  transition: all 0.3s ease;
+}
 
   .slicknav_menu {
     display: block;
@@ -147,7 +208,8 @@ header .header-nav .header-logo img {
     color: #33373d;
     text-transform: capitalize !important;
     border: none !important;
-    font-weight: 400 !important;
+    font-weight: 500 !important;
+    padding: 12px 18px;
   }
 
   .dropdown-menu>li>a{
@@ -184,7 +246,7 @@ header .header-nav .header-logo img {
 
 @media (max-width: 768px) {
   header .header-nav .header-logo img {
-    width: 160px;
+    width: 80px;
   }
   .slicknav_btn.slicknav_open:before, .slicknav_btn.slicknav_collapsed:before {
     top: 23px;
@@ -641,6 +703,7 @@ footer .overlay{
   background-color: #2C2734;
   opacity: .9;
 }
+
 
 .social-links a i {
   height: 42px;
@@ -1618,4 +1681,75 @@ footer .overlay{
   .form-card {
     padding: 25px;
   }
+}
+
+/* Sticky nav */
+.navbar-sticky-in {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Dropdown fixes */
+.header-nav,
+.header-nav-menu,
+.header-nav-inner {
+  overflow: visible !important;
+}
+
+.nav-item {
+  position: relative;
+}
+
+.dropdown-menu {
+  z-index: 10000;
+}
+
+@media (min-width: 992px) {
+  .nav-item.dropdown:hover > .dropdown-menu {
+    display: block;
+  }
+}
+.dropdown-menu .dropdown-toggle::after {
+  display: inline-block;
+  margin-left: .255em;
+  vertical-align: .255em;
+  content: "\f0d7"; 
+  font-family: "Font Awesome 5 Free"; 
+  font-weight: 900; 
+  font-size: 0.6rem;
+  color: #2C2734;
+}
+
+
+/* 🔒 Prevent header height change on hover */
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.show {
+  transform: none !important;
+}
+
+/* 🔒 Make dropdowns float without affecting layout */
+.navbar-nav .dropdown-menu {
+  position: absolute !important;
+  display: block;
+  opacity: 0;
+  visibility: hidden;
+  /* pointer-events: none; */
+}
+
+/* Show dropdown */
+.navbar-nav .dropdown:hover > .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* 🔒 Stop height animation */
+.header-nav-menu {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
 }

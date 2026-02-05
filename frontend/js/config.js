@@ -1,3 +1,5 @@
+console.log("config.js LOADED");
+
 // Config file to store global constants
 // window.API_BASE_URL = "http://localhost:5000/api";
 

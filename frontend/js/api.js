@@ -1,5 +1,11 @@
-const API_URL = window.API_BASE_URL;
+console.log("API BASE URL:", window.API_BASE_URL);
 
+const API_URL = window.API_BASE_URL;
+// const API_URL = "https://ria-orphans-web-application.onrender.com/api";
+
+if (!API_URL) {
+  console.error("API_BASE_URL is not defined. Check config.js loading.");
+}
 
 // HANDLE AUTH ERRORS
 // async function handleResponse(response) {
