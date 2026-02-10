@@ -19,8 +19,23 @@ body {
   padding-top: 1px; 
 }
 
+/* Disable SlickNav completely */
+.slicknav_menu,
+#slicknav-mobile,
+.slicknav_nav,
+.slicknav_btn {
+  display: none !important;
+}
+
 header .header-nav .header-logo img {
-  width: 110px;
+  /* width: 110px; */
+  max-height: 95px;
+  width: auto;
+}
+@media (max-width: 768px) {
+  header .header-nav .header-logo img {
+    max-height: 45px;
+  }
 }
 
 .navbar-nav .nav-link{
@@ -45,7 +60,8 @@ header .header-nav .header-logo img {
 
 .navbar-nav .nav-link:hover, .navbar-nav .nav-link.show{
   color: #FF6D12;
-  transform: translateY(-1px);
+  /* transform: translateY(-1px); */
+  transform: none;
 }
 
 .dropdown-menu>li>a:hover{
@@ -53,7 +69,59 @@ header .header-nav .header-logo img {
   color: #ffffff;
 }
 
-@media (min-width: 1180px) {
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+.navbar-toggler-icon {
+  /* background-image: var(--bs-navbar-toggler-icon-bg); */
+  background-image: none;
+  position: relative;
+  width: 24px;
+  height: 2px;
+  background-color: #000;
+  display: block;
+  transition: background 0.3s ease;
+}
+
+/* Create hamburger lines */
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background-color: #000;
+  left: 0;
+  transition: transform 0.3s ease;
+}
+
+.navbar-toggler-icon::before {
+  top: -8px;
+}
+
+.navbar-toggler-icon::after {
+  top: 8px;
+}
+
+/* When menu is open → show X */
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+  background-color: transparent;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+@media (min-width: 992px) {
   .navbar-nav .dropdown-menu{
     position: absolute;
     top: auto;
@@ -1752,4 +1820,32 @@ footer .overlay{
 /* 🔒 Stop height animation */
 .header-nav-menu {
   transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+/* Bootstrap mobile navbar behavior */
+@media (max-width: 991px) {
+  .navbar-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  /* .navbar-collapse {
+    background: #F5F5F5;
+    padding: 10px 0;
+    margin-top: 10px;
+  } */
+   .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    z-index: 999;
+    padding: 1rem 0;
+   }
+  .navbar-nav .nav-link {
+    padding: 12px 24px !important;
+    width: 100%;
+  }
 }
