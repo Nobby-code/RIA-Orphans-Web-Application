@@ -25,7 +25,11 @@ exports.createOrphan = async (req, res) => {
     //   });
     // }
 
-    const baseURL = req.protocol + "://" + req.get("host");
+    // const baseURL = req.protocol + "://" + req.get("host");
+    let imageUrl = null;
+    if (req.file) {
+      imageUrl = req.file.path; // Cloudinary gives URL in .path
+    }
     const orphan = await Orphan.create({
       name,
       dob,
@@ -34,8 +38,8 @@ exports.createOrphan = async (req, res) => {
       orphanType,
       deceasedParent,
       description,
-      // image: req.file ? `/uploads/${req.file.filename}` : null,
-      image: req.file ? `${baseURL}/uploads/${req.file.filename}` : null,
+      // image: req.file ? `${baseURL}/uploads/${req.file.filename}` : null,
+      image: imageUrl,
       createdBy: req.user._id,
     });
 

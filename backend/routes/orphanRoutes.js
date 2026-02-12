@@ -39,19 +39,20 @@ const router = express.Router();
 const multer = require("multer");
 const { protect, admin } = require("../middleware/auth");
 const orphanController = require("../controllers/orphanController");
+const upload = require("../middleware/upload");
 
 // Multer storage
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + "-" + file.originalname);
-  }
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "uploads/");
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//     cb(null, uniqueSuffix + "-" + file.originalname);
+//   }
+// });
 
-const upload = multer({ storage });
+// const upload = multer({ storage });
 
 // ✔️ Create orphan → admin only
 router.post("/", protect, admin, upload.single("image"), orphanController.createOrphan);

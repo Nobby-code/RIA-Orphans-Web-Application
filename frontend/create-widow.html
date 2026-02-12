@@ -135,13 +135,6 @@
 
           <div class="col-md-6 mb-3">
             <label class="fw-semibold">Description</label>
-            <!-- <input
-              type="text"
-              id="description"
-              class="form-control"
-              placeholder="Enter description"
-              required
-            /> -->
             <textarea
               id="description"
               class="form-control"
@@ -161,10 +154,6 @@
             />
           </div>
         </div>
-
-        <!-- <div class="text-center">
-          <button class="btn btn-primary mt-3">Save Widow</button>
-        </div> -->
         <button
           type="submit"
           id="submitBtn"
@@ -242,7 +231,6 @@
         </div>
       </div>
     </div>
-    <!-- <div id="site-footer"></div> -->
 
     <script src="js/layout.js"></script>
     <script src="js/config.js"></script>
@@ -254,42 +242,60 @@
         .addEventListener("submit", async (e) => {
           e.preventDefault();
 
-          const widowData = {
-            name: document.getElementById("name").value,
-            dob: document.getElementById("dob").value,
-            // age: document.getElementById("calculatedAge").value,
-            location: document.getElementById("location").value,
-            numberOfChildren: Number(
-              document.getElementById("childrenCount").value,
-            ),
-            description: document.getElementById("description").value,
-          };
+          const submitBtn = document.getElementById("submitBtn");
+          const btnText = document.getElementById("btnText");
+          const btnSpinner = document.getElementById("btnSpinner");
+
+          // 🔒 Disable button + show spinner
+          submitBtn.disabled = true;
+          btnText.textContent = "Saving...";
+          btnSpinner.classList.remove("d-none");
+
+          const widowData = new FormData();
+
+          widowData.append("name", document.getElementById("name").value);
+          widowData.append("dob", document.getElementById("dob").value);
+          widowData.append(
+            "location",
+            document.getElementById("location").value,
+          );
+          widowData.append(
+            "numberOfChildren",
+            document.getElementById("childrenCount").value,
+          );
+          widowData.append(
+            "description",
+            document.getElementById("description").value,
+          );
+
+          if (document.getElementById("image").files[0]) {
+            widowData.append(
+              "image",
+              document.getElementById("image").files[0],
+            );
+          }
 
           try {
             const res = await fetch(`${API_URL}/widows`, {
               method: "POST",
               headers: {
-                "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
-              body: JSON.stringify(widowData),
+              body: widowData,
             });
 
             const data = await res.json();
 
             if (data.success) {
-              // Show success modal
               const successModal = new bootstrap.Modal(
                 document.getElementById("successModal"),
               );
               successModal.show();
 
-              // Redirect after a short delay
               setTimeout(() => {
                 window.location.href = "dashboard.html";
               }, 1500);
             } else {
-              // alert(data.message);
               document.getElementById("errorMessage").textContent =
                 data.message || "Error adding widow";
               const errorModal = new bootstrap.Modal(
@@ -298,29 +304,110 @@
               errorModal.show();
             }
           } catch (err) {
-            // console.error(err.message);
             document.getElementById("errorMessage").textContent =
               "Error adding widow";
             const errorModal = new bootstrap.Modal(
               document.getElementById("errorModal"),
             );
             errorModal.show();
+          } finally {
+            // 🔓 Re-enable button + restore text
+            submitBtn.disabled = false;
+            btnText.textContent = "Save Widow";
+            btnSpinner.classList.add("d-none");
           }
         });
 
-      // Calculate age when DOB changes
-      const dobInput = document.getElementById("dob");
+      // document
+      //   .getElementById("widowForm")
+      //   .addEventListener("submit", async (e) => {
+      //     e.preventDefault();
 
+      //     const widowData = {
+      //       name: document.getElementById("name").value,
+      //       dob: document.getElementById("dob").value,
+      //       location: document.getElementById("location").value,
+      //       numberOfChildren: Number(
+      //         document.getElementById("childrenCount").value,
+      //       ),
+      //       description: document.getElementById("description").value,
+      //     };
+
+      //     try {
+      //       const res = await fetch(`${API_URL}/widows`, {
+      //         method: "POST",
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+      //         },
+      //         body: JSON.stringify(widowData),
+      //       });
+
+      //       const data = await res.json();
+
+      //       if (data.success) {
+      //         const successModal = new bootstrap.Modal(
+      //           document.getElementById("successModal"),
+      //         );
+      //         successModal.show();
+
+      //         setTimeout(() => {
+      //           window.location.href = "dashboard.html";
+      //         }, 1500);
+      //       } else {
+      //         document.getElementById("errorMessage").textContent =
+      //           data.message || "Error adding widow";
+      //         const errorModal = new bootstrap.Modal(
+      //           document.getElementById("errorModal"),
+      //         );
+      //         errorModal.show();
+      //       }
+      //     } catch (err) {
+      //       document.getElementById("errorMessage").textContent =
+      //         "Error adding widow";
+      //       const errorModal = new bootstrap.Modal(
+      //         document.getElementById("errorModal"),
+      //       );
+      //       errorModal.show();
+      //     }
+      //   });
+
+      // const dobInput = document.getElementById("dob");
+
+      // dobInput.max = new Date().toISOString().split("T")[0];
+
+      // dobInput.addEventListener("change", function () {
+      //   const dob = new Date(this.value);
+      //   const today = new Date();
+
+      //   let age = today.getFullYear() - dob.getFullYear();
+      //   const monthDifference = today.getMonth() - dob.getMonth();
+
+      //   if (
+      //     monthDifference < 0 ||
+      //     (monthDifference === 0 && today.getDate() < dob.getDate())
+      //   ) {
+      //     age--;
+      //   }
+
+      //   document.getElementById("calculatedAge").value = age;
+      // });
+
+      const dobInput = document.getElementById("dob");
+      const ageField = document.getElementById("calculatedAge");
+
+      // Prevent future dates
       dobInput.max = new Date().toISOString().split("T")[0];
 
       dobInput.addEventListener("change", function () {
+        if (!this.value) return;
+
         const dob = new Date(this.value);
         const today = new Date();
 
         let age = today.getFullYear() - dob.getFullYear();
         const monthDifference = today.getMonth() - dob.getMonth();
 
-        // Adjust if birthday hasn't occurred yet this year
         if (
           monthDifference < 0 ||
           (monthDifference === 0 && today.getDate() < dob.getDate())
@@ -328,7 +415,7 @@
           age--;
         }
 
-        document.getElementById("calculatedAge").value = age;
+        ageField.value = age >= 0 ? age : "";
       });
     </script>
     <script src="js/bootstrap.bundle.min.js"></script>

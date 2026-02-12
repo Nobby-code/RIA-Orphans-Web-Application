@@ -9,11 +9,20 @@ exports.createWidow = async (req, res) => {
       return res.status(400).json({ message: "Name is required" });
     }
 
-    console.log("Received widow data:", req.body);
+    // console.log("Received widow data:", req.body);
+    let imageUrl = null;
+    if (req.file) {
+      imageUrl = req.file.path; // Cloudinary gives URL in .path
+    }
+    // if (req.file) {
+    //   const baseURL = req.protocol + "://" + req.get("host");
+    //   imagePath = `${baseURL}/uploads/${req.file.filename}`;
+    // }
 
     const widow = await Widow.create({
       name,
       dob,
+      image: imageUrl,
       // age,
       location,
       numberOfChildren,
@@ -27,10 +36,13 @@ exports.createWidow = async (req, res) => {
     });
     
   } catch (error) {
-    console.error("Create widow error:", error);
-    console.error(error.message);
-    res.status(500).json({ message: "Server error" });
-  }
+  console.error("FULL ERROR:", error);
+  console.error("ERROR MESSAGE:", error.message);
+  res.status(500).json({ 
+    message: error.message || "Server error",
+    error: error
+  });
+}
 
 };
 
