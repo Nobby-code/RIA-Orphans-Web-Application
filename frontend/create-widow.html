@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -84,7 +84,7 @@
             />
           </div>
 
-          <div class="col-md-6 mb-3">
+          <!-- <div class="col-md-6 mb-3">
             <label class="fw-semibold">Age</label>
             <input
               type="number"
@@ -92,6 +92,22 @@
               class="form-control"
               placeholder="Enter age"
               required
+            />
+          </div> -->
+
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold">Date of Birth</label>
+            <input type="date" id="dob" class="form-control" max="" required />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold">Age</label>
+            <input
+              type="text"
+              id="calculatedAge"
+              class="form-control"
+              readonly
+              placeholder="Age will be calculated automatically"
             />
           </div>
 
@@ -119,20 +135,112 @@
 
           <div class="col-md-6 mb-3">
             <label class="fw-semibold">Description</label>
-            <input
+            <!-- <input
               type="text"
               id="description"
               class="form-control"
               placeholder="Enter description"
               required
+            /> -->
+            <textarea
+              id="description"
+              class="form-control"
+              rows="3"
+              placeholder="Enter description"
+              required
+            ></textarea>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="fw-semibold">Upload Photo (optional)</label>
+            <input
+              type="file"
+              id="image"
+              class="form-control"
+              accept="image/*"
             />
           </div>
         </div>
 
-        <div class="text-center">
+        <!-- <div class="text-center">
           <button class="btn btn-primary mt-3">Save Widow</button>
-        </div>
+        </div> -->
+        <button
+          type="submit"
+          id="submitBtn"
+          class="btn btn-primary w-100 mt-3"
+          autocomplete="off"
+        >
+          <span id="btnText">Save Widow</span>
+          <span
+            id="btnSpinner"
+            class="spinner-border spinner-border-sm ms-2 d-none"
+            role="status"
+            aria-hidden="true"
+          ></span>
+        </button>
       </form>
+    </div>
+
+    <!-- Success Modal -->
+    <div
+      class="modal fade"
+      id="successModal"
+      tabindex="-1"
+      aria-labelledby="successModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="successModalLabel">
+              <i class="fas fa-check-circle me-2"></i> Success
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body text-center py-4">
+            <!-- <h5 class="mb-2">Orphan Created Successfully 🎉</h5> -->
+            <p class="text-muted mb-0">The widow record saved successfully!.</p>
+          </div>
+
+          <div class="modal-footer justify-content-center">
+            <button
+              type="button"
+              class="btn btn-success px-4"
+              data-bs-dismiss="modal"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title">
+              <i class="fas fa-times-circle me-2"></i> Error
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body text-center">
+            <p id="errorMessage" class="mb-0"></p>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- <div id="site-footer"></div> -->
 
@@ -148,9 +256,12 @@
 
           const widowData = {
             name: document.getElementById("name").value,
-            age: document.getElementById("age").value,
+            dob: document.getElementById("dob").value,
+            // age: document.getElementById("calculatedAge").value,
             location: document.getElementById("location").value,
-            numberOfChildren: document.getElementById("childrenCount").value,
+            numberOfChildren: Number(
+              document.getElementById("childrenCount").value,
+            ),
             description: document.getElementById("description").value,
           };
 
@@ -167,16 +278,58 @@
             const data = await res.json();
 
             if (data.success) {
-              alert("Widow added successfully");
-              window.location.href = "dashboard.html";
+              // Show success modal
+              const successModal = new bootstrap.Modal(
+                document.getElementById("successModal"),
+              );
+              successModal.show();
+
+              // Redirect after a short delay
+              setTimeout(() => {
+                window.location.href = "dashboard.html";
+              }, 1500);
             } else {
-              alert(data.message);
+              // alert(data.message);
+              document.getElementById("errorMessage").textContent =
+                data.message || "Error adding widow";
+              const errorModal = new bootstrap.Modal(
+                document.getElementById("errorModal"),
+              );
+              errorModal.show();
             }
           } catch (err) {
-            console.error(err.message);
-            alert("Error adding widow");
+            // console.error(err.message);
+            document.getElementById("errorMessage").textContent =
+              "Error adding widow";
+            const errorModal = new bootstrap.Modal(
+              document.getElementById("errorModal"),
+            );
+            errorModal.show();
           }
         });
+
+      // Calculate age when DOB changes
+      const dobInput = document.getElementById("dob");
+
+      dobInput.max = new Date().toISOString().split("T")[0];
+
+      dobInput.addEventListener("change", function () {
+        const dob = new Date(this.value);
+        const today = new Date();
+
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDifference = today.getMonth() - dob.getMonth();
+
+        // Adjust if birthday hasn't occurred yet this year
+        if (
+          monthDifference < 0 ||
+          (monthDifference === 0 && today.getDate() < dob.getDate())
+        ) {
+          age--;
+        }
+
+        document.getElementById("calculatedAge").value = age;
+      });
     </script>
     <script src="js/bootstrap.bundle.min.js"></script>
   </body>

@@ -3,15 +3,18 @@ const Widow = require("../models/Widow");
 // Create widow (admin only)
 exports.createWidow = async (req, res) => {
   try {
-    const { name, age, location, numberOfChildren, description } = req.body;
+    const { name, dob, location, numberOfChildren, description } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: "Name is required" });
     }
 
+    console.log("Received widow data:", req.body);
+
     const widow = await Widow.create({
       name,
-      age,
+      dob,
+      // age,
       location,
       numberOfChildren,
       description,
@@ -22,11 +25,13 @@ exports.createWidow = async (req, res) => {
       success: true,
       data: widow,
     });
+    
   } catch (error) {
     console.error("Create widow error:", error);
     console.error(error.message);
     res.status(500).json({ message: "Server error" });
   }
+
 };
 
 // Get all widows (public)
