@@ -34,6 +34,10 @@ const orphanSchema = new mongoose.Schema({
     type: String,
   },
   image: String,
+  
+  imagePublicId: {
+  type: String,
+},
 
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // admin who created
   createdAt: { type: Date, default: Date.now },

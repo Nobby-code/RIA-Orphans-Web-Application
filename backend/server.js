@@ -92,7 +92,6 @@ io.on("connection", (socket) => {
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-console.log("Cloudinary key:", process.env.CLOUDINARY_API_KEY);
 app.set("io", io);
 // app.listen(PORT, () => {
 //   console.log(`Server running on port ${PORT}`);

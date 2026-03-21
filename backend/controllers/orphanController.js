@@ -1,9 +1,12 @@
 const Orphan = require("../models/Orphan");
+const cloudinary = require("cloudinary").v2;
+
 
 // Create new orphan (admin only)
 exports.createOrphan = async (req, res) => {
   try {
-    const { name, dob, age, gender, orphanType, deceasedParent, description } = req.body;
+    const { name, dob, age, gender, orphanType, deceasedParent, description } =
+      req.body;
 
     if (!name) {
       return res.status(400).json({ message: "Name is required" });
@@ -40,6 +43,7 @@ exports.createOrphan = async (req, res) => {
       description,
       // image: req.file ? `${baseURL}/uploads/${req.file.filename}` : null,
       image: imageUrl,
+      imagePublicId: req.file ? req.file.filename : null,
       createdBy: req.user._id,
     });
 
@@ -89,7 +93,7 @@ exports.getOrphanById = async (req, res) => {
   try {
     const orphan = await Orphan.findById(req.params.id).populate(
       "createdBy",
-      "name email"
+      "name email",
     );
     if (!orphan) {
       return res.status(404).json({ message: "Orphan not found" });
@@ -104,41 +108,115 @@ exports.getOrphanById = async (req, res) => {
 // Update orphan by ID (admin only)
 exports.updateOrphan = async (req, res) => {
   try {
-    const { id } = req.params;
+    const orphan = await Orphan.findById(req.params.id);
 
-    // IMPORTANT: ensure id exists
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Orphan ID is required",
-      });
-    }
-
-    const updatedOrphan = await Orphan.findByIdAndUpdate(
-      id,
-      {
-        name: req.body.name,
-        age: req.body.age,
-        gender: req.body.gender,
-        description: req.body.description,
-        image: req.body.image,
-      },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedOrphan) {
+    if (!orphan) {
       return res.status(404).json({
         success: false,
         message: "Orphan not found",
       });
     }
 
+    orphan.name = req.body.name || orphan.name;
+    // orphan.age = req.body.age || orphan.age;
+    orphan.dob = req.body.dob || orphan.dob;
+    orphan.gender = req.body.gender || orphan.gender;
+    orphan.description = req.body.description || orphan.description;
+
+    if (req.file) {
+      if (orphan.imagePublicId) {
+        await cloudinary.uploader.destroy(orphan.imagePublicId);
+      }
+
+      orphan.image = req.file.path;
+      orphan.imagePublicId = req.file.filename;
+    }
+
+    const updatedOrphan = await orphan.save();
+
     res.json({
       success: true,
       data: updatedOrphan,
     });
+
   } catch (error) {
     console.error("Update orphan error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+// exports.updateOrphan = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     if (!id) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Orphan ID is required",
+//       });
+//     }
+
+//     const updatedOrphan = await Orphan.findByIdAndUpdate(
+//       id,
+//       {
+//         name: req.body.name,
+//         age: req.body.age,
+//         gender: req.body.gender,
+//         description: req.body.description,
+//         image: req.body.image,
+//       },
+//       { new: true, runValidators: true }
+//     );
+
+//     if (!updatedOrphan) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Orphan not found",
+//       });
+//     }
+
+//     res.json({
+//       success: true,
+//       data: updatedOrphan,
+//     });
+//   } catch (error) {
+//     console.error("Update orphan error:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Server error",
+//     });
+//   }
+// };
+
+// Delete orphan by ID (admin only)
+exports.deleteOrphan = async (req, res) => {
+  try {
+    const orphan = await Orphan.findById(req.params.id);
+
+    if (!orphan) {
+      return res.status(404).json({
+        success: false,
+        message: "Orphan not found",
+      });
+    }
+
+    // Delete image from Cloudinary
+    if (orphan.imagePublicId) {
+      await cloudinary.uploader.destroy(orphan.imagePublicId);
+    }
+
+    await orphan.deleteOne();
+
+    res.json({
+      success: true,
+      message: "Orphan deleted successfully",
+    });
+
+  } catch (error) {
+    console.error("Delete orphan error:", error);
     res.status(500).json({
       success: false,
       message: "Server error",

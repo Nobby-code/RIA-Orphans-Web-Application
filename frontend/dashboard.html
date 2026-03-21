@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -204,7 +204,7 @@
             <div class="card text-center">
               <div class="card-body">
                 <h5 class="card-title">Total Widows</h5>
-                <p class="card-text fs-3" id="totalOrphans">0</p>
+                <p class="card-text fs-3" id="totalWidows">0</p>
               </div>
             </div>
           </div>
@@ -307,8 +307,8 @@
               <input type="text" id="editName" required />
             </div>
             <div>
-              <label>Age:</label>
-              <input type="number" id="editAge" required />
+              <label>Date of Birth:</label>
+              <input type="date" id="editDob" required />
             </div>
             <div>
               <label>Gender:</label>
@@ -322,8 +322,16 @@
               <textarea id="editDescription"></textarea>
             </div>
             <div>
-              <label>Image URL:</label>
-              <input type="text" id="editImage" />
+              <label>Current Image:</label>
+              <img
+                id="editImagePreview"
+                style="width: 120px; margin-bottom: 10px"
+              />
+            </div>
+
+            <div>
+              <label>Upload New Image:</label>
+              <input type="file" id="editImage" accept="image/*" />
             </div>
             <button type="submit">Save Changes</button>
           </form>
@@ -364,22 +372,24 @@
               .slice(-5)
               .reverse()
               .forEach((orphan, index) => {
-                const imageSrc = orphan.image
-                  ? `${API_URL}${orphan.image}`
-                  : "images/default.jpg";
+                const imageSrc =
+                  orphan.image ||
+                  "images/volunteer-holding-cardboard-box-2021-09-01-15-27-23-utc.jpg";
+                // ? `${API_URL}${orphan.image}`
+                // : "images/default.jpg";
                 orphansTable.innerHTML += `
                     <tr>
                       <td>${index + 1}</td>
                       <td><img src="${imageSrc}" class="orphan-img" alt="${
-                  orphan.name
-                }" /></td>
+                        orphan.name
+                      }" /></td>
                       <td>${orphan.name}</td>
                       <td>${orphan.age || "-"}</td>
                       <td>${orphan.gender || "-"}</td>
                       <td>${orphan.description || "-"}</td>
                       <td>
                           <button class="btn btn-sm btn-warning" onclick='openModal(${JSON.stringify(
-                            orphan
+                            orphan,
                           )})'>
                           <i class="fas fa-edit"></i> Edit
                           </button>
@@ -490,44 +500,86 @@
       function openModal(orphan) {
         document.getElementById("editOrphanId").value = orphan._id;
         document.getElementById("editName").value = orphan.name;
-        document.getElementById("editAge").value = orphan.age;
+        // document.getElementById("editAge").value = orphan.age;
+        // document.getElementById("editDob").value = orphan.dob;
+        if (orphan.dob) {
+          const formattedDate = new Date(orphan.dob)
+            .toISOString()
+            .split("T")[0];
+          document.getElementById("editDob").value = formattedDate;
+        }
         document.getElementById("editGender").value = orphan.gender;
         document.getElementById("editDescription").value =
           orphan.description || "";
-        document.getElementById("editImage").value = orphan.image || "";
+        document.getElementById("editImage").value = "";
 
         document.getElementById("editOrphanModal").style.display = "flex";
+        document.getElementById("editImagePreview").src = orphan.image || "";
+        // document
+        //   .getElementById("editImage")
+        //   .addEventListener("change", function () {
+        //     const file = this.files[0];
+        //     if (file) {
+        //       document.getElementById("editImagePreview").src =
+        //         URL.createObjectURL(file);
+        //     }
+        //   });
       }
 
       function closeModal() {
         document.getElementById("editOrphanModal").style.display = "none";
+        document.getElementById("editImagePreview").src = "";
+        document.getElementById("editImage").value = "";
       }
     </script>
     <script>
       function getToken() {
         return localStorage.getItem("token");
       }
+
+      document
+        .getElementById("editImage")
+        .addEventListener("change", function () {
+          const file = this.files[0];
+
+          if (file) {
+            const previewUrl = URL.createObjectURL(file);
+            document.getElementById("editImagePreview").src = previewUrl;
+          }
+        });
+
       document
         .getElementById("editOrphanForm")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
 
           const id = document.getElementById("editOrphanId").value;
-          const name = document.getElementById("editName").value;
-          const age = parseInt(document.getElementById("editAge").value);
-          const gender = document.getElementById("editGender").value;
-          const description = document.getElementById("editDescription").value;
-          const image = document.getElementById("editImage").value;
+
+          const formData = new FormData();
+          formData.append("name", document.getElementById("editName").value);
+          // formData.append("age", document.getElementById("editAge").value);
+          formData.append("dob", document.getElementById("editDob").value);
+          formData.append(
+            "gender",
+            document.getElementById("editGender").value,
+          );
+          formData.append(
+            "description",
+            document.getElementById("editDescription").value,
+          );
+
+          const imageFile = document.getElementById("editImage").files[0];
+          if (imageFile) {
+            formData.append("image", imageFile);
+          }
 
           try {
             const res = await fetch(`${API_URL}/orphans/${id}`, {
               method: "PUT",
               headers: {
-                "Content-Type": "application/json",
                 Authorization: `Bearer ${getToken()}`,
               },
-              //   Authorization: `Bearer ${getToken()}`,
-              body: JSON.stringify({ name, age, gender, description, image }),
+              body: formData,
             });
 
             const data = await res.json();
@@ -535,39 +587,121 @@
             if (data.success) {
               alert("Orphan updated successfully!");
               closeModal();
-              loadDashboard(); // refresh table and charts
+              loadDashboard();
             } else {
-              alert("Failed to update orphan: " + data.message);
+              alert("Failed: " + data.message);
             }
           } catch (err) {
             console.error(err);
             alert("Error updating orphan");
           }
         });
+
+      // document
+      //   .getElementById("editOrphanForm")
+      //   .addEventListener("submit", async (e) => {
+      //     e.preventDefault();
+
+      //     const id = document.getElementById("editOrphanId").value;
+      //     const name = document.getElementById("editName").value;
+      //     const age = parseInt(document.getElementById("editAge").value);
+      //     const gender = document.getElementById("editGender").value;
+      //     const description = document.getElementById("editDescription").value;
+      //     const image = document.getElementById("editImage").value;
+
+      //     try {
+      //       const res = await fetch(`${API_URL}/orphans/${id}`, {
+      //         method: "PUT",
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //           Authorization: `Bearer ${getToken()}`,
+      //         },
+      //         body: JSON.stringify({ name, age, gender, description, image }),
+      //       });
+
+      //       const data = await res.json();
+
+      //       if (data.success) {
+      //         alert("Orphan updated successfully!");
+      //         closeModal();
+      //         loadDashboard();
+      //       } else {
+      //         alert("Failed to update orphan: " + data.message);
+      //       }
+      //     } catch (err) {
+      //       console.error(err);
+      //       alert("Error updating orphan");
+      //     }
+      //   });
     </script>
 
     <script>
       // Logout functionality
 
+      // const logoutMessageBox = document.getElementById("logoutMessage");
+
+      // function showLogoutMessage(message, type = "danger") {
+      //   logoutMessageBox.textContent = message;
+      //   logoutMessageBox.className = `alert alert-${type}`;
+      //   logoutMessageBox.classList.remove("d-none");
+      // }
+
+      // const logoutButton = document.getElementById("logoutBtn");
+      // logoutButton.addEventListener("click", () => {
+      //   localStorage.removeItem("token");
+      //   localStorage.removeItem("role");
+      //   showLogoutMessage("You have been logged out.", "success");
+      //   setTimeout(() => {
+      //     window.location.href = "login.html";
+      //   }, 1200);
+      // });
+
       const logoutMessageBox = document.getElementById("logoutMessage");
+      const logoutButton = document.getElementById("logoutBtn");
 
       function showLogoutMessage(message, type = "danger") {
         logoutMessageBox.textContent = message;
-        logoutMessageBox.className = `alert alert-${type}`;
+        logoutMessageBox.className = `alert alert-${type} logoutMessageBox text-center`;
         logoutMessageBox.classList.remove("d-none");
       }
 
-      const logoutButton = document.getElementById("logoutBtn");
-      logoutButton.addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        // alert("You have been logged out.");
-        showLogoutMessage("You have been logged out.", "success");
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 1200);
+      logoutButton.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        if (confirm("Are you sure you want to logout?")) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+
+          showLogoutMessage("You have been logged out.", "success");
+
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1200);
+        }
       });
     </script>
+    <!-- <script src="js/logout.js">
+            document.addEventListener("DOMContentLoaded", () => {
+
+        const authBtn = document.getElementById("authBtn");
+        const token = localStorage.getItem("token");
+
+        if (token) {
+          authBtn.textContent = "Logout";
+          authBtn.href = "#";
+
+          authBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            logout();
+          });
+
+        } else {
+          authBtn.textContent = "Login";
+          authBtn.href = "login.html";
+        }
+
+      });
+    </script> -->
     <script src="js/dashboard.js"></script>
   </body>
 </html>
