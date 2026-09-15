@@ -1,34 +1,32 @@
 console.log("API BASE URL:", window.API_BASE_URL);
 
 const API_URL = window.API_BASE_URL;
-// const API_URL = "https://ria-orphans-web-application.onrender.com/api";
 
 if (!API_URL) {
   console.error("API_BASE_URL is not defined. Check config.js loading.");
 }
 
-// HANDLE AUTH ERRORS
-// async function handleResponse(response) {
-//   if (response.status === 401 || response.status === 403) {
-//     localStorage.removeItem("token");
-//     localStorage.removeItem("role");
-//     window.location.href = "login.html";
-//     return;
-//   }
-//   return response.json();
-// }
-
+// HANDLE AUTH ERRORS & STANDARD RESPONSES SECURELY
 async function handleResponse(response) {
   if (response.status === 401 || response.status === 403) {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     window.location.href = "login.html";
-    return;
+    return null; // Stop further processing
   }
 
   if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text || "Request failed");
+    // const text = await response.text();
+    // throw new Error(text || "Request failed");
+    let errorMessage = "Request failed";
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.message || errorMessage;
+    } catch (e) {
+      // Fallback if the backend response wasn't valid JSON
+      errorMessage = await response.text() || errorMessage;
+    }
+    throw new Error(errorMessage);
   }
 
   // Handle empty responses safely
@@ -64,7 +62,7 @@ async function createOrphan(formData) {
   const response = await fetch(`${API_URL}/orphans`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`, // ❗ NO content-type for files
+      Authorization: `Bearer ${token}`,
     },
     body: formData,
   });

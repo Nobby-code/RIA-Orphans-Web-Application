@@ -18,75 +18,379 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet"
+/>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css" />
+
     <style>
+      :root {
+        --forest-900: #14302b;
+        --forest-700: #1f4b43;
+        --forest-600: #295e54;
+        --marigold-500: #e2a63b;
+        --marigold-600: #c98f28;
+        --clay-600: #a8502e;
+        --paper-100: #f3f5f0;
+        --paper-0: #fbfbf8;
+        --ink-900: #1c2420;
+        --ink-600: #4c5650;
+        --line-200: #dee4dc;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--paper-100);
+        color: var(--ink-900);
+        font-family: "Manrope", "Poppins", sans-serif;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      .card-title {
+        font-family: "Fraunces", "Playfair", serif;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--ink-900);
+      }
+
       .mainpage {
         min-height: 100vh;
         display: flex;
-        /* flex-direction: column; */
       }
+
+      /* ---------- Sidebar ---------- */
       #sidebar {
-        min-width: 220px;
-        max-width: 220px;
-        background-color: #343a40;
-        color: white;
+        min-width: 230px;
+        max-width: 230px;
+        background-color: var(--forest-900);
+        color: #eef2ef;
         min-height: 100vh;
+        padding: 24px 16px !important;
+        border-right: 1px solid var(--forest-700);
+      }
+      #sidebar h3 {
+        font-family: "Fraunces", "Playfair", serif;
+        font-size: 1.25rem;
+        color: #fff;
+        text-align: left !important;
+        padding-left: 10px;
+        margin-bottom: 28px !important;
       }
       #sidebar a {
-        color: white;
+        color: #cfd9d3;
         text-decoration: none;
       }
-      #sidebar .nav-link.active {
-        background-color: #495057;
+      #sidebar .nav-link,
+      #sidebar .nav-link.active-link {
+        color: #cfd9d3;
+        padding: 10px 12px;
+        border-radius: 0;
+        border-left: 3px solid transparent;
+        font-size: 0.93rem;
+        font-weight: 500;
+        margin-bottom: 2px;
+        transition:
+          background-color 0.15s ease,
+          color 0.15s ease;
       }
+      #sidebar .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.06);
+        color: #fff;
+      }
+      #sidebar .nav-link.active,
+      #sidebar .nav-link.active-link {
+        background-color: rgba(226, 166, 59, 0.12);
+        color: #fff;
+        border-left: 3px solid var(--marigold-500);
+        font-weight: 600;
+      }
+
+      /* ---------- Main content ---------- */
       #content {
         flex-grow: 1;
-        padding: 20px;
+        padding: 28px 32px;
       }
+
+      .navbar.bg-light {
+        background: transparent !important;
+        padding: 0 0 20px 0 !important;
+        border-bottom: 1px solid var(--line-200);
+        margin-bottom: 28px !important;
+      }
+      .navbar-brand {
+        font-family: "Fraunces", "Playfair", serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--ink-900) !important;
+      }
+
+      /* ---------- Quick actions ---------- */
+      .quick-action {
+        margin-bottom: 28px;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .quick-action .btn {
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.88rem;
+        padding: 9px 16px;
+        border: none;
+        box-shadow: none;
+      }
+      .quick-action .btn-success {
+        background-color: var(--forest-700);
+      }
+      .quick-action .btn-success:hover {
+        background-color: var(--forest-900);
+      }
+      .quick-action .btn-warning {
+        background-color: var(--marigold-500);
+        color: var(--ink-900);
+      }
+      .quick-action .btn-warning:hover {
+        background-color: var(--marigold-600);
+      }
+      .quick-action .btn-primary {
+        background-color: var(--clay-600);
+      }
+      .quick-action .btn-primary:hover {
+        background-color: #8a4025;
+      }
+      .quick-action .btn-info {
+        background-color: var(--forest-600);
+        color: #fff;
+      }
+      .quick-action .btn-info:hover {
+        background-color: var(--forest-700);
+      }
+
+      /* ---------- Cards ---------- */
       .card {
         margin-bottom: 20px;
+        background: var(--paper-0);
+        border: 1px solid var(--line-200);
+        border-radius: 8px;
+        box-shadow: none;
       }
+      .card-header {
+        background: transparent;
+        border-bottom: 1px solid var(--line-200);
+        padding: 14px 18px;
+      }
+      .card-header h5 {
+        margin: 0;
+        font-size: 1.05rem;
+      }
+      .card-body {
+        padding: 18px;
+      }
+
+      /* Stat cards */
+      .stat-card .card-body {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        text-align: left;
+        padding: 20px 18px;
+      }
+      .stat-icon {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        color: #fff;
+        background: var(--forest-700);
+      }
+      .stat-card.accent-marigold .stat-icon {
+        background: var(--marigold-500);
+        color: var(--ink-900);
+      }
+      .stat-card.accent-clay .stat-icon {
+        background: var(--clay-600);
+      }
+      .stat-card.accent-forest .stat-icon {
+        background: var(--forest-600);
+      }
+      .stat-card .card-title {
+        font-family: "Manrope", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--ink-600);
+        margin-bottom: 4px;
+        text-transform: none;
+      }
+      .stat-card .card-text {
+        font-family: "Fraunces", serif;
+        font-size: 2rem !important;
+        font-weight: 600;
+        color: var(--ink-900);
+        margin: 0;
+      }
+
+      /* ---------- Tables ---------- */
+      .table {
+        color: var(--ink-900);
+        font-size: 0.92rem;
+      }
+      .table thead th {
+        border-bottom: 2px solid var(--line-200);
+        color: var(--ink-600);
+        font-weight: 700;
+        font-size: 0.78rem;
+        padding-bottom: 10px;
+      }
+      .table td {
+        vertical-align: middle;
+        border-color: var(--line-200);
+      }
+      .table-striped > tbody > tr:nth-of-type(odd) > * {
+        background-color: transparent;
+      }
+      .table-striped > tbody > tr:hover > * {
+        background-color: rgba(31, 75, 67, 0.05);
+      }
+      .table .btn-warning {
+        background-color: transparent;
+        border: 1px solid var(--marigold-500);
+        color: var(--marigold-600);
+        font-weight: 600;
+      }
+      .table .btn-warning:hover {
+        background-color: var(--marigold-500);
+        color: var(--ink-900);
+      }
+
       .orphan-img {
         width: 50px;
         height: 50px;
         object-fit: cover;
         border-radius: 50%;
-      }
-      .quick-action {
-        margin-bottom: 15px;
+        border: 1px solid var(--line-200);
       }
 
+      #searchOrphans,
+      #searchWidows {
+        max-width: 420px;
+        margin: 0 18px 16px;
+        border: 1px solid var(--line-200);
+        border-radius: 6px;
+        padding: 9px 14px;
+      }
+      #searchOrphans:focus,
+      #searchWidows:focus {
+        border-color: var(--forest-700);
+        box-shadow: 0 0 0 3px rgba(31, 75, 67, 0.12);
+      }
+
+      /* ---------- Modals ---------- */
       .modal {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(20, 48, 43, 0.55);
         display: flex;
         justify-content: center;
         align-items: center;
+        z-index: 1050;
       }
 
       .modal-content {
-        background: white;
-        padding: 20px;
+        background: var(--paper-0);
+        padding: 26px;
         border-radius: 10px;
-        width: 400px;
+        width: 420px;
+        max-height: 88vh;
+        overflow-y: auto;
         position: relative;
+        border: 1px solid var(--line-200);
+      }
+      .modal-content h2 {
+        font-size: 1.3rem;
+        margin-bottom: 18px;
+      }
+      .modal-content form > div {
+        margin-bottom: 14px;
+      }
+      .modal-content label {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--ink-600);
+        margin-bottom: 5px;
+      }
+      .modal-content input,
+      .modal-content select,
+      .modal-content textarea {
+        width: 100%;
+        border: 1px solid var(--line-200);
+        border-radius: 6px;
+        padding: 9px 11px;
+        font-family: "Manrope", sans-serif;
+        font-size: 0.9rem;
+        background: #fff;
+        color: var(--ink-900);
+      }
+      .modal-content input:focus,
+      .modal-content select:focus,
+      .modal-content textarea:focus {
+        outline: none;
+        border-color: var(--forest-700);
+        box-shadow: 0 0 0 3px rgba(31, 75, 67, 0.12);
+      }
+      .modal-content input:disabled {
+        background: var(--paper-100);
+        color: var(--ink-600);
+      }
+      .modal-content button[type="submit"] {
+        background: var(--forest-700);
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        padding: 10px 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-top: 4px;
+      }
+      .modal-content button[type="submit"]:hover {
+        background: var(--forest-900);
       }
 
       .close {
         position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 24px;
+        top: 14px;
+        right: 18px;
+        font-size: 22px;
+        line-height: 1;
         cursor: pointer;
+        color: var(--ink-600);
+      }
+      .close:hover {
+        color: var(--ink-900);
       }
 
       .logoutMessageBox {
         max-width: 430px;
         width: 80%;
-        margin-bottom: 20px;
+        margin: 16px auto 0;
       }
 
       .nav-link {
@@ -94,10 +398,197 @@
         padding: 10px 15px;
       }
 
-      .nav-link.active {
-        background-color: #ff6d12;
-        color: #fff;
-        border-radius: 5px;
+        /* =========================
+   CREATE USER MODAL
+========================= */
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(4px);
+
+        padding: 20px;
+      }
+
+      /* Modal box */
+      .modal-content {
+        position: relative;
+
+        width: 100%;
+        max-width: 500px;
+
+        background: #ffffff;
+        border-radius: 16px;
+
+        padding: 30px;
+
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+
+        animation: modalSlideIn 0.25s ease-out;
+      }
+
+      /* Animation */
+      @keyframes modalSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px) scale(0.98);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* Modal heading */
+      .modal-content h2 {
+        margin: 0 0 25px;
+
+        font-size: 24px;
+        font-weight: 700;
+
+        color: #222;
+      }
+
+      /* Close button */
+      .modal-content .close {
+        position: absolute;
+
+        top: 15px;
+        right: 20px;
+
+        width: 35px;
+        height: 35px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        font-size: 26px;
+        font-weight: 400;
+
+        color: #777;
+        cursor: pointer;
+
+        transition: all 0.2s ease;
+      }
+
+      .modal-content .close:hover {
+        background: #f1f1f1;
+        color: #222;
+      }
+
+      /* Form */
+      #createUserForm {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      /* Each field */
+      #createUserForm > div {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      /* Labels */
+      #createUserForm label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #444;
+      }
+
+      /* Inputs and select */
+      #createUserForm input,
+      #createUserForm select {
+        width: 100%;
+        box-sizing: border-box;
+
+        padding: 12px 14px;
+
+        border: 1px solid #d9d9d9;
+        border-radius: 8px;
+
+        background: #fff;
+
+        font-size: 15px;
+        color: #333;
+
+        outline: none;
+
+        transition: all 0.2s ease;
+      }
+
+      /* Focus effect */
+      #createUserForm input:focus,
+      #createUserForm select:focus {
+        border-color: #ff6d12;
+
+        box-shadow: 0 0 0 3px rgba(255, 109, 18, 0.12);
+      }
+
+      /* Placeholder */
+      #createUserForm input::placeholder {
+        color: #aaa;
+      }
+
+      /* Create button */
+      #createUserForm button {
+        width: 100%;
+
+        margin-top: 8px;
+
+        padding: 13px 20px;
+
+        border: none;
+        border-radius: 8px;
+
+        background: #ff6d12;
+        color: white;
+
+        font-size: 15px;
+        font-weight: 600;
+
+        cursor: pointer;
+
+        transition: all 0.2s ease;
+      }
+
+      #createUserForm button:hover {
+        background: #e85d08;
+        transform: translateY(-1px);
+
+        box-shadow: 0 5px 15px rgba(255, 109, 18, 0.25);
+      }
+
+      #createUserForm button:active {
+        transform: translateY(0);
+      }
+
+      /* Mobile */
+      @media (max-width: 600px) {
+        .modal {
+          padding: 15px;
+        }
+
+        .modal-content {
+          padding: 25px 20px;
+          border-radius: 12px;
+        }
+
+        .modal-content h2 {
+          font-size: 21px;
+        }
       }
     </style>
   </head>
@@ -169,7 +660,7 @@
       <div id="content">
         <!-- Topbar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-          <div class="container-fluid">
+          <div class="container-fluid px-0">
             <span class="navbar-brand">RIA Orphans Dashboard</span>
           </div>
         </nav>
@@ -193,34 +684,54 @@
         <!-- Stats Cards -->
         <div class="row">
           <div class="col-md-4">
-            <div class="card text-center">
+            <div class="card stat-card text-center">
               <div class="card-body">
-                <h5 class="card-title">Total Orphans</h5>
-                <p class="card-text fs-3" id="totalOrphans">0</p>
+                <div class="stat-icon accent-marigold">
+                  <i class="fas fa-child"></i>
+                </div>
+                <div>
+                  <h5 class="card-title">Total Orphans</h5>
+                  <p class="card-text fs-3" id="totalOrphans">0</p> 
+                </div>
               </div>
             </div>
           </div>
           <div class="col-md-4">
-            <div class="card text-center">
+            <div class="card stat-card accent-clay text-center">
               <div class="card-body">
-                <h5 class="card-title">Total Widows</h5>
-                <p class="card-text fs-3" id="totalWidows">0</p>
+                <div class="stat-icon">
+                  <i class="fas fa-female"></i>
+                </div>
+                <div>
+                  <h5 class="card-title">Total Widows</h5>
+                  <p class="card-text fs-3" id="totalWidows">0</p>
+                </div>
               </div>
             </div>
           </div>
           <div class="col-md-4">
-            <div class="card text-center">
+            <div class="card stat-card accent-marigold text-center">
               <div class="card-body">
-                <h5 class="card-title">Total Donations</h5>
-                <p class="card-text fs-3" id="totalDonations">0</p>
+                <div class="stat-icon">
+                  <i class="fas fa-donate"></i>
+                </div>
+                <div>
+                  <h5 class="card-title">Total Donations</h5>
+                  <p class="card-text fs-3" id="totalDonations">0</p>
+                </div>
               </div>
             </div>
           </div>
           <div class="col-md-4">
-            <div class="card text-center">
+            <div class="card stat-card accent-forest text-center">
               <div class="card-body">
-                <h5 class="card-title">Total Users</h5>
-                <p class="card-text fs-3" id="totalUsers">0</p>
+                <div class="stat-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div>
+                  <h5 class="card-title">Total Users</h5>
+                  <p class="card-text fs-3" id="totalUsers">0</p>
+                </div>
               </div>
             </div>
           </div>
@@ -254,7 +765,7 @@
               type="text"
               id="searchOrphans"
               class="form-control"
-              placeholder="Search orphans by name, gender, or description..."
+              placeholder="Search orphans by name, program number, or gender..."
             />
           </div>
           <div class="card-body">
@@ -263,6 +774,7 @@
                 <tr>
                   <th>#</th>
                   <th>Image</th>
+                  <th>Program No.</th>
                   <th>Name</th>
                   <th>Age</th>
                   <th>Gender</th>
@@ -271,7 +783,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="text-center">Loading...</td>
+                  <td colspan="7" class="text-center">Loading...</td>
                 </tr>
               </tbody>
             </table>
@@ -286,7 +798,7 @@
               type="text"
               id="searchWidows"
               class="form-control"
-              placeholder="Search widows by name, gender, or description..."
+              placeholder="Search widows by name, program number, or gender..."
             />
           </div>
           <div class="card-body">
@@ -295,6 +807,7 @@
                 <tr>
                   <th>#</th>
                   <th>Name</th>
+                  <th>Program No.</th>
                   <th>Age</th>
                   <th>No of Children</th>
                   <th>Location</th>
@@ -321,6 +834,10 @@
             <div>
               <label>Name:</label>
               <input type="text" id="editName" required />
+            </div>
+            <div>
+              <label>Program No:</label>
+              <input type="text" id="editProgramNumber" required disabled />
             </div>
             <div>
               <label>Date of Birth:</label>
@@ -368,10 +885,15 @@
               <input type="text" id="editWidowName" required />
             </div>
 
-            <!-- <div>
-              <label>Age:</label>
-              <input type="number" id="editWidowAge" required />
-            </div> -->
+            <div>
+              <label>Program No:</label>
+              <input
+                type="text"
+                id="editWidowProgramNumber"
+                required
+                disabled
+              />
+            </div>
 
             <div>
               <label>Date of Birth:</label>
@@ -396,6 +918,83 @@
             <div>
               <label>Upload Image:</label>
               <input type="file" id="editWidowImage" accept="image/*" />
+            </div>
+
+            <button type="submit">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modals for creating users -->
+      <div id="createUserModal" class="modal" style="display: none">
+        <div class="modal-content">
+          <span class="close" onclick="closeCreateUserForm()">&times;</span>
+          <h2>Create User</h2>
+
+          <form id="createUserForm">
+            <div>
+              <label>Name:</label>
+              <input type="text" id="createUserName" required />
+            </div>
+
+            <div>
+              <label>Email:</label>
+              <input type="email" id="createUserEmail" required />
+            </div>
+
+            <div>
+              <label>Phone:</label>
+              <input type="text" id="createUserPhone" />
+            </div>
+
+            <div>
+              <label>Password:</label>
+              <input type="password" id="createUserPassword" required />
+            </div>
+
+            <div>
+              <label>Role:</label>
+              <select id="createUserRole" required>
+                <option value="">Select Role</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+              </select>
+            </div>
+
+            <button type="submit">Create User</button>
+          </form>
+        </div>
+      </div>
+      <!-- Edit User Modal -->
+      <div id="editUserModal" class="modal" style="display: none">
+        <div class="modal-content">
+          <span class="close" onclick="closeEditUserForm()">&times;</span>
+          <h2>Edit User</h2>
+
+          <form id="editUserForm">
+            <input type="hidden" id="editUserId" />
+            <div>
+              <label>Name:</label>
+              <input type="text" id="editUserName" required />
+            </div>
+
+            <div>
+              <label>Email:</label>
+              <input type="email" id="editUserEmail" required />
+            </div>
+
+            <div>
+              <label>Phone:</label>
+              <input type="text" id="editUserPhone" />
+            </div>
+
+            <div>
+              <label>Role:</label>
+              <select id="editUserRole" required>
+                <option value="">Select Role</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+              </select>
             </div>
 
             <button type="submit">Save Changes</button>
@@ -442,6 +1041,7 @@
       <tr>
         <td>${index + 1}</td>
         <td><img src="${imageSrc}" class="orphan-img" /></td>
+        <td>${orphan.programNumber || "-"}</td>
         <td>${orphan.name}</td>
         <td>${orphan.age || "-"}</td>
         <td>${orphan.gender || "-"}</td>
@@ -470,7 +1070,8 @@
       <tr>
         <td>${index + 1}</td>
         <td>${widow.name}</td>
-        <td>${widow.dob || "-"}</td>
+        <td>${widow.programNumber || "-"}</td>
+        <td>${widow.age || "-"}</td>
         <td>${widow.numberOfChildren || "-"}</td>
         <td>${widow.location || "-"}</td>
         <td>
@@ -490,47 +1091,10 @@
           const orphanData = await orphanRes.json();
           allOrphans = orphanData.data || [];
 
-          // const totalOrphans = orphanData.success ? orphanData.data.length : 0;
           const totalOrphans = allOrphans.length;
           document.getElementById("totalOrphans").innerText = totalOrphans;
 
           renderOrphans(allOrphans);
-
-          // const orphansTable = document.querySelector("#orphansTable tbody");
-          // orphansTable.innerHTML = "";
-
-          // if (totalOrphans === 0) {
-          //   orphansTable.innerHTML = `<tr><td colspan="6" class="text-center">No orphans found</td></tr>`;
-          // } else {
-          //   orphanData.data
-          //     .slice(-5)
-          //     .reverse()
-          //     .forEach((orphan, index) => {
-          //       const imageSrc =
-          //         orphan.image ||
-          //         "images/volunteer-holding-cardboard-box-2021-09-01-15-27-23-utc.jpg";
-          //       orphansTable.innerHTML += `
-          //           <tr>
-          //             <td>${index + 1}</td>
-          //             <td><img src="${imageSrc}" class="orphan-img" alt="${
-          //               orphan.name
-          //             }" /></td>
-          //             <td>${orphan.name}</td>
-          //             <td>${orphan.age || "-"}</td>
-          //             <td>${orphan.gender || "-"}</td>
-          //             <td>${orphan.description || "-"}</td>
-          //             <td>
-          //                 <button class="btn btn-sm btn-warning" onclick='openModal(${JSON.stringify(
-          //                   orphan,
-          //                 )})'>
-          //                 <i class="fas fa-edit"></i> Edit
-          //                 </button>
-          //             </td>
-          //           </tr>
-          //         `;
-          //     });
-          // }
-
           // Recent widows
           const widowsRes = await fetch(`${API_URL}/widows`);
           const widowsData = await widowsRes.json();
@@ -539,27 +1103,6 @@
           const totalWidows = allWidows.length;
           document.getElementById("totalWidows").innerText = totalWidows;
           renderWidows(allWidows);
-
-          // const widowsTable = document.querySelector("#widowsTable tbody");
-          // widowsTable.innerHTML = "";
-
-          // widowsData.data.forEach((widow, index) => {
-          //   widowsTable.innerHTML += `
-          //           <tr>
-          //           <td>${index + 1}</td>
-          //           <td>${widow.name}</td>
-          //           <td>${widow.dob || "-"}</td>
-          //           <td>${widow.numberOfChildren || "-"}</td>
-          //           <td>${widow.location || "-"}</td>
-          //           <td>
-          //               <button class="btn btn-sm btn-warning"
-          //                 onclick="alert('Edit widow coming soon')">
-          //                 <i class="fas fa-edit"></i> Edit
-          //               </button>
-          //           </td>
-          //           </tr>
-          //       `;
-          // });
 
           // Fetch total donations
           const donationsRes = await fetch(`${API_URL}/donations/total`);
@@ -641,13 +1184,13 @@
       const searchInput = document.getElementById("searchOrphans");
 
       if (searchInput) {
-      searchInput
-        .addEventListener("input", function () {
+        searchInput.addEventListener("input", function () {
           const value = this.value.toLowerCase();
 
           const filtered = allOrphans.filter(
             (o) =>
               (o.name || "").toLowerCase().includes(value) ||
+              (o.programNumber || "").toLowerCase().includes(value) ||
               (o.gender || "").toLowerCase().includes(value) ||
               (o.description || "").toLowerCase().includes(value),
           );
@@ -665,7 +1208,10 @@
           const filtered = allWidows.filter(
             (w) =>
               (w.name || "").toLowerCase().includes(value) ||
-              (w.numberOfChildren || "").toString().toLowerCase().includes(value) ||
+              (w.numberOfChildren || "")
+                .toString()
+                .toLowerCase()
+                .includes(value) ||
               (w.location || "").toLowerCase().includes(value),
           );
 
@@ -677,8 +1223,8 @@
       function openModal(orphan) {
         document.getElementById("editOrphanId").value = orphan._id;
         document.getElementById("editName").value = orphan.name;
-        // document.getElementById("editAge").value = orphan.age;
-        // document.getElementById("editDob").value = orphan.dob;
+        document.getElementById("editProgramNumber").value =
+          orphan.programNumber || "";
         if (orphan.dob) {
           const formattedDate = new Date(orphan.dob)
             .toISOString()
@@ -692,15 +1238,6 @@
 
         document.getElementById("editOrphanModal").style.display = "flex";
         document.getElementById("editImagePreview").src = orphan.image || "";
-        // document
-        //   .getElementById("editImage")
-        //   .addEventListener("change", function () {
-        //     const file = this.files[0];
-        //     if (file) {
-        //       document.getElementById("editImagePreview").src =
-        //         URL.createObjectURL(file);
-        //     }
-        //   });
       }
 
       function closeModal() {
@@ -709,25 +1246,7 @@
         document.getElementById("editImage").value = "";
       }
 
-      // Open widow edit modal
-      // function openWidowModal(widow) {
-      //   console.log("Widow clicked:", widow);
-      //   document.getElementById("editWidowId").value = widow._id;
-      //   document.getElementById("editWidowName").value = widow.name;
-      //   document.getElementById("editWidowAge").value = widow.age || "";
-      //   document.getElementById("editWidowChildren").value =
-      //     widow.numberOfChildren || "";
-      //   document.getElementById("editWidowLocation").value =
-      //     widow.location || "";
-      //   document.getElementById("editWidowDescription").value =
-      //     widow.description || "";
-
-      //   document.getElementById("editWidowModal").style.display = "flex";
-      // }
-
       async function openWidowModal(id) {
-        console.log("Widow ID clicked:", id); // debug
-
         try {
           const res = await fetch(`${API_URL}/widows/${id}`);
           const data = await res.json();
@@ -736,7 +1255,6 @@
 
           document.getElementById("editWidowId").value = widow._id;
           document.getElementById("editWidowName").value = widow.name;
-          // document.getElementById("editWidowAge").value = widow.age || "";
           if (widow.dob) {
             const formattedDate = new Date(widow.dob)
               .toISOString()
@@ -767,7 +1285,6 @@
       }
 
       // Handle orphan edit form submission
-
       document
         .getElementById("editImage")
         .addEventListener("change", function () {
@@ -841,7 +1358,6 @@
             "name",
             document.getElementById("editWidowName").value,
           );
-          // formData.append("age", document.getElementById("editWidowAge").value);
           formData.append("dob", document.getElementById("editWidowDob").value);
           formData.append(
             "numberOfChildren",
@@ -856,7 +1372,7 @@
             document.getElementById("editWidowDescription").value,
           );
 
-          // ✅ Handle image
+          // Handle image
           const imageFile = document.getElementById("editWidowImage")?.files[0];
           if (imageFile) {
             formData.append("image", imageFile);
@@ -866,9 +1382,9 @@
             const res = await fetch(`${API_URL}/widows/${id}`, {
               method: "PUT",
               headers: {
-                Authorization: `Bearer ${getToken()}`, // ✅ ONLY this header
+                Authorization: `Bearer ${getToken()}`, // ONLY this header
               },
-              body: formData, // ✅ NOT JSON
+              body: formData, // NOT JSON
             });
 
             const data = await res.json();
@@ -895,26 +1411,6 @@
     </script>
 
     <script>
-      // Logout functionality
-
-      // const logoutMessageBox = document.getElementById("logoutMessage");
-
-      // function showLogoutMessage(message, type = "danger") {
-      //   logoutMessageBox.textContent = message;
-      //   logoutMessageBox.className = `alert alert-${type}`;
-      //   logoutMessageBox.classList.remove("d-none");
-      // }
-
-      // const logoutButton = document.getElementById("logoutBtn");
-      // logoutButton.addEventListener("click", () => {
-      //   localStorage.removeItem("token");
-      //   localStorage.removeItem("role");
-      //   showLogoutMessage("You have been logged out.", "success");
-      //   setTimeout(() => {
-      //     window.location.href = "login.html";
-      //   }, 1200);
-      // });
-
       const logoutMessageBox = document.getElementById("logoutMessage");
       const logoutButton = document.getElementById("logoutBtn");
 
@@ -939,28 +1435,112 @@
         }
       });
     </script>
-    <!-- <script src="js/logout.js">
-            document.addEventListener("DOMContentLoaded", () => {
 
-        const authBtn = document.getElementById("authBtn");
-        const token = localStorage.getItem("token");
+    <script>
+      const createUserModal = document.getElementById("createUserModal");
+      const createUserForm = document.getElementById("createUserForm");
 
-        if (token) {
-          authBtn.textContent = "Logout";
-          authBtn.href = "#";
+      function showCreateUserForm() {
+        createUserModal.style.display = "flex";
+      }
 
-          authBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            logout();
+      function closeCreateUserForm() {
+        createUserModal.style.display = "none";
+        createUserForm.reset();
+      }
+
+      createUserForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("createUserName").value;
+        const email = document.getElementById("createUserEmail").value;
+        const phone = document.getElementById("createUserPhone").value;
+        const password = document.getElementById("createUserPassword").value;
+        const role = document.getElementById("createUserRole").value;
+
+        const userData = { name, email, phone, password, role };
+
+        try {
+          const res = await fetch(`${API_URL}/users`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${getToken()}`,
+            },
+            body: JSON.stringify(userData),
           });
 
-        } else {
-          authBtn.textContent = "Login";
-          authBtn.href = "login.html";
-        }
+          const data = await res.json();
 
+          if (data.success) {
+            alert("User created successfully!");
+            closeCreateUserForm();
+            loadDashboard();
+          } else {
+            alert("Failed: " + data.message);
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Error creating user");
+        }
       });
-    </script> -->
+
+      // update User  modal functionality
+      const editUserModal = document.getElementById("editUserModal");
+      const editUserForm = document.getElementById("editUserForm");
+
+      function showEditUserForm(user) {
+        document.getElementById("editUserId").value = user._id;
+        document.getElementById("editUserName").value = user.name || "";
+        document.getElementById("editUserEmail").value = user.email || "";
+        document.getElementById("editUserPhone").value = user.phone || "";
+        document.getElementById("editUserRole").value = user.role || "";
+
+        editUserModal.style.display = "flex";
+      }
+
+      function closeEditUserForm() {
+        editUserModal.style.display = "none";
+        editUserForm.reset();
+      }
+
+      editUserForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const userId = document.getElementById("editUserId").value;
+        const name = document.getElementById("editUserName").value;
+        const email = document.getElementById("editUserEmail").value;
+        const phone = document.getElementById("editUserPhone").value;
+        const role = document.getElementById("editUserRole").value;
+
+        const userData = { name, email, phone, role };
+
+        try {
+          const res = await fetch(`${API_URL}/users/${userId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${getToken()}`,
+            },
+            body: JSON.stringify(userData),
+          });
+
+          const data = await res.json();
+
+          if (data.success) {
+            alert("User updated successfully!");
+            closeEditUserForm();
+            loadDashboard();
+          } else {
+            alert("Failed: " + data.message);
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Error updating user");
+        }
+      });
+    </script>
+
     <script src="js/dashboard.js"></script>
   </body>
 </html>

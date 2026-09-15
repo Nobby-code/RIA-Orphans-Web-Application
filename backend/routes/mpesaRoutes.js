@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mpesaController = require("../controllers/mpesaController");
+const { protect, admin } = require("../middleware/auth");
 
 // Initiate STK Push
 router.post("/stkpush", mpesaController.stkPush);
@@ -13,6 +14,6 @@ router.post("/callback", mpesaController.mpesaCallback);
 //   res.status(200).json({ message: "Callback received successfully" });
 // });
 
-router.get("/", mpesaController.getTransactions);
+router.get("/", protect, admin, mpesaController.getTransactions);
 
 module.exports = router;

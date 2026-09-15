@@ -1,3 +1,83 @@
+let allOrphansList = [];
+let allWidowsList = [];
+
+function renderOrphansList(list) {
+  const tableBody = document.getElementById("orphansTableBody");
+  if (!tableBody) return;
+
+  tableBody.innerHTML = "";
+
+  if (list.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="6" class="text-center">No results found</td>
+      </tr>
+    `;
+    return;
+  }
+
+  list.forEach((orphan, index) => {
+    tableBody.innerHTML += `
+      <tr>
+        <td>${index + 1}</td>
+        <td>
+          <img src="${orphan.image || 'images/volunteer-holding-cardboard-box-2021-09-01-15-27-23-utc.jpg'}" alt="" class="img-thumbnail" style="max-width: 50px; height: auto;" />
+        </td>
+        <td>${orphan.programNumber || "-"}</td>
+        <td>${orphan.name || "-"}</td>
+        <td>${orphan.age || "-"}</td>
+        <td>${orphan.gender || "-"}</td>
+        <td>${orphan.description || "-"}</td>
+        <td>
+          <button class="btn btn-sm btn-warning"
+            onclick='openModal(${JSON.stringify(orphan)})'>
+            Edit
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function renderWidowsList(list) {
+  const tableBody = document.getElementById("widowsTableBody");
+  if (!tableBody) return;
+
+  tableBody.innerHTML = "";
+
+  if (list.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="6" class="text-center">No results found</td>
+      </tr>
+    `;
+    return;
+  }
+
+  list.forEach((widow, index) => {
+    tableBody.innerHTML += `
+      <tr>
+        <td>${index + 1}</td>
+        <td>
+          <img src="${widow.image || 'images/volunteer-holding-cardboard-box-2021-09-01-15-27-23-utc.jpg'}" alt="" class="img-thumbnail" style="max-width: 50px; height: auto;" />
+        </td>
+        <td>${widow.programNumber || "-"}</td>
+        <td>${widow.name || "-"}</td>
+        <td>${widow.age || "-"}</td>
+        <td>${widow.children || "-"}</td>
+        <td>${widow.location || "-"}</td>
+        <td>${widow.description || "-"}</td>
+        <td>
+          <button class="btn btn-sm btn-warning"
+            onclick="openWidowModal('${widow._id}')">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const links = document.querySelectorAll("[data-page]");
   const contentArea = document.getElementById("content");
@@ -19,11 +99,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // if (page === "orphans") {
         //   loadOrphansPage();
-        // } 
+        // }
 
         // Call correct data loader
         PAGE_LOADERS[page]?.();
-
       } catch (error) {
         contentArea.innerHTML = "<p>Error loading content</p>";
       }
@@ -32,68 +111,71 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Load Orphans Page
-    async function loadOrphansPage() {
-      const tableBody = document.getElementById("orphansTableBody");
-      if (!tableBody) return;
+async function loadOrphansPage() {
+  const tableBody = document.getElementById("orphansTableBody");
+  const searchInputL = document.getElementById("searchOrphansList");
+  if (!tableBody) return;
 
-      tableBody.innerHTML = `
+  tableBody.innerHTML = `
     <div class="d-flex justify-content-center align-items-center gap-2">
   <div class="spinner-border text-primary" role="status"></div>
   <span>Loading data, please wait...</span>
 </div>
   `;
 
-      try {
-        const res = await fetch(`${API_URL}/orphans`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+  try {
+    const res = await fetch(`${API_URL}/orphans`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
 
-        const data = await res.json();
-        tableBody.innerHTML = "";
+    const data = await res.json();
+    tableBody.innerHTML = "";
 
-        if (!data.success || data.data.length === 0) {
-          tableBody.innerHTML = `
+    if (!data.success || data.data.length === 0) {
+      tableBody.innerHTML = `
         <tr>
           <td colspan="6" class="text-center">No orphans found</td>
         </tr>
       `;
-          return;
-        }
+      return;
+    }
 
-        data.data.forEach((orphan, index) => {
-          tableBody.innerHTML += `
-        <tr>
-          <td>${index + 1}</td>
-          <td>${orphan.name}</td>
-          <td>${orphan.age || "-"}</td>
-          <td>${orphan.gender || "-"}</td>
-          <td>${orphan.description || "-"}</td>
-          <td>
-            <button class="btn btn-sm btn-warning"
-              onclick='openModal(${JSON.stringify(orphan)})'>
-              Edit
-            </button>
-          </td>
-        </tr>
-      `;
-        });
-      } catch (error) {
-        console.error(error);
-        tableBody.innerHTML = `
-      <tr>
+    allOrphansList = data.data; // Store for search
+
+    // Render initial table
+    renderOrphansList(allOrphansList);
+
+    if (searchInputL) {
+      searchInputL.addEventListener("input", function () {
+        const value = this.value.toLowerCase();
+
+        const filtered = allOrphansList.filter(
+          (o) =>
+            (o.name || "").toLowerCase().includes(value) ||
+            (o.programNumber || "").toLowerCase().includes(value) ||
+            (o.gender || "").toLowerCase().includes(value) ||
+            (o.description || "").toLowerCase().includes(value),
+        );
+        renderOrphansList(filtered);
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    tableBody.innerHTML = `<tr>
         <td colspan="6" class="text-center text-danger">
           Failed to load orphans
         </td>
       </tr>
     `;
-      }
-    }
+  }
+}
 
 // Load Widows Page
 async function loadWidowsPage() {
   const tableBody = document.getElementById("widowsTableBody");
+  const searchInputW = document.getElementById("searchWidowsList");
   if (!tableBody) return;
 
   tableBody.innerHTML = `
@@ -117,21 +199,24 @@ async function loadWidowsPage() {
       return;
     }
 
-    data.data.forEach((widow, index) => {
-      tableBody.innerHTML += `
-        <tr>
-          <td>${index + 1}</td>
-          <td>${widow.name}</td>
-          <td>${widow.age || "-"}</td>
-          <td>${widow.numberOfChildren || "-"}</td>
-          <td>${widow.location || "-"}</td>
-          <td>${widow.description || "-"}</td>
-          <td>
-            <button class="btn btn-sm btn-warning">Edit</button>
-          </td>
-        </tr>
-      `;
-    });
+    allWidowsList = data.data; // Store for search
+
+    renderWidowsList(allWidowsList);
+
+    if (searchInputW) {
+      searchInputW.addEventListener("input", function () {
+        const value = this.value.toLowerCase();
+
+        const filtered = allWidowsList.filter(
+          (w) =>
+            (w.name || "").toLowerCase().includes(value) ||
+            (w.programNumber || "").toLowerCase().includes(value) ||
+            (w.gender || "").toLowerCase().includes(value) ||
+            (w.description || "").toLowerCase().includes(value)
+        );
+        renderWidowsList(filtered);
+      });
+    }
   } catch (err) {
     console.error(err);
     tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Failed to load widows</td></tr>`;
@@ -161,7 +246,6 @@ async function loadDonorsPage() {
       tableBody.innerHTML = `<tr><td colspan="6" class="text-center">No donors found</td></tr>`;
       return;
     }
-
 
     data.data.forEach((donor, index) => {
       tableBody.innerHTML += `
@@ -348,10 +432,11 @@ async function loadUsersPage() {
           <td>${index + 1}</td>
           <td>${user.name}</td>
           <td>${user.email}</td>
+          <td>${user.phone || "-"}</td>
           <td>${user.role}</td>
           <td>${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "-"}</td>
           <td>
-            <button class="btn btn-sm btn-warning">Edit</button>
+            <button class="btn btn-sm btn-warning " onclick="showEditUserForm(${JSON.stringify(user).replace(/"/g, '&quot;')})">Edit</button>
           </td>
         </tr>
       `;
@@ -362,6 +447,42 @@ async function loadUsersPage() {
   }
 }
 
+// Search functionality for orphans
+
+const searchOrphansInput = document.getElementById("searchOrphans");
+
+if (searchOrphansInput) {
+  searchOrphansInput.addEventListener("input", function () {
+    const value = this.value.toLowerCase();
+
+    const filtered = allOrphans.filter(
+      (o) =>
+        (o.name || "").toLowerCase().includes(value) ||
+        (o.programNumber || "").toLowerCase().includes(value) ||
+        (o.gender || "").toLowerCase().includes(value) ||
+        (o.description || "").toLowerCase().includes(value),
+    );
+
+    renderOrphans(filtered);
+  });
+}
+// Search functionality for widows
+const searchWidowsInput2 = document.getElementById("searchWidows");
+
+if (searchWidowsInput2) {
+  searchWidowsInput2.addEventListener("input", function () {
+    const value = this.value.toLowerCase();
+
+    const filtered = allWidows.filter(
+      (w) =>
+        (w.name || "").toLowerCase().includes(value) ||
+        (w.numberOfChildren || "").toString().toLowerCase().includes(value) ||
+        (w.location || "").toLowerCase().includes(value),
+    );
+
+    renderWidows(filtered);
+  });
+}
 const PAGE_LOADERS = {
   orphans: loadOrphansPage,
   widows: loadWidowsPage,

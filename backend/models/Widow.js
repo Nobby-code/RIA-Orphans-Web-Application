@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Counter = require("./Counter");
 
 const widowSchema = new mongoose.Schema(
   {
@@ -11,9 +12,6 @@ const widowSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    // age: {
-    //   type: Number,
-    // },
     location: {
       type: String,
     },
@@ -30,6 +28,10 @@ const widowSchema = new mongoose.Schema(
     },
     image: {
       type: String,
+    },
+    programNumber: {
+      type: String,
+      unique: true,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -59,6 +61,26 @@ widowSchema.virtual("age").get(function () {
   }
 
   return age;
+});
+
+widowSchema.pre("save", async function (next) {
+  if (this.programNumber) return next(); // already set
+
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "widowProgram" },
+      { $inc: { seq: 1 } },
+      { new: true, upsert: true }
+    );
+
+    const year = new Date().getFullYear().toString().slice(-2);
+    const paddedNumber = String(counter.seq).padStart(3, "0");
+
+    this.programNumber = `RW-${paddedNumber}/${year}`;
+  } catch (err) {
+    console.error("Error generating program number:", err);
+    return next(err);
+  }
 });
 
 module.exports = mongoose.model("Widow", widowSchema);

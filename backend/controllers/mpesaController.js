@@ -9,7 +9,6 @@ const sendSMS = require("../config/smsService");
 
 exports.stkPush = async (req, res) => {
   try {
-    // const { amount, phone } = req.body;
     const {
       amount,
       phone,
@@ -23,7 +22,28 @@ exports.stkPush = async (req, res) => {
     if (!amount || !phone || !beneficiaryId || !beneficiaryType) {
       return res
         .status(400)
-        .json({ success: false, message: "Missing required donation fields" });
+        .json({ success: false, message: "Invalid or missing required donation field(s)" });
+    }
+
+    // Validate amount is a whole number between 1 and 150,000 KES
+    const numericAmount = Number(amount);
+    if (
+      !Number.isFinite(numericAmount) ||
+      !Number.isInteger(numericAmount) ||
+      numericAmount < 1 ||
+      numericAmount > 150000
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Amount must be a whole number between 1 and 150,000 KES",
+      });
+    }
+
+    // Basic phone format check before we send it to Safaricom
+    if (!/^\d{9,12}$/.test(phone.replace(/^\+/, ""))) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid phone number" });
     }
 
     // Ensure phone number is in 2547XXXXXXXX format
@@ -41,8 +61,7 @@ exports.stkPush = async (req, res) => {
       process.env.MPESA_SHORTCODE + process.env.MPESA_PASSKEY + timestamp
     ).toString("base64");
 
-    const stkURL =
-      "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+    const stkURL = process.env.MPESA_BASE_URL_SANDBOX;
 
     const payload = {
       BusinessShortCode: process.env.MPESA_SHORTCODE,
@@ -59,6 +78,8 @@ exports.stkPush = async (req, res) => {
     };
 
     console.log("STK Push Payload:", payload);
+    
+    console.log("STK URL being used:", stkURL);
 
     const response = await axios.post(stkURL, payload, {
       headers: { Authorization: `Bearer ${token}` },
@@ -110,10 +131,37 @@ exports.stkPush = async (req, res) => {
 
 exports.mpesaCallback = async (req, res) => {
   try {
-    const callback = req.body.Body.stkCallback;
+    // const callback = req.body.Body.stkCallback;
+    if (
+      process.env.MPESA_CALLBACK_SECRET &&
+      req.query.token !== process.env.MPESA_CALLBACK_SECRET
+    ) {
+      console.warn("Rejected M-Pesa callback with invalid/missing token");
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const callback = req.body?.Body?.stkCallback;
+    if (!callback) {
+      return res.status(400).json({ message: "Malformed callback payload" });
+    }
 
     const { MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc } =
       callback;
+
+
+      // Find the transaction in the database
+    const existing = await Transaction.findOne({
+          checkoutRequestID: CheckoutRequestID,
+        });
+        if (!existing) {
+          return res.status(404).json({ message: "Transaction not found" });
+        }
+        if (existing.status !== "pending") {
+          return res
+            .status(200)
+            .json({ message: `Callback ignored, transaction already ${existing.status}` });
+        }
+    
 
     // If failed, update status and exit
     if (ResultCode !== 0) {
@@ -123,8 +171,15 @@ exports.mpesaCallback = async (req, res) => {
           status: "failed",
           resultCode: ResultCode,
           resultDesc: ResultDesc,
-        }
+        },
+        { new: true }
       );
+
+      const io = req.app.get("io");
+      io.to(CheckoutRequestID).emit("paymentFailed", {
+        checkoutRequestID: CheckoutRequestID,
+        message: "Payment failed",
+      });
 
       return res.status(200).json({ message: "Callback saved (FAILED)" });
     }

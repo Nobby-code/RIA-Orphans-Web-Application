@@ -6,30 +6,6 @@ async function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-//   const res = await fetch(`${API_URL}/auth/login`, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ email, password }),
-//   });
-
-//   const data = await res.json();
-
-//   if (res.ok && data.token) {
-//     localStorage.setItem("token", data.token);
-
-//     if (data.role) {
-//       localStorage.setItem("role", data.role);
-//     }
-
-//     alert(data.message || "Login successful");
-//     window.location.href = "create-orphan.html";
-
-//   } else {
-//     alert("Invalid credentials");
-//   } 
-// }
-
-
 try {
     const res = await fetch(`${API_URL}/auth/login`, {
       method: "POST",

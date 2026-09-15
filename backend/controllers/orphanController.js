@@ -1,7 +1,6 @@
 const Orphan = require("../models/Orphan");
 const cloudinary = require("cloudinary").v2;
 
-
 // Create new orphan (admin only)
 exports.createOrphan = async (req, res) => {
   try {
@@ -21,14 +20,6 @@ exports.createOrphan = async (req, res) => {
     if (orphanType === "total") {
       req.body.deceasedParent = null; // Ensure deceasedParent is null for total orphans
     }
-    // if (orphanType === "total" && deceasedParent) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Total orphan should not have deceased parent",
-    //   });
-    // }
-
-    // const baseURL = req.protocol + "://" + req.get("host");
     let imageUrl = null;
     if (req.file) {
       imageUrl = req.file.path; // Cloudinary gives URL in .path
@@ -119,6 +110,7 @@ exports.updateOrphan = async (req, res) => {
 
     orphan.name = req.body.name || orphan.name;
     // orphan.age = req.body.age || orphan.age;
+    orphan.programNumber = req.body.programNumber || orphan.programNumber;
     orphan.dob = req.body.dob || orphan.dob;
     orphan.gender = req.body.gender || orphan.gender;
     orphan.description = req.body.description || orphan.description;
@@ -138,7 +130,6 @@ exports.updateOrphan = async (req, res) => {
       success: true,
       data: updatedOrphan,
     });
-
   } catch (error) {
     console.error("Update orphan error:", error);
     res.status(500).json({
@@ -214,7 +205,6 @@ exports.deleteOrphan = async (req, res) => {
       success: true,
       message: "Orphan deleted successfully",
     });
-
   } catch (error) {
     console.error("Delete orphan error:", error);
     res.status(500).json({

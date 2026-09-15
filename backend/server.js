@@ -1,10 +1,15 @@
+const dns = require("dns");
 const http = require("http");
 const { Server } = require("socket.io");
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const path = require("path");
 require("dotenv").config();
+// Set DNS servers to Google's and Cloudflare's public DNS servers
+dns.setDefaultResultOrder('ipv4first');
+dns.setServers(['8.8.8.8', '1.1.1.1']);
 
 const mpesaRoutes = require("./routes/mpesaRoutes");
 const orphanRoutes = require("./routes/orphanRoutes");
@@ -20,11 +25,16 @@ const mongoose = require("mongoose");
 
 // MongoDB URI
 const MONGO_URI =
-  process.env.MONGO_URI || process.env.MONGO_URI_LOCAL;
+  process.env.MONGO_URI 
+  // || process.env.MONGO_URI_LOCAL;
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    const mongoURI = process.env.MONGO_URI || process.env.MONGO_URI_LOCAL;
+    if (!mongoURI) {
+      throw new Error("MongoDB URI is not defined in environment variables.");
+    }
+    await mongoose.connect(mongoURI);
     console.log("MongoDB Connected ✅");
   } catch (err) {
     console.error("MongoDB Connection Error ❌ :", err);
@@ -32,19 +42,49 @@ const connectDB = async () => {
 };
 connectDB();
 
-// mongoose
-//   .connect(MONGO_URI)
-//   .then(() => console.log("MongoDB connected"))
-//   .catch((err) => console.error("MongoDB connection error:", err));
-
 const app = express();
 
-app.use(cors({
-  origin: "*", // later we can restrict to your domain
-  credentials: true,
-}));
-app.use(bodyParser.json());
+app.use(helmet());
+
+// SECURITY: CORS was wide open ("*") with credentials: true, which is an
+// unsafe combination in browsers. Restrict it to known origins via env var:
+//   ALLOWED_ORIGINS=https://yourdomain.com,https://admin.yourdomain.com
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow non-browser tools (curl, Postman) and same-origin requests with no Origin header
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
+if (allowedOrigins.length === 0) {
+  console.warn(
+    "⚠️  ALLOWED_ORIGINS is not set — CORS is currently open to any origin. Set it in .env before deploying to production."
+  );
+}
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Basic global rate limit to slow down abuse/scraping across the API
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/api", apiLimiter);
+
 app.use("/api/mpesa", mpesaRoutes);
 app.use("/api/orphans", orphanRoutes);
 app.use("/api/auth", authRoutes);
@@ -55,7 +95,6 @@ app.use("/api/donations", mpesaRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/programs", programRoutes);
 app.use("/api/events", eventsRoutes);
-app.use(express.urlencoded({ extended: true }));
 // app.use("/uploads", express.static("uploads"));
 // Serve the uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -69,7 +108,10 @@ const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
 
 const io = new Server(server, {
-  cors: { origin: "*", methods: ["GET", "POST"] },
+  cors: {
+    origin: allowedOrigins.length === 0 ? "*" : allowedOrigins,
+    methods: ["GET", "POST"],
+  },
 });
 
 // Make Socket.IO instance available in routes/controllers

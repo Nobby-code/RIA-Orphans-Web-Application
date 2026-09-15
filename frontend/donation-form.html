@@ -39,6 +39,25 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/lightgallery/css/lightgallery-bundle.min.css"
     />
+
+    <style>
+      body {
+        background: #f8f9fa;
+      }
+      .sponsor-card {
+        max-width: 700px;
+        margin: auto;
+      }
+      .form-section-title {
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+      .sponsor-form .form-control,
+      .sponsor-form .form-select {
+        border-radius: 0.25rem;
+        color: #495057;
+      }
+    </style>
   </head>
   <body>
     <!-- Header Section Start -->
@@ -96,21 +115,21 @@
                     >
                       <option value="USD" selected>USD</option>
                       <option value="EUR">EUR</option>
-                      <option value="GBP">GBP</option>
-                      <option value="NPR">NPR</option>
+                      <!-- <option value="GBP">GBP</option>
+                      <option value="NPR">NPR</option> -->
                       <option value="INR">KES</option>
                     </select>
                   </div>
                   <div class="col-8">
                     <label class="fw-bold playfair h5" for="otherAmount"
-                      >Other Amount</label
+                      >Amount</label
                     >
                     <div class="input-group">
-                      <span
+                      <!-- <span
                         class="input-group-text bg-secondary white"
                         id="currencySymbol"
                         >$</span
-                      >
+                      > -->
                       <input
                         id="otherAmount"
                         type="number"
@@ -142,8 +161,8 @@
                       >Designation</label
                     >
                     <select id="designation" class="bg-white">
-                      <option selected>Where it’s needed most</option>
-                      <option>Food & Nutrition</option>
+                      <!-- <option selected>Where it’s needed most</option> -->
+                      <option selected>Food & Nutrition</option>
                       <option>Education</option>
                       <option>Healthcare</option>
                       <option>Clean Water</option>
@@ -165,7 +184,49 @@
                 <!-- Donor Info -->
                 <div class="donr-info my-4">
                   <h4 class="mb-3">Donor Infomation</h4>
-                  <div class="row g-3">
+                  <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Full Name *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="fullName"
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Email Address *</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Phone Number *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Country</label>
+                  <input
+                    type="text"
+                    id="country"
+                    name="country"
+                    class="form-control"
+                  />
+                </div>
+              </div>
+                  <!-- <div class="row g-3">
                     <div class="col-md-6">
                       <input
                         id="fname"
@@ -193,7 +254,7 @@
                         required
                       />
                     </div>
-                  </div>
+                  </div> -->
                 </div>
 
                 <div class="donation-btns mt-4">

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -47,6 +47,11 @@
       .form-section-title {
         font-weight: 600;
         margin-bottom: 15px;
+      }
+      .sponsor-form .form-control,
+      .sponsor-form .form-select {
+        border-radius: 0.25rem;
+        color: #495057;
       }
     </style>
   </head>
@@ -113,26 +118,25 @@
                     required
                   />
                 </div>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Phone Number *</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  class="form-control"
-                  required
-                />
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Country</label>
-                <input
-                  type="text"
-                  id="country"
-                  name="country"
-                  class="form-control"
-                />
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Phone Number *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Country</label>
+                  <input
+                    type="text"
+                    id="country"
+                    name="country"
+                    class="form-control"
+                  />
+                </div>
               </div>
 
               <hr />
@@ -379,11 +383,12 @@
       }
       phoneInput.addEventListener("countrychange", () => {
         const countryData = iti.getSelectedCountryData();
+        countryInput.value = countryData.name;
         renderPaymentMethods(countryData.iso2);
       });
 
       const successModal = new bootstrap.Modal(
-        document.getElementById("paymentSuccessModal")
+        document.getElementById("paymentSuccessModal"),
       );
 
       const loading = document.getElementById("paymentLoading");
@@ -449,7 +454,7 @@
               if (!res.ok) {
                 // alert(data.message || "Failed to initiate MPESA payment");
                 throw new Error(
-                  data.message || "Failed to initiate MPESA payment"
+                  data.message || "Failed to initiate MPESA payment",
                 );
                 setButtonLoading(false);
                 return;
@@ -527,37 +532,16 @@
         setButtonLoading(false);
         successModal.show();
       });
-    </script>
-    <!-- <script>
-      const socket = io("http://localhost:5000");
-      let paymentTimeout;
 
-      socket.on("paymentSuccess", (data) => {
-        paymentTimeout = setTimeout(() => {
-          loading.style.display = "none";
-          submitBtn.disabled = false;
-
-          errorBox.textContent =
-            "⏱ Payment timed out. Please check your phone or try again.";
-          errorBox.style.display = "block";
-        }, 60000);
-
+      socket.on("paymentFailed", (data) => {
         clearTimeout(paymentTimeout);
 
-        document.getElementById("receiptNumber").innerText =
-          data.amount || "N/A";
-
-        setButtonLoading(false);
-
         loading.style.display = "none";
-        success.style.display = "block";
-        submitBtn.disabled = false;
-
-        successModal.show();
-
-        sponsorForm.reset();
+        setButtonLoading(false);
+        errorBox.textContent = data.message || "Payment failed.";
+        errorBox.style.display = "block";
       });
-    </script> -->
+    </script>
   </body>
   <script src="js/sticky.js"></script>
 </html>

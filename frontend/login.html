@@ -1,109 +1,164 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Login</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login</title>
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
-  <style>
-    body {
-      background: #f5f7fa;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-    .login-card {
-      max-width: 430px;
-      width: 100%;
-      padding: 30px;
-      border-radius: 8px;
-      background: #fff;
-      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
-    }
-    .btn-primary {
-      /* border-radius: 30px; */
-      background-color: #FF6D12;
-      padding: 10px;
-    }
-    .loginMessage {
-      /* max-width: 430px;
-      margin-bottom: 20px; */
-      max-width: 430px;
-      width: 100%;
-    }
-  </style>
-</head>
-
-<body>
-  <div id="loginMessage" class="alert d-none loginMessage" role="alert"></div>
-  <div class="login-card">
-    <h3 class="text-center fw-bold mb-3">ADMIN LOGIN</h3>
-    <p class="text-center text-muted">Login to access the admin dashboard</p>
-
-    <form id="loginForm" class="mt-4">
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Email</label>
-        <input type="email" id="email" class="form-control" placeholder="admin@example.com" required>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Password</label>
-        <input type="password" id="password" class="form-control" placeholder="Enter password" required>
-      </div>
-
-      <button id="loginBtn" class="btn btn-primary w-100 mt-2 " type="submit">Login</button>
-    </form>
-  </div>
-
-  <script src="js/config.js"></script>
-  <script src="js/api.js"></script>
-  <script>
-    const messageBox = document.getElementById("loginMessage");
-
-    function showMessage(message, type = "danger") {
-      messageBox.textContent = message;
-      messageBox.className = `alert alert-${type}`;
-      messageBox.classList.remove("d-none");
-    }
-
-
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      messageBox.classList.add("d-none");
-
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      try {
-        const res = await loginUser(email, password);
-
-        if (res.token && res.user && res.user.role === "admin") {
-          localStorage.setItem("token", res.token);
-          localStorage.setItem("role", res.user.role);
-          // alert("Login successful!");
-          showMessage("Login successful!", "success");
-          // window.location.href = "dashboard.html"; 
-          document.getElementById("loginBtn").disabled = true;
-          document.getElementById("loginBtn").textContent = "redirecting to dashboard...";
-          setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 1200);
-        } else {
-          // alert(res.message || "Invalid login");
-          showMessage(res.message || "Invalid login");
-        }
-      } catch (err) {
-        console.error(err);
-        showMessage("danger", "Server error. Please try again.");
+    <style>
+      body {
+        background: #f5f7fa;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
       }
-    });
-  </script>
-</body>
-</html>
+      .login-card {
+        max-width: 430px;
+        width: 100%;
+        padding: 30px;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+      }
+      .btn-primary {
+        /* border-radius: 30px; */
+        background-color: #ff6d12;
+        padding: 10px;
+      }
+      .loginMessage {
+        /* max-width: 430px;
+      margin-bottom: 20px; */
+        max-width: 430px;
+        width: 100%;
+      }
+    </style>
+  </head>
 
+  <body>
+    <div id="loginMessage" class="alert d-none loginMessage" role="alert"></div>
+    <div class="login-card">
+      <h3 class="text-center fw-bold mb-3">ADMIN LOGIN</h3>
+      <p class="text-center text-muted">Login to access the admin dashboard</p>
+
+      <form id="loginForm" class="mt-4">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Email</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            placeholder="admin@example.com"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Password</label>
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            placeholder="Enter password"
+            required
+          />
+        </div>
+
+        <button id="loginBtn" class="btn btn-primary w-100 mt-2" type="submit">
+          Login
+        </button>
+      </form>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // const token = localStorage.getItem("token");
+        // const role = localStorage.getItem("role");
+
+        // if (token && role === "admin") {
+        //   window.location.href = "dashboard.html";
+        // }
+
+        const messageBox = document.getElementById("loginMessage");
+        const form = document.getElementById("loginForm");
+        const loginBtn = document.getElementById("loginBtn");
+
+        function showMessage(message, type = "danger") {
+          messageBox.textContent = message;
+          messageBox.className = `alert alert-${type}`;
+          messageBox.classList.remove("d-none");
+        }
+
+        // Hide message
+        function hideMessage() {
+          messageBox.classList.add("d-none");
+        }
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          // messageBox.classList.add("d-none");
+          hideMessage();
+
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value.trim();
+
+          if (!email || !password) {
+            showMessage("Please enter both email and password", "warning");
+            return;
+          }
+
+          loginBtn.disabled = true;
+          // loginBtn.textContent = "Logging in...";
+          loginBtn.innerHTML = `
+          <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+          Logging in...
+            `;
+
+          try {
+            const res = await loginUser(email, password);
+
+            console.log("LOGIN RESPONSE:", res); // Debug
+
+            if (res && res.token && res.user) {
+              if (res.user.role !== "admin") {
+                showMessage("Access denied. Admins only.", "danger");
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Login";
+                return;
+              }
+              localStorage.setItem("token", res.token);
+              localStorage.setItem("role", res.user.role);
+              showMessage("Login successful!", "success");
+              loginBtn.disabled = true;
+              loginBtn.textContent = "redirecting to dashboard...";
+              setTimeout(() => {
+                window.location.href = "dashboard.html";
+              }, 1200);
+            } else {
+              showMessage("Invalid login credentials", "danger");
+            }
+          } catch (err) {
+            console.error("LOGIN ERROR:", err);
+            showMessage(
+              err.message || "Server error. Please try again.",
+              "danger",
+            );
+          } finally {
+            loginBtn.disabled = false;
+            loginBtn.textContent = "Login";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

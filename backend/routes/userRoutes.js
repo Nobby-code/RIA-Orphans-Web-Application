@@ -6,4 +6,10 @@ const userController = require('../controllers/userController');
 // Get all users → admin only
 router.get('/', protect, admin, userController.getAllUsers);
 
+// Create a new user → admin only
+router.post('/', protect, admin, userController.createUser);
+
+// Update user details → admin only
+router.put('/:id', protect, admin, userController.updateUser);
+
 module.exports = router;
