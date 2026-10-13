@@ -14,6 +14,9 @@ const orphanSchema = new mongoose.Schema({
     type: String,
     enum: ["Male", "Female"],
   },
+  contact: {
+    type: String,
+  },
   orphanType: {
     type: String,
     enum: ["total", "partial"],

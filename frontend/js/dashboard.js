@@ -10,7 +10,7 @@ function renderOrphansList(list) {
   if (list.length === 0) {
     tableBody.innerHTML = `
       <tr>
-        <td colspan="6" class="text-center">No results found</td>
+        <td colspan="9" class="text-center">No results found</td>
       </tr>
     `;
     return;
@@ -25,6 +25,7 @@ function renderOrphansList(list) {
         </td>
         <td>${orphan.programNumber || "-"}</td>
         <td>${orphan.name || "-"}</td>
+        <td>${orphan.contact || "-"}</td>
         <td>${orphan.age || "-"}</td>
         <td>${orphan.gender || "-"}</td>
         <td>${orphan.description || "-"}</td>
@@ -136,7 +137,7 @@ async function loadOrphansPage() {
     if (!data.success || data.data.length === 0) {
       tableBody.innerHTML = `
         <tr>
-          <td colspan="6" class="text-center">No orphans found</td>
+          <td colspan="9" class="text-center">No orphans found</td>
         </tr>
       `;
       return;
@@ -164,7 +165,7 @@ async function loadOrphansPage() {
   } catch (error) {
     console.error(error);
     tableBody.innerHTML = `<tr>
-        <td colspan="6" class="text-center text-danger">
+        <td colspan="9" class="text-center text-danger">
           Failed to load orphans
         </td>
       </tr>

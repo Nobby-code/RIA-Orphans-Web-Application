@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sponsor an Orphan | RIA Orphans Foundation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.css"
+    />
+
+    <!-- Favicon -->
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="images/cropped-favicon-32x32.png"
+    />
+    <!--CSS Plugins-->
+    <link rel="stylesheet" href="css/plugin.css" />
+    <!-- Default CSS-->
+    <link rel="stylesheet" href="css/default.css" />
+    <!--Custom CSS-->
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <!-- Font Awesome 4.7.0 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <!-- Font Awesome 5 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <style>
+      body {
+        background: #f8f9fa;
+      }
+      .sponsor-card {
+        max-width: 700px;
+        margin: auto;
+      }
+      .form-section-title {
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+      .sponsor-form .form-control,
+      .sponsor-form .form-select {
+        border-radius: 0.25rem;
+        color: #495057;
+      }
+
+      /* styles.css defines a global ".modal" (display:flex, fixed overlay,
+         z-index:1000) for the admin pages. On this page that keeps the Bootstrap
+         modal on screen as an invisible full-page layer that can take focus
+         (the aria-hidden warning) and sits below Bootstrap's backdrop (z-index
+         1050). Restore Bootstrap's behaviour for this modal. */
+      #paymentSuccessModal.modal {
+        display: none; /* Bootstrap sets inline display:block when showing */
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        z-index: 1055;
+        align-items: initial;
+        justify-content: initial;
+        background: transparent;
+        backdrop-filter: none;
+      }
+      #paymentSuccessModal .modal-content {
+        padding: 0;
+        max-width: none;
+        max-height: none;
+        overflow: visible;
+        animation: none;
+        border-radius: var(--bs-modal-border-radius, 0.5rem);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header Section Start -->
+    <div id="site-header"></div>
+    <!-- Header Section End -->
+
+    <!-- Sponsor Form -->
+    <section class="py-5">
+      <div class="container">
+        <div class="card sponsor-card shadow border-0">
+          <div class="card-body p-4">
+            <!-- Beneficiary Info -->
+            <div class="mb-4">
+              <h5 class="form-section-title">Beneficiary Details</h5>
+              <p class="mb-1">
+                <strong>Type:</strong>
+                <span id="beneficiaryType">Loading...</span>
+              </p>
+              <p class="mb-0">
+                <strong>ID:</strong>
+                <span id="beneficiaryNo">Loading...</span>
+              </p>
+              <p class="mb-0">
+                <strong>Name:</strong>
+                <span id="beneficiaryName">Loading...</span>
+              </p>
+              <p class="mb-0">
+                <strong>Age:</strong>
+                <span id="beneficiaryAge">Loading...</span>
+              </p>
+            </div>
+
+            <hr />
+
+            <!-- Sponsor Info -->
+            <h5 class="form-section-title">Sponsor Information</h5>
+            <form id="sponsorForm" class="sponsor-form">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="fullName">Full Name *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="fullName"
+                    name="fullName"
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="email">Email Address *</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="phone">Phone Number *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="country">Country</label>
+                  <input
+                    type="text"
+                    id="country"
+                    name="country"
+                    class="form-control"
+                  />
+                </div>
+              </div>
+
+              <hr />
+
+              <!-- Sponsorship Details -->
+              <h5 class="form-section-title">Sponsorship Details</h5>
+
+              <div class="mb-3">
+                <label class="form-label" for="sponsorshipType"
+                  >Sponsorship Type *</label
+                >
+                <select
+                  class="form-select"
+                  id="sponsorshipType"
+                  name="sponsorshipType"
+                  required
+                >
+                  <option value="">Select type</option>
+                  <option value="monthly">Monthly Sponsorship</option>
+                  <option value="one-time">One-Time Support</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="currencySelect"
+                  >Select Currency *</label
+                >
+                <select
+                  class="form-select"
+                  id="currencySelect"
+                  name="currency"
+                  required
+                >
+                  <option value="">Select currency</option>
+                  <option value="KES">KES</option>
+                  <option value="USD">USD</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="amount">Select Amount *</label>
+                <div class="mb-2" id="presetAmounts"></div>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="amount"
+                  name="amount"
+                  placeholder="Other amount"
+                  min="1"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Payment Method *</label>
+                <div id="paymentMethods"></div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="message"
+                  >Message (Optional)</label
+                >
+                <textarea
+                  class="form-control"
+                  id="message"
+                  rows="4"
+                  name="message"
+                  placeholder="Write a message or prayer for the child..."
+                ></textarea>
+              </div>
+
+              <!-- Hidden fields -->
+              <input type="hidden" name="beneficiaryType" id="hiddenType" />
+              <input type="hidden" name="beneficiaryId" id="hiddenId" />
+              <input type="hidden" name="beneficiaryName" id="hiddenName" />
+              <input type="hidden" name="beneficiaryAge" id="hiddenAge" />
+
+              <button
+                type="submit"
+                id="submitBtn"
+                class="btn btn-primary w-100 py-2 mt-3"
+              >
+                <span id="btnText">Proceed to Sponsor</span>
+                <span
+                  id="btnSpinner"
+                  class="spinner-border spinner-border-sm ms-2 d-none"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              </button>
+
+              <!-- Loading -->
+              <div
+                id="paymentLoading"
+                class="mt-3"
+                style="display: none; color: blue"
+                role="status"
+              >
+                ⏳ Waiting for M-Pesa payment confirmation... Check your phone
+                and enter your PIN.
+              </div>
+
+              <!-- Error -->
+              <div
+                id="paymentError"
+                class="mt-3"
+                style="display: none; color: red"
+                role="alert"
+              ></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Payment Success Modal -->
+    <div
+      class="modal fade"
+      id="paymentSuccessModal"
+      tabindex="-1"
+      aria-labelledby="paymentSuccessLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="paymentSuccessLabel">
+              Payment Successful
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body text-center">
+            <p class="mb-2">Thank you for sponsoring an orphan ❤️</p>
+            <p class="text-muted">
+              Your payment has been received successfully.
+            </p>
+            <p class="fw-bold">
+              Paid Amount:
+              <span id="receiptNumber" class="text-success"></span>
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-success w-100"
+              data-bs-dismiss="modal"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Starts -->
+    <div id="site-footer"></div>
+    <!-- Footer Ends -->
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="js/sticky.js"></script>
+
+    <script>
+      /* ------------------------------------------------------------------
+       * Setup
+       * ---------------------------------------------------------------- */
+      const API_URL = window.API_BASE_URL;
+      const socket = io(API_URL.replace("/api", ""));
+
+      const PAYMENT_RULES = {
+        ke: ["mpesa", "card", "paypal"],
+        us: ["card", "paypal"],
+        gb: ["card", "paypal"],
+        default: ["paypal"],
+      };
+
+      const sponsorForm = document.getElementById("sponsorForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const btnText = document.getElementById("btnText");
+      const btnSpinner = document.getElementById("btnSpinner");
+      const loading = document.getElementById("paymentLoading");
+      const errorBox = document.getElementById("paymentError");
+      const phoneInput = document.getElementById("phone");
+      const countryInput = document.getElementById("country");
+
+      let currentCheckoutId = null;
+      let paymentTimeout = null;
+
+      /* ------------------------------------------------------------------
+       * Beneficiary details
+       * ---------------------------------------------------------------- */
+      async function loadBeneficiaryDetails() {
+        const params = new URLSearchParams(window.location.search);
+        const type = params.get("type");
+        const id = params.get("id");
+
+        document.getElementById("beneficiaryType").innerText = type || "N/A";
+
+        const setNA = () => {
+          ["beneficiaryName", "beneficiaryAge", "beneficiaryNo"].forEach(
+            (el) => (document.getElementById(el).innerText = "N/A"),
+          );
+        };
+
+        if (!type || !id) {
+          setNA();
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_URL}/${type}s/${id}`);
+          if (!response.ok) throw new Error("Request failed");
+          const data = await response.json();
+
+          if (!data.data) {
+            alert("Beneficiary not found!");
+            setNA();
+            return;
+          }
+
+          const orphan = data.data;
+          document.getElementById("beneficiaryName").innerText = orphan.name;
+          document.getElementById("beneficiaryAge").innerText =
+            orphan.age + " years";
+          document.getElementById("beneficiaryNo").innerText =
+            orphan.programNumber || "N/A";
+
+          // Hidden inputs for payload
+          document.getElementById("hiddenType").value = type;
+          document.getElementById("hiddenId").value = id;
+          document.getElementById("hiddenName").value = orphan.name;
+          document.getElementById("hiddenAge").value = orphan.age;
+        } catch (err) {
+          console.error("Failed to load beneficiary:", err);
+          setNA();
+          errorBox.textContent =
+            "Could not load beneficiary details. Please refresh the page.";
+          errorBox.style.display = "block";
+        }
+      }
+      loadBeneficiaryDetails();
+
+      /* ------------------------------------------------------------------
+       * Phone input + payment methods
+       * ---------------------------------------------------------------- */
+      const iti = window.intlTelInput(phoneInput, {
+        initialCountry: "auto",
+        separateDialCode: true,
+        geoIpLookup: function (callback) {
+          fetch("https://ipapi.co/json/")
+            .then((res) => res.json())
+            .then((data) => callback(data.country?.toLowerCase() || "ke"))
+            .catch(() => callback("ke")); // fallback to Kenya
+        },
+        utilsScript:
+          "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js",
+      });
+
+      function syncCountry() {
+        const countryData = iti.getSelectedCountryData();
+        countryInput.value = countryData.name || "";
+        renderPaymentMethods(countryData.iso2);
+      }
+
+      function renderPaymentMethods(countryCode) {
+        const methods = PAYMENT_RULES[countryCode] || PAYMENT_RULES.default;
+        const container = document.getElementById("paymentMethods");
+        container.innerHTML = methods
+          .map(
+            (method) => `
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="paymentMethod"
+                id="pm-${method}" value="${method}" required />
+              <label class="form-check-label" for="pm-${method}">
+                ${method.toUpperCase()}
+              </label>
+            </div>`,
+          )
+          .join("");
+      }
+
+      phoneInput.addEventListener("countrychange", syncCountry);
+      setTimeout(syncCountry, 500);
+
+      /* ------------------------------------------------------------------
+       * Success modal (with focus/aria-hidden fix)
+       * ---------------------------------------------------------------- */
+      const modalEl = document.getElementById("paymentSuccessModal");
+      const successModal = new bootstrap.Modal(modalEl);
+
+      modalEl.addEventListener("show.bs.modal", () => {
+        modalEl.removeAttribute("inert");
+      });
+
+      // Hiding starts: make the modal inert and drop focus BEFORE Bootstrap
+      // sets aria-hidden, so focus is never inside an aria-hidden element.
+      modalEl.addEventListener("hide.bs.modal", () => {
+        modalEl.setAttribute("inert", "");
+        if (modalEl.contains(document.activeElement)) {
+          document.activeElement.blur();
+        }
+      });
+
+      // Fully hidden (focus trap gone): safe to move focus back to the page.
+      modalEl.addEventListener("hidden.bs.modal", () => {
+        submitBtn.focus();
+      });
+
+      /* ------------------------------------------------------------------
+       * UI helpers
+       * ---------------------------------------------------------------- */
+      function setButtonLoading(isLoading) {
+        submitBtn.disabled = isLoading;
+        btnSpinner.classList.toggle("d-none", !isLoading);
+        btnText.textContent = isLoading
+          ? "Waiting for payment"
+          : "Proceed to Sponsor";
+      }
+
+      function stopWaiting() {
+        clearTimeout(paymentTimeout);
+        paymentTimeout = null;
+        loading.style.display = "none";
+        setButtonLoading(false);
+      }
+
+      function showError(msg) {
+        stopWaiting();
+        errorBox.textContent = msg;
+        errorBox.style.display = "block";
+      }
+
+      function resetFormKeepBeneficiary() {
+        const ids = ["hiddenType", "hiddenId", "hiddenName", "hiddenAge"];
+        const saved = ids.map((id) => [id, document.getElementById(id).value]);
+        sponsorForm.reset();
+        saved.forEach(([id, v]) => (document.getElementById(id).value = v));
+        syncCountry(); // reset() clears the country field and payment options
+      }
+
+      /* ------------------------------------------------------------------
+       * Socket events (registered once)
+       * ---------------------------------------------------------------- */
+      socket.on("paymentSuccess", (d) => {
+        if (d.checkoutRequestID !== currentCheckoutId) return;
+        stopWaiting();
+        document.getElementById("receiptNumber").innerText = d.amount || "N/A";
+        successModal.show();
+        resetFormKeepBeneficiary();
+        currentCheckoutId = null;
+      });
+
+      socket.on("paymentFailed", (d) => {
+        if (d.checkoutRequestID && d.checkoutRequestID !== currentCheckoutId)
+          return;
+        currentCheckoutId = null;
+        showError(d.message || "Payment failed.");
+      });
+
+      /* ------------------------------------------------------------------
+       * Form submit
+       * ---------------------------------------------------------------- */
+      sponsorForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Full international number, e.g. +254712345678
+        phoneInput.value = iti.getNumber();
+
+        errorBox.style.display = "none";
+        loading.style.display = "block";
+        setButtonLoading(true);
+
+        const payload = Object.fromEntries(new FormData(sponsorForm).entries());
+
+        if (payload.paymentMethod === "mpesa") {
+          try {
+            const res = await fetch(`${API_URL}/mpesa/stkpush`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                phone: payload.phone,
+                amount: payload.amount,
+                fullName: payload.fullName,
+                email: payload.email,
+                beneficiaryId: payload.beneficiaryId,
+                beneficiaryType: payload.beneficiaryType,
+                sponsorshipType: payload.sponsorshipType,
+                description: `Sponsorship for ${payload.beneficiaryName}`,
+              }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+              throw new Error(
+                data.message || "Failed to initiate MPESA payment",
+              );
+            }
+
+            currentCheckoutId = data.data.CheckoutRequestID;
+            socket.emit("joinPaymentRoom", currentCheckoutId);
+
+            // Start the timeout only now that the STK push has been sent
+            clearTimeout(paymentTimeout);
+            paymentTimeout = setTimeout(
+              () =>
+                showError(
+                  "⏱ Payment timed out. Please check your phone or try again.",
+                ),
+              60000,
+            );
+          } catch (err) {
+            showError(err.message);
+          }
+        } else if (payload.paymentMethod === "card") {
+          alert("Card payment method selected. Integration pending.");
+          stopWaiting();
+        } else if (payload.paymentMethod === "paypal") {
+          alert("PayPal payment method selected. Integration pending.");
+          stopWaiting();
+        } else {
+          alert("Please select a valid payment method.");
+          stopWaiting();
+        }
+      });
+    </script>
+  </body>
+</html>

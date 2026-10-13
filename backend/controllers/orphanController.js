@@ -4,7 +4,7 @@ const cloudinary = require("cloudinary").v2;
 // Create new orphan (admin only)
 exports.createOrphan = async (req, res) => {
   try {
-    const { name, dob, age, gender, orphanType, deceasedParent, description } =
+    const { name, dob, age, gender, contact, orphanType, deceasedParent, description } =
       req.body;
 
     if (!name) {
@@ -29,6 +29,7 @@ exports.createOrphan = async (req, res) => {
       dob,
       age,
       gender,
+      contact,
       orphanType,
       deceasedParent,
       description,
@@ -113,6 +114,7 @@ exports.updateOrphan = async (req, res) => {
     orphan.programNumber = req.body.programNumber || orphan.programNumber;
     orphan.dob = req.body.dob || orphan.dob;
     orphan.gender = req.body.gender || orphan.gender;
+    orphan.contact = req.body.contact || orphan.contact;
     orphan.description = req.body.description || orphan.description;
 
     if (req.file) {

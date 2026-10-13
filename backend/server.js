@@ -21,6 +21,8 @@ const userRoutes = require("./routes/userRoutes");
 const programRoutes = require("./routes/programRoutes");
 const eventsRoutes = require("./routes/eventRoutes");
 
+const paypalRoutes = require("./routes/paypalRoutes");
+
 const mongoose = require("mongoose");
 
 // MongoDB URI
@@ -35,7 +37,9 @@ const connectDB = async () => {
       throw new Error("MongoDB URI is not defined in environment variables.");
     }
     await mongoose.connect(mongoURI);
-    console.log("MongoDB Connected ✅");
+    // console.log("MongoDB Connected ✅");
+    const dbName = mongoURI.match(/\/([^/?\s]+)(?=\s|✅|$)/)[1];
+    console.log(`MongoDB Connected to database: ${dbName} ✅`);
   } catch (err) {
     console.error("MongoDB Connection Error ❌ :", err);
   }
@@ -95,6 +99,7 @@ app.use("/api/donations", mpesaRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/programs", programRoutes);
 app.use("/api/events", eventsRoutes);
+app.use("/api/paypal", paypalRoutes);
 // app.use("/uploads", express.static("uploads"));
 // Serve the uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

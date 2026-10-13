@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RIA Orphans Dashboard</title>
 
+    <!-- Load external libraries for toasting-->
+    <script src="https://jsdelivr.net"></script>
+
     <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -19,11 +22,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
-  rel="stylesheet"
-/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css" />
 
@@ -398,7 +401,7 @@
         padding: 10px 15px;
       }
 
-        /* =========================
+      /* =========================
    CREATE USER MODAL
 ========================= */
 
@@ -667,10 +670,10 @@
 
         <!-- Quick Actions -->
         <div class="d-flex quick-action">
-          <a href="create-orphan.html" class="btn btn-success me-3"
+          <a onclick="showCreateOrphanForm()" class="btn btn-success me-3"
             ><i class="fas fa-plus me-1"></i> Add Orphan</a
           >
-          <a href="create-widow.html" class="btn btn-warning me-3"
+          <a onclick="showCreateWidowForm()" class="btn btn-warning me-3"
             ><i class="fas fa-plus me-1"></i> Add Widow</a
           >
           <a href="add-donation.html" class="btn btn-primary"
@@ -691,7 +694,7 @@
                 </div>
                 <div>
                   <h5 class="card-title">Total Orphans</h5>
-                  <p class="card-text fs-3" id="totalOrphans">0</p> 
+                  <p class="card-text fs-3" id="totalOrphans">0</p>
                 </div>
               </div>
             </div>
@@ -731,6 +734,19 @@
                 <div>
                   <h5 class="card-title">Total Users</h5>
                   <p class="card-text fs-3" id="totalUsers">0</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card stat-card accent-clay text-center">
+              <div class="card-body">
+                <div class="stat-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div>
+                  <h5 class="card-title">Total Donors</h5>
+                  <p class="card-text fs-3" id="totalDonors">0</p>
                 </div>
               </div>
             </div>
@@ -824,6 +840,139 @@
         </div>
       </div>
 
+      <!--Success Toast-->
+      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div
+          id="successToast"
+          class="toast align-items-center text-white bg-success border-0"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div class="d-flex">
+            <div class="toast-body">Data saved successfully!</div>
+            <button
+              type="button"
+              class="btn-close btn-close-white me-2 m-auto"
+              data-bs-dismiss="toast"
+              aria-label="Close"
+            ></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Toast -->
+      <div
+        id="errorToast"
+        class="toast align-items-center text-white bg-danger border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div id="errorToastBody" class="toast-body">
+            An error occurred while saving.
+          </div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- Modal for creating new orphan -->
+      <div id="createOrphanModal" class="modal" style="display: none">
+        <div class="modal-content">
+          <span class="close" onclick="closeCreateOrphanForm()">&times;</span>
+          <h2>Create Orphan</h2>
+          <form id="createOrphanForm">
+            <div>
+              <label>Name:</label>
+              <input type="text" id="orphanName" required />
+            </div>
+            <div>
+              <label>Date of Birth:</label>
+              <input type="date" id="orphanDob" required />
+            </div>
+            <div>
+              <label>Gender:</label>
+              <select id="orphanGender" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+            <div>
+              <label>Contact:</label>
+              <input type="text" id="orphanContact" />
+            </div>
+            <div>
+              <label>Orphan Type:</label>
+              <select id="orphanType" required>
+                <option value="">Select Orphan Type</option>
+                <option value="total">Total Orphan</option>
+                <option value="partial">Partial Orphan</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 mb-3 d-none" id="deceasedParentGroup">
+              <label class="fw-semibold">Who is Deceased?</label>
+              <select id="deceasedParent" class="form-select">
+                <option value="">Select parent</option>
+                <option value="father">Father</option>
+                <option value="mother">Mother</option>
+              </select>
+            </div>
+            <div>
+              <label>Description:</label>
+              <textarea id="orphanDescription"></textarea>
+            </div>
+            <div>
+              <label>Upload Image:</label>
+              <input type="file" id="orphanImage" accept="image/*" />
+            </div>
+            <button type="submit" id="createOrphanBtn">Create Orphan</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal for creating new widow -->
+      <div id="createWidowModal" class="modal" style="display: none">
+        <div class="modal-content">
+          <span class="close" onclick="closeCreateWidowForm()">&times;</span>
+          <h2>Create Widow</h2>
+          <form id="createWidowForm">
+            <div>
+              <label>Name:</label>
+              <input type="text" id="widowName" required />
+            </div>
+            <div>
+              <label>Date of Birth:</label>
+              <input type="date" id="widowDob" required />
+            </div>
+            <div>
+              <label>Number of Children:</label>
+              <input type="number" id="widowChildren" />
+            </div>
+            <div>
+              <label>Location:</label>
+              <input type="text" id="widowLocation" />
+            </div>
+            <div>
+              <label>Description:</label>
+              <textarea id="widowDescription"></textarea>
+            </div>
+            <div>
+              <label>Upload Image:</label>
+              <input type="file" id="widowImage" accept="image/*" />
+            </div>
+            <button type="submit">Create Widow</button>
+          </form>
+        </div>
+      </div>
+
       <!-- Edit Orphan Modal -->
       <div id="editOrphanModal" class="modal" style="display: none">
         <div class="modal-content">
@@ -850,6 +999,12 @@
                 <option value="Female">Female</option>
               </select>
             </div>
+
+            <div>
+              <label>Contact:</label>
+              <input type="text" id="editContact" />
+            </div>
+
             <div>
               <label>Description:</label>
               <textarea id="editDescription"></textarea>
@@ -1038,22 +1193,23 @@
               "images/volunteer-holding-cardboard-box-2021-09-01-15-27-23-utc.jpg";
 
             table.innerHTML += `
-      <tr>
-        <td>${index + 1}</td>
-        <td><img src="${imageSrc}" class="orphan-img" /></td>
-        <td>${orphan.programNumber || "-"}</td>
-        <td>${orphan.name}</td>
-        <td>${orphan.age || "-"}</td>
-        <td>${orphan.gender || "-"}</td>
-        <td>${orphan.description || "-"}</td>
-        <td>
-          <button class="btn btn-sm btn-warning"
-            onclick='openModal(${JSON.stringify(orphan)})'>
-            <i class="fas fa-edit"></i> Edit
-          </button>
-        </td>
-      </tr>
-    `;
+                  <tr>
+                    <td>${index + 1}</td>
+                    <td><img src="${imageSrc}" class="orphan-img" /></td>
+                    <td>${orphan.programNumber || "-"}</td>
+                    <td>${orphan.name}</td>
+                    <td>${orphan.contact || "-"}</td>
+                    <td>${orphan.age || "-"}</td>
+                    <td>${orphan.gender || "-"}</td>
+                    <td>${orphan.description || "-"}</td>
+                    <td>
+                      <button class="btn btn-sm btn-warning"
+                        onclick='openModal(${JSON.stringify(orphan)})'>
+                        <i class="fas fa-edit"></i> Edit
+                      </button>
+                    </td>
+                  </tr>
+                `;
           });
       }
 
@@ -1067,21 +1223,21 @@
         }
         data.forEach((widow, index) => {
           table.innerHTML += `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${widow.name}</td>
-        <td>${widow.programNumber || "-"}</td>
-        <td>${widow.age || "-"}</td>
-        <td>${widow.numberOfChildren || "-"}</td>
-        <td>${widow.location || "-"}</td>
-        <td>
-          <button class="btn btn-sm btn-warning"
-            onclick="openWidowModal('${widow._id}')">
-            <i class="fas fa-edit"></i> Edit
-          </button>
-        </td>
-      </tr>
-    `;
+                  <tr>
+                    <td>${index + 1}</td>
+                    <td>${widow.name}</td>
+                    <td>${widow.programNumber || "-"}</td>
+                    <td>${widow.age || "-"}</td>
+                    <td>${widow.numberOfChildren || "-"}</td>
+                    <td>${widow.location || "-"}</td>
+                    <td>
+                      <button class="btn btn-sm btn-warning"
+                        onclick="openWidowModal('${widow._id}')">
+                        <i class="fas fa-edit"></i> Edit
+                      </button>
+                    </td>
+                  </tr>
+                `;
         });
       }
 
@@ -1103,6 +1259,35 @@
           const totalWidows = allWidows.length;
           document.getElementById("totalWidows").innerText = totalWidows;
           renderWidows(allWidows);
+
+          // Fetch total donors
+          try {
+            const token = localStorage.getItem("token");
+            const donorsRes = await fetch(`${API_URL}/donors`, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            if (donorsRes.status === 401) {
+              throw new Error("Unauthorized: Please log in again.");
+            }
+            const donorsData = await donorsRes.json();
+            allDonors = donorsData.data || [];
+
+            const totalDonors = allDonors.length;
+
+            const element = document.getElementById("totalDonors");
+            if (element) {
+              element.innerText = totalDonors;
+            }
+          } catch (error) {
+            console.error("Fetch error:", error.message);
+          }
+
+          // document.getElementById("totalDonors").innerText = donorsData.success
+          //   ? donorsData.total
+          //   : 0;
 
           // Fetch total donations
           const donationsRes = await fetch(`${API_URL}/donations/total`);
@@ -1145,7 +1330,7 @@
 
           // Gender Chart
           new Chart(document.getElementById("genderChart"), {
-            type: "pie",
+            type: "bar",
             data: {
               labels: Object.keys(genderCounts), // ["Male", "Female", "Other"]
               datasets: [
@@ -1305,6 +1490,10 @@
 
           const formData = new FormData();
           formData.append("name", document.getElementById("editName").value);
+          formData.append(
+            "contact",
+            document.getElementById("editContact").value,
+          );
           formData.append("dob", document.getElementById("editDob").value);
           formData.append(
             "gender",
@@ -1473,15 +1662,15 @@
           const data = await res.json();
 
           if (data.success) {
-            alert("User created successfully!");
+            showSuccessToast();
             closeCreateUserForm();
             loadDashboard();
           } else {
-            alert("Failed: " + data.message);
+            showErrorToast("Failed: " + data.message);
           }
         } catch (err) {
           console.error(err);
-          alert("Error creating user");
+          showErrorToast("Error creating user");
         }
       });
 
@@ -1528,7 +1717,7 @@
           const data = await res.json();
 
           if (data.success) {
-            alert("User updated successfully!");
+            showSuccessToast();
             closeEditUserForm();
             loadDashboard();
           } else {
@@ -1536,7 +1725,178 @@
           }
         } catch (err) {
           console.error(err);
-          alert("Error updating user");
+          showErrorToast("Error updating user");
+        }
+      });
+    </script>
+
+    <script>
+      // Helper functions to easily target and show specific toasts
+      const showSuccessToast = () => {
+        const toast = new bootstrap.Toast(
+          document.getElementById("successToast"),
+        );
+        toast.show();
+      };
+
+      const showErrorToast = (message) => {
+        const body = document.getElementById("errorToastBody");
+        body.innerText = message || "An error occurred while saving.";
+        const toast = new bootstrap.Toast(
+          document.getElementById("errorToast"),
+        );
+        toast.show();
+      };
+      // create orphan modal functionality
+      const createOrphanModal = document.getElementById("createOrphanModal");
+      const createOrphanForm = document.getElementById("createOrphanForm");
+
+      function showCreateOrphanForm() {
+        createOrphanModal.style.display = "flex";
+      }
+
+      function closeCreateOrphanForm() {
+        createOrphanModal.style.display = "none";
+        createOrphanForm.reset();
+      }
+
+      createOrphanForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("orphanName").value;
+        const dob = document.getElementById("orphanDob").value;
+        const gender = document.getElementById("orphanGender").value;
+        const contact = document.getElementById("orphanContact").value;
+        const orphanType = document.getElementById("orphanType").value;
+        const description = document.getElementById("orphanDescription").value;
+
+        const imageFile = document.getElementById("orphanImage").files[0];
+
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("dob", dob);
+        formData.append("gender", gender);
+        formData.append("contact", contact);
+        formData.append("orphanType", orphanType);
+        if (orphanType === "partial") {
+          formData.append(
+            "deceasedParent",
+            document.getElementById("deceasedParent").value,
+          );
+        }
+
+        formData.append("description", description);
+        if (imageFile) {
+          formData.append("image", imageFile);
+        }
+
+        try {
+          const res = await fetch(`${API_URL}/orphans`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+            body: formData,
+          });
+
+          const data = await res.json();
+
+          if (data.success) {
+            showSuccessToast();
+            closeCreateOrphanForm();
+            loadDashboard();
+          } else {
+            showErrorToast("Failed: " + data.message);
+          }
+        } catch (err) {
+          console.error(err);
+          showErrorToast("Error creating orphan");
+        }
+      });
+
+      // Show/hide deceased parent based on orphan type
+      orphanType.addEventListener("change", () => {
+        if (orphanType.value === "partial") {
+          deceasedParentGroup.classList.remove("d-none");
+          deceasedParent.setAttribute("required", "required");
+        } else {
+          deceasedParentGroup.classList.add("d-none");
+          deceasedParent.removeAttribute("required");
+        }
+      });
+
+      // create widow modal functionality
+      const createWidowModal = document.getElementById("createWidowModal");
+      const createWidowForm = document.getElementById("createWidowForm");
+
+      function showCreateWidowForm() {
+        createWidowModal.style.display = "flex";
+      }
+
+      function closeCreateWidowForm() {
+        createWidowModal.style.display = "none";
+        createWidowForm.reset();
+      }
+
+      createWidowForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const submitBtn = createWidowForm.querySelector(
+          'button[type="submit"]',
+        );
+        const originalBtnText = submitBtn.innerHTML;
+
+        const name = document.getElementById("widowName").value;
+        const dob = document.getElementById("widowDob").value;
+        const numberOfChildren = document.getElementById("widowChildren").value;
+        const location = document.getElementById("widowLocation").value;
+        const description = document.getElementById("widowDescription").value;
+
+        const imageFile = document.getElementById("widowImage").files[0];
+
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("dob", dob);
+        formData.append("numberOfChildren", numberOfChildren);
+        formData.append("location", location);
+        formData.append("description", description);
+        if (imageFile) {
+          formData.append("image", imageFile);
+        }
+
+        try {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Saving Profile...
+          `;
+
+          const res = await fetch(`${API_URL}/widows`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+            body: formData,
+          });
+
+          const data = await res.json();
+
+          if (data.success) {
+            // const toastEl = document.getElementById("successToast");
+            // const toast = new bootstrap.Toast(toastEl);
+            // toast.show();
+            showSuccessToast();
+            closeCreateWidowForm();
+            loadDashboard();
+          } else {
+            showErrorToast("Failed: " + data.message);
+          }
+        } catch (err) {
+          console.error(err);
+          showErrorToast("Error creating widow");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
         }
       });
     </script>

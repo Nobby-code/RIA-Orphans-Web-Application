@@ -53,6 +53,31 @@
         border-radius: 0.25rem;
         color: #495057;
       }
+
+      /* styles.css defines a global ".modal" (display:flex, fixed overlay,
+         z-index:1000) for the admin pages. On this page that keeps the Bootstrap
+         modal on screen as an invisible full-page layer that can take focus
+         (the aria-hidden warning) and sits below Bootstrap's backdrop (z-index
+         1050). Restore Bootstrap's behaviour for this modal. */
+      #paymentSuccessModal.modal {
+        display: none; /* Bootstrap sets inline display:block when showing */
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        z-index: 1055;
+        align-items: initial;
+        justify-content: initial;
+        background: transparent;
+        backdrop-filter: none;
+      }
+      #paymentSuccessModal .modal-content {
+        padding: 0;
+        max-width: none;
+        max-height: none;
+        overflow: visible;
+        animation: none;
+        border-radius: var(--bs-modal-border-radius, 0.5rem);
+      }
     </style>
   </head>
 
@@ -73,10 +98,6 @@
                 <strong>Type:</strong>
                 <span id="beneficiaryType">Loading...</span>
               </p>
-              <!-- <p class="mb-0">
-                <strong>ID:</strong>
-                <span id="beneficiaryId">Loading...</span>
-              </p> -->
               <p class="mb-0">
                 <strong>ID:</strong>
                 <span id="beneficiaryNo">Loading...</span>
@@ -98,10 +119,11 @@
             <form id="sponsorForm" class="sponsor-form">
               <div class="row">
                 <div class="col-md-6 mb-3">
-                  <label class="form-label">Full Name *</label>
+                  <label class="form-label" for="fullName">Full Name *</label>
                   <input
                     type="text"
                     class="form-control"
+                    id="fullName"
                     name="fullName"
                     placeholder="Enter your full name"
                     required
@@ -109,17 +131,18 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                  <label class="form-label">Email Address *</label>
+                  <label class="form-label" for="email">Email Address *</label>
                   <input
                     type="email"
                     class="form-control"
+                    id="email"
                     name="email"
                     placeholder="Enter your email"
                     required
                   />
                 </div>
                 <div class="col-md-6 mb-3">
-                  <label class="form-label">Phone Number *</label>
+                  <label class="form-label" for="phone">Phone Number *</label>
                   <input
                     type="tel"
                     id="phone"
@@ -129,7 +152,7 @@
                   />
                 </div>
                 <div class="col-md-6 mb-3">
-                  <label class="form-label">Country</label>
+                  <label class="form-label" for="country">Country</label>
                   <input
                     type="text"
                     id="country"
@@ -145,8 +168,15 @@
               <h5 class="form-section-title">Sponsorship Details</h5>
 
               <div class="mb-3">
-                <label class="form-label">Sponsorship Type *</label>
-                <select class="form-select" name="sponsorshipType" required>
+                <label class="form-label" for="sponsorshipType"
+                  >Sponsorship Type *</label
+                >
+                <select
+                  class="form-select"
+                  id="sponsorshipType"
+                  name="sponsorshipType"
+                  required
+                >
                   <option value="">Select type</option>
                   <option value="monthly">Monthly Sponsorship</option>
                   <option value="one-time">One-Time Support</option>
@@ -154,7 +184,9 @@
               </div>
 
               <div class="mb-3">
-                <label class="form-label">Select Currency *</label>
+                <label class="form-label" for="currencySelect"
+                  >Select Currency *</label
+                >
                 <select
                   class="form-select"
                   id="currencySelect"
@@ -168,13 +200,15 @@
               </div>
 
               <div class="mb-3">
-                <label class="form-label">Select Amount *</label>
+                <label class="form-label" for="amount">Select Amount *</label>
                 <div class="mb-2" id="presetAmounts"></div>
                 <input
                   type="number"
                   class="form-control"
+                  id="amount"
                   name="amount"
                   placeholder="Other amount"
+                  min="1"
                   required
                 />
               </div>
@@ -185,9 +219,12 @@
               </div>
 
               <div class="mb-3">
-                <label class="form-label">Message (Optional)</label>
+                <label class="form-label" for="message"
+                  >Message (Optional)</label
+                >
                 <textarea
                   class="form-control"
+                  id="message"
                   rows="4"
                   name="message"
                   placeholder="Write a message or prayer for the child..."
@@ -213,18 +250,47 @@
                   aria-hidden="true"
                 ></span>
               </button>
-              <!-- Loading -->
-              <div id="paymentLoading" style="display: none; color: blue">
-                ⏳ Waiting for M-Pesa payment confirmation...
+
+              <!-- PayPal checkout -->
+              <div
+                id="paypalCheckoutSection"
+                class="mt-3"
+                style="display: none"
+              >
+                <div class="alert alert-info">
+                  Complete your donation securely using PayPal. Your payment
+                  will be confirmed by our server.
+                </div>
+
+                <div id="paypal-button-container"></div>
+
+                <button
+                  type="button"
+                  id="cancelPayPalBtn"
+                  class="btn btn-outline-secondary w-100 mt-2"
+                >
+                  Cancel PayPal checkout
+                </button>
               </div>
 
-              <!-- Success -->
-              <div id="paymentSuccess" style="display: none; color: green">
-                ✅ Payment Received! Thank you for your support.
+              <!-- Loading -->
+              <div
+                id="paymentLoading"
+                class="mt-3"
+                style="display: none; color: blue"
+                role="status"
+              >
+                ⏳ Waiting for M-Pesa payment confirmation... Check your phone
+                and enter your PIN.
               </div>
 
               <!-- Error -->
-              <div id="paymentError" style="display: none; color: red"></div>
+              <div
+                id="paymentError"
+                class="mt-3"
+                style="display: none; color: red"
+                role="alert"
+              ></div>
             </form>
           </div>
         </div>
@@ -249,6 +315,7 @@
               type="button"
               class="btn-close btn-close-white"
               data-bs-dismiss="modal"
+              aria-label="Close"
             ></button>
           </div>
           <div class="modal-body text-center">
@@ -257,7 +324,6 @@
               Your payment has been received successfully.
             </p>
             <p class="fw-bold">
-              <!-- Receipt Number: -->
               Paid Amount:
               <span id="receiptNumber" class="text-success"></span>
             </p>
@@ -283,49 +349,17 @@
     <script src="js/config.js"></script>
     <script src="js/layout.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
-    <script>
-      const API_URL = window.API_BASE_URL;
-      async function loadBeneficiaryDetails() {
-        const params = new URLSearchParams(window.location.search);
-        const type = params.get("type");
-        const id = params.get("id");
-        document.getElementById("beneficiaryType").innerText = type || "N/A";
-        // Fetch additional details from API if needed
-        // const API_URL = "http://localhost:5000/api";
-
-        const response = await fetch(`${API_URL}/${type}s/${id}`);
-        const data = await response.json();
-        console.log("API response:", data);
-        if (!data.data) {
-          alert("Beneficiary not found!");
-          document.getElementById("beneficiaryName").innerText = "N/A";
-          document.getElementById("beneficiaryAge").innerText = "N/A";
-          document.getElementById("beneficiaryNo").innerText = "N/A";
-          return;
-        }
-        const orphans = data.data;
-
-        // Display
-        document.getElementById("beneficiaryName").innerText = orphans.name;
-        document.getElementById("beneficiaryAge").innerText =
-          orphans.age + " years";
-        document.getElementById("beneficiaryNo").innerText =
-          orphans.programNumber || "N/A";
-
-        // Hidden inputs for payload
-        document.getElementById("hiddenType").value = type;
-        document.getElementById("hiddenId").value = id;
-        document.getElementById("hiddenName").value = orphans.name;
-        document.getElementById("hiddenAge").value = orphans.age;
-        // document.getElementById("hiddenNo").value = orphans.programNumber;
-      }
-      // window.onload = loadBeneficiaryDetails;
-      loadBeneficiaryDetails();
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"></script>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="js/sticky.js"></script>
+
     <script>
+      /* ------------------------------------------------------------------
+       * Setup
+       * ---------------------------------------------------------------- */
+      const API_URL = window.API_BASE_URL;
+      const socket = io(API_URL.replace("/api", ""));
+
       const PAYMENT_RULES = {
         ke: ["mpesa", "card", "paypal"],
         us: ["card", "paypal"],
@@ -333,215 +367,577 @@
         default: ["paypal"],
       };
 
-      const phoneInput = document.querySelector("#phone");
-      const countryInput = document.querySelector("#country");
+      const sponsorForm = document.getElementById("sponsorForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const btnText = document.getElementById("btnText");
+      const btnSpinner = document.getElementById("btnSpinner");
+      const loading = document.getElementById("paymentLoading");
+      const errorBox = document.getElementById("paymentError");
+      const phoneInput = document.getElementById("phone");
+      const countryInput = document.getElementById("country");
 
+      let currentCheckoutId = null;
+      let paymentTimeout = null;
+
+      /* ------------------------------------------------------------------
+       * Beneficiary details
+       * ---------------------------------------------------------------- */
+      async function loadBeneficiaryDetails() {
+        const params = new URLSearchParams(window.location.search);
+        const type = params.get("type");
+        const id = params.get("id");
+
+        document.getElementById("beneficiaryType").innerText = type || "N/A";
+
+        const setNA = () => {
+          ["beneficiaryName", "beneficiaryAge", "beneficiaryNo"].forEach(
+            (el) => (document.getElementById(el).innerText = "N/A"),
+          );
+        };
+
+        if (!type || !id) {
+          setNA();
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_URL}/${type}s/${id}`);
+          if (!response.ok) throw new Error("Request failed");
+          const data = await response.json();
+
+          if (!data.data) {
+            alert("Beneficiary not found!");
+            setNA();
+            return;
+          }
+
+          const orphan = data.data;
+          document.getElementById("beneficiaryName").innerText = orphan.name;
+          document.getElementById("beneficiaryAge").innerText =
+            orphan.age + " years";
+          document.getElementById("beneficiaryNo").innerText =
+            orphan.programNumber || "N/A";
+
+          // Hidden inputs for payload
+          document.getElementById("hiddenType").value = type;
+          document.getElementById("hiddenId").value = id;
+          document.getElementById("hiddenName").value = orphan.name;
+          document.getElementById("hiddenAge").value = orphan.age;
+        } catch (err) {
+          console.error("Failed to load beneficiary:", err);
+          setNA();
+          errorBox.textContent =
+            "Could not load beneficiary details. Please refresh the page.";
+          errorBox.style.display = "block";
+        }
+      }
+      loadBeneficiaryDetails();
+
+      /* ------------------------------------------------------------------
+       * Phone input + payment methods
+       * ---------------------------------------------------------------- */
       const iti = window.intlTelInput(phoneInput, {
         initialCountry: "auto",
         separateDialCode: true,
         geoIpLookup: function (callback) {
           fetch("https://ipapi.co/json/")
             .then((res) => res.json())
-            .then((data) => {
-              callback(data.country?.toLowerCase() || "ke");
-            })
+            .then((data) => callback(data.country?.toLowerCase() || "ke"))
             .catch(() => callback("ke")); // fallback to Kenya
         },
         utilsScript:
           "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js",
       });
 
-      setTimeout(() => {
+      function syncCountry() {
         const countryData = iti.getSelectedCountryData();
-        countryInput.value = countryData.name;
+        countryInput.value = countryData.name || "";
         renderPaymentMethods(countryData.iso2);
-      }, 500);
+      }
 
-      // Ensure full phone number is submitted
-      document.getElementById("sponsorForm").addEventListener("submit", () => {
-        phoneInput.value = iti.getNumber(); // +254712345678
-      });
-
-      // Dynamic rendering of payment methods based on country
       function renderPaymentMethods(countryCode) {
         const methods = PAYMENT_RULES[countryCode] || PAYMENT_RULES.default;
-
         const container = document.getElementById("paymentMethods");
-        container.innerHTML = "";
-
-        methods.forEach((method) => {
-          container.innerHTML += `
+        container.innerHTML = methods
+          .map(
+            (method) => `
             <div class="form-check">
               <input class="form-check-input" type="radio" name="paymentMethod"
-                value="${method}" required />
-              <label class="form-check-label">
+                id="pm-${method}" value="${method}" required />
+              <label class="form-check-label" for="pm-${method}">
                 ${method.toUpperCase()}
               </label>
-            </div>
-          `;
-        });
+            </div>`,
+          )
+          .join("");
       }
-      phoneInput.addEventListener("countrychange", () => {
-        const countryData = iti.getSelectedCountryData();
-        countryInput.value = countryData.name;
-        renderPaymentMethods(countryData.iso2);
+
+      phoneInput.addEventListener("countrychange", syncCountry);
+      setTimeout(syncCountry, 500);
+
+      /* ------------------------------------------------------------------
+       * Success modal (with focus/aria-hidden fix)
+       * ---------------------------------------------------------------- */
+      const modalEl = document.getElementById("paymentSuccessModal");
+      const successModal = new bootstrap.Modal(modalEl);
+
+      modalEl.addEventListener("show.bs.modal", () => {
+        modalEl.removeAttribute("inert");
       });
 
-      const successModal = new bootstrap.Modal(
-        document.getElementById("paymentSuccessModal"),
-      );
-
-      const loading = document.getElementById("paymentLoading");
-      const success = document.getElementById("paymentSuccess");
-      const errorBox = document.getElementById("paymentError");
-
-      // const submitBtn = document.getElementById("submitBtn");
-      const btnText = document.getElementById("btnText");
-      const btnSpinner = document.getElementById("btnSpinner");
-
-      function setButtonLoading(isLoading) {
-        if (isLoading) {
-          submitBtn.disabled = true;
-          btnSpinner.classList.remove("d-none");
-          btnText.textContent = "Waiting for payment";
-        } else {
-          submitBtn.disabled = false;
-          btnSpinner.classList.add("d-none");
-          btnText.textContent = "Proceed to Sponsor";
+      // Hiding starts: make the modal inert and drop focus BEFORE Bootstrap
+      // sets aria-hidden, so focus is never inside an aria-hidden element.
+      modalEl.addEventListener("hide.bs.modal", () => {
+        modalEl.setAttribute("inert", "");
+        if (modalEl.contains(document.activeElement)) {
+          document.activeElement.blur();
         }
+      });
+
+      // Fully hidden (focus trap gone): safe to move focus back to the page.
+      modalEl.addEventListener("hidden.bs.modal", () => {
+        submitBtn.focus();
+      });
+
+      /* ------------------------------------------------------------------
+       * UI helpers
+       * ---------------------------------------------------------------- */
+      function setButtonLoading(isLoading) {
+        submitBtn.disabled = isLoading;
+        btnSpinner.classList.toggle("d-none", !isLoading);
+        btnText.textContent = isLoading
+          ? "Waiting for payment"
+          : "Proceed to Sponsor";
       }
 
-      document
-        .getElementById("sponsorForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
+      function stopWaiting() {
+        clearTimeout(paymentTimeout);
+        paymentTimeout = null;
+        loading.style.display = "none";
+        setButtonLoading(false);
+      }
 
-          loading.style.display = "block";
-          success.style.display = "none";
-          errorBox.style.display = "none";
-          submitBtn.disabled = true;
+      function showError(msg) {
+        stopWaiting();
+        errorBox.textContent = msg;
+        errorBox.style.display = "block";
+      }
 
-          setButtonLoading(true);
+      function resetFormKeepBeneficiary() {
+        const ids = ["hiddenType", "hiddenId", "hiddenName", "hiddenAge"];
+        const saved = ids.map((id) => [id, document.getElementById(id).value]);
+        sponsorForm.reset();
+        saved.forEach(([id, v]) => (document.getElementById(id).value = v));
+        syncCountry(); // reset() clears the country field and payment options
+      }
 
-          const formData = new FormData(e.target);
-          const payload = Object.fromEntries(formData.entries());
+      /* ------------------------------------------------------------------
+       * Socket events (registered once)
+       * ---------------------------------------------------------------- */
+      socket.on("paymentSuccess", (d) => {
+        if (d.checkoutRequestID !== currentCheckoutId) return;
+        stopWaiting();
+        document.getElementById("receiptNumber").innerText = d.amount || "N/A";
+        successModal.show();
+        resetFormKeepBeneficiary();
+        currentCheckoutId = null;
+      });
 
-          console.log("Sponsor payload:", payload);
+      socket.on("paymentFailed", (d) => {
+        if (d.checkoutRequestID && d.checkoutRequestID !== currentCheckoutId)
+          return;
+        currentCheckoutId = null;
+        showError(d.message || "Payment failed.");
+      });
 
-          if (payload.paymentMethod === "mpesa") {
-            try {
-              const res = await fetch(`${API_URL}/mpesa/stkpush`, {
+      /* ----------------------------------------------------------
+   PayPal frontend integration
+---------------------------------------------------------- */
+
+      const paypalSection = document.getElementById("paypalCheckoutSection");
+      const paypalButtonContainer = document.getElementById(
+        "paypal-button-container",
+      );
+      const cancelPayPalBtn = document.getElementById("cancelPayPalBtn");
+
+      let paypalSdkPromise = null;
+      let paypalButtonsInstance = null;
+      let paypalProcessing = false;
+      let paypalPaymentUncertain = false;
+
+      function loadPayPalSdk() {
+        if (window.paypal?.Buttons) {
+          return Promise.resolve(window.paypal);
+        }
+
+        if (paypalSdkPromise) {
+          return paypalSdkPromise;
+        }
+
+        const clientId = window.PAYPAL_CLIENT_ID;
+
+        if (!clientId || clientId === "SANDBOX_CLIENT_ID") {
+          return Promise.reject(
+            new Error(
+              "Configure your PayPal Sandbox Client ID in js/config.js.",
+            ),
+          );
+        }
+
+        paypalSdkPromise = new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+
+          script.src =
+            "https://www.paypal.com/sdk/js" +
+            `?client-id=${encodeURIComponent(clientId)}` +
+            "&currency=USD&intent=capture&components=buttons";
+
+          script.onload = () => {
+            if (window.paypal?.Buttons) {
+              resolve(window.paypal);
+            } else {
+              paypalSdkPromise = null;
+              reject(
+                new Error("PayPal SDK loaded but Buttons is unavailable."),
+              );
+            }
+          };
+
+          script.onerror = () => {
+            paypalSdkPromise = null;
+            reject(
+              new Error(
+                "PayPal SDK could not load. Check your connection and Client ID.",
+              ),
+            );
+          };
+
+          document.head.appendChild(script);
+        });
+
+        return paypalSdkPromise;
+      }
+
+      async function readApiResponse(response) {
+        const raw = await response.text();
+
+        let result;
+
+        try {
+          result = raw ? JSON.parse(raw) : {};
+        } catch {
+          throw new Error(
+            `The server returned invalid JSON (HTTP ${response.status}).`,
+          );
+        }
+
+        if (!response.ok) {
+          throw new Error(
+            result.message ||
+              result.error ||
+              `The server returned HTTP ${response.status}.`,
+          );
+        }
+
+        return result;
+      }
+
+      async function startPayPalCheckout(payload) {
+        if (paypalPaymentUncertain) {
+          throw new Error(
+            "A previous payment may have completed. Contact the foundation to verify it before trying again.",
+          );
+        }
+
+        if (payload.currency !== "USD") {
+          throw new Error(
+            "PayPal currently supports USD only. Select USD or choose M-Pesa for KES.",
+          );
+        }
+
+        if (
+          !Number.isFinite(Number(payload.amount)) ||
+          Number(payload.amount) <= 0
+        ) {
+          throw new Error("Enter a valid sponsorship amount.");
+        }
+
+        paypalSection.style.display = "block";
+        paypalButtonContainer.innerHTML = "";
+        submitBtn.style.display = "none";
+        errorBox.style.display = "none";
+
+        try {
+          const paypal = await loadPayPalSdk();
+
+          paypalButtonsInstance = paypal.Buttons({
+            style: {
+              layout: "vertical",
+              shape: "rect",
+              label: "paypal",
+            },
+
+            createOrder: async () => {
+              const response = await fetch(`${API_URL}/paypal/create-order`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
+                  amount: Number(payload.amount).toFixed(2),
+                  currency: "USD",
+                  fullName: payload.fullName.trim(),
+                  email: payload.email.trim(),
                   phone: payload.phone,
-                  amount: payload.amount,
-                  fullName: payload.fullName,
-                  email: payload.email,
                   beneficiaryId: payload.beneficiaryId,
                   beneficiaryType: payload.beneficiaryType,
                   sponsorshipType: payload.sponsorshipType,
-                  description: `Sponsorship for ${payload.beneficiaryName}`,
+                  message: payload.message || "",
                 }),
               });
 
-              const data = await res.json();
+              const result = await readApiResponse(response);
+              const orderID = result.orderID || result.id;
 
-              // setButtonLoading(false);
-
-              if (!res.ok) {
-                // alert(data.message || "Failed to initiate MPESA payment");
-                throw new Error(
-                  data.message || "Failed to initiate MPESA payment",
-                );
-                setButtonLoading(false);
-                return;
+              if (!orderID) {
+                console.error("PayPal create-order response:", result);
+                throw new Error("The server did not return a PayPal order ID.");
               }
 
-              // Join Socket.IO room for real-time updates
-              socket.emit("joinPaymentRoom", data.data.CheckoutRequestID);
+              return orderID;
+            },
 
-              // Timeout for payment
-              let paymentTimeout = setTimeout(() => {
-                loading.style.display = "none";
-                setButtonLoading(false);
-                errorBox.textContent =
-                  "⏱ Payment timed out. Please check your phone.";
-                errorBox.style.display = "block";
-              }, 60000);
+            onApprove: async (data) => {
+              if (paypalProcessing) return;
 
-              socket.on("paymentSuccess", (paymentData) => {
+              paypalProcessing = true;
+              setButtonLoading(true);
+              loading.style.display = "block";
+              loading.textContent = "Verifying your PayPal payment...";
+              errorBox.style.display = "none";
+
+              let captureRequestStarted = false;
+
+              try {
+                captureRequestStarted = true;
+
+                const response = await fetch(
+                  `${API_URL}/paypal/capture-order`,
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      orderID: data.orderID,
+                    }),
+                  },
+                );
+
+                const result = await readApiResponse(response);
+
+                console.log("PayPal capture API response:", result);
+
+                // Support a backend response that exposes the status at the
+                // top level or inside a data object.
+                const details = result.data || result;
+                const status = String(
+                  details.status ||
+                    details.orderStatus ||
+                    details.captureStatus ||
+                    details.capture?.status ||
+                    "",
+                ).toUpperCase();
+
+                const verified =
+                  result.success === true ||
+                  result.verified === true ||
+                  status === "COMPLETED";
+
+                if (!verified) {
+                  console.error(
+                    "PayPal verification response did not confirm completion:",
+                    result,
+                  );
+
+                  paypalPaymentUncertain = true;
+
+                  throw new Error(
+                    "The server did not confirm the payment as completed. Do not pay again yet; check the transaction with the foundation.",
+                  );
+                }
+
+                // Check the amount/currency if the backend supplies them.
+                // The backend must perform the authoritative comparison too.
+                const paidAmount =
+                  details.amount ??
+                  details.capture?.amount?.value ??
+                  details.purchase_units?.[0]?.payments?.captures?.[0]?.amount
+                    ?.value;
+
+                const paidCurrency =
+                  details.currency ??
+                  details.capture?.amount?.currency_code ??
+                  details.purchase_units?.[0]?.payments?.captures?.[0]?.amount
+                    ?.currency_code;
+
                 if (
-                  paymentData.checkoutRequestID !== data.data.CheckoutRequestID
-                )
-                  return;
-                clearTimeout(paymentTimeout);
-                loading.style.display = "none";
-                setButtonLoading(false);
-                document.getElementById("receiptNumber").innerText =
-                  paymentData.amount || "N/A";
-                success.style.display = "block";
-                sponsorForm.reset();
-              });
+                  paidAmount !== undefined &&
+                  Number(paidAmount) !== Number(payload.amount)
+                ) {
+                  paypalPaymentUncertain = true;
+                  throw new Error(
+                    "The captured amount does not match the sponsorship amount. Do not retry; contact the foundation.",
+                  );
+                }
 
-              alert("MPESA prompt sent 📲 Enter your PIN on your phone");
-            } catch (err) {
-              loading.style.display = "none";
-              submitBtn.disabled = false;
-              errorBox.textContent = err.message;
-              errorBox.style.display = "block";
+                if (paidCurrency && paidCurrency !== "USD") {
+                  paypalPaymentUncertain = true;
+                  throw new Error(
+                    "The captured currency does not match the expected currency. Contact the foundation before retrying.",
+                  );
+                }
+
+                stopWaiting();
+                paypalSection.style.display = "none";
+                submitBtn.style.display = "";
+
+                document.getElementById("receiptNumber").textContent =
+                  `${paidCurrency || "USD"} ${Number(
+                    paidAmount ?? payload.amount,
+                  ).toFixed(2)}`;
+
+                successModal.show();
+                resetFormKeepBeneficiary();
+
+                paypalPaymentUncertain = false;
+              } catch (error) {
+                console.error("PayPal verification error:", error);
+
+                // If capture was attempted, don't encourage another payment
+                // until the server's order/capture state has been checked.
+                if (captureRequestStarted) {
+                  paypalPaymentUncertain = true;
+                }
+
+                stopWaiting();
+                showError(
+                  error.message ||
+                    "Payment verification failed. Please contact the foundation before retrying.",
+                );
+              } finally {
+                paypalProcessing = false;
+              }
+            },
+
+            onCancel: () => {
+              paypalSection.style.display = "none";
+              submitBtn.style.display = "";
+              paypalButtonContainer.innerHTML = "";
+              stopWaiting();
+            },
+
+            onError: (error) => {
+              console.error("PayPal checkout error:", error);
+              stopWaiting();
+
+              showError(
+                "PayPal checkout encountered an error. If you approved the payment, check its status before trying again.",
+              );
+            },
+          });
+
+          await paypalButtonsInstance.render("#paypal-button-container");
+        } catch (error) {
+          console.error("Unable to initialize PayPal:", error);
+          paypalSection.style.display = "none";
+          submitBtn.style.display = "";
+          showError(error.message || "Could not start PayPal checkout.");
+        }
+      }
+
+      cancelPayPalBtn.addEventListener("click", () => {
+        if (paypalProcessing) return;
+
+        paypalSection.style.display = "none";
+        submitBtn.style.display = "";
+        paypalButtonContainer.innerHTML = "";
+        paypalButtonsInstance = null;
+        stopWaiting();
+      });
+
+      /* ------------------------------------------------------------------
+       * Form submit
+       * ---------------------------------------------------------------- */
+      sponsorForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Full international number, e.g. +254712345678
+        phoneInput.value = iti.getNumber();
+
+        errorBox.style.display = "none";
+        loading.style.display = "block";
+        setButtonLoading(true);
+
+        const payload = Object.fromEntries(new FormData(sponsorForm).entries());
+
+        if (payload.paymentMethod === "mpesa") {
+          try {
+            const res = await fetch(`${API_URL}/mpesa/stkpush`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                phone: payload.phone,
+                amount: payload.amount,
+                fullName: payload.fullName,
+                email: payload.email,
+                beneficiaryId: payload.beneficiaryId,
+                beneficiaryType: payload.beneficiaryType,
+                sponsorshipType: payload.sponsorshipType,
+                description: `Sponsorship for ${payload.beneficiaryName}`,
+              }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+              throw new Error(
+                data.message || "Failed to initiate MPESA payment",
+              );
             }
-          } else if (payload.paymentMethod === "card") {
-            alert("Card payment method selected. Integration pending.");
-            loading.style.display = "none";
-            submitBtn.disabled = false;
-          } else if (payload.paymentMethod === "paypal") {
-            alert("PayPal payment method selected. Integration pending.");
-            loading.style.display = "none";
-            submitBtn.disabled = false;
-          } else {
-            alert("Please select a valid payment method.");
-            loading.style.display = "none";
-            submitBtn.disabled = false;
+
+            currentCheckoutId = data.data.CheckoutRequestID;
+            socket.emit("joinPaymentRoom", currentCheckoutId);
+
+            // Start the timeout only now that the STK push has been sent
+            clearTimeout(paymentTimeout);
+            paymentTimeout = setTimeout(
+              () =>
+                showError(
+                  "⏱ Payment timed out. Please check your phone or try again.",
+                ),
+              60000,
+            );
+          } catch (err) {
+            showError(err.message);
           }
-        });
-    </script>
-    <!-- <script src="http://localhost:5000/socket.io/socket.io.js"></script> -->
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
-
-    <script>
-      const socket = io(window.API_BASE_URL.replace("/api", "")); // connect to backend;
-      let paymentTimeout = setTimeout(() => {
-        loading.style.display = "none";
-        setButtonLoading(false);
-
-        errorBox.textContent =
-          "⏱ Payment timed out. Please check your phone or try again.";
-        errorBox.style.display = "block";
-      }, 60000);
-
-      socket.on("paymentSuccess", (data) => {
-        clearTimeout(paymentTimeout);
-
-        document.getElementById("receiptNumber").innerText =
-          data.amount || "N/A";
-
-        loading.style.display = "none";
-        setButtonLoading(false);
-        successModal.show();
-      });
-
-      socket.on("paymentFailed", (data) => {
-        clearTimeout(paymentTimeout);
-
-        loading.style.display = "none";
-        setButtonLoading(false);
-        errorBox.textContent = data.message || "Payment failed.";
-        errorBox.style.display = "block";
+        } else if (payload.paymentMethod === "card") {
+          alert("Card payment method selected. Integration pending.");
+          stopWaiting();
+        } else if (payload.paymentMethod === "paypal") {
+          // alert("PayPal payment method selected. Integration pending.");
+          // stopWaiting();
+          loading.style.display = "none";
+          try {
+            await startPayPalCheckout(payload);
+          } catch (err) {
+            showError(err.message);
+          }
+        } else {
+          alert("Please select a valid payment method.");
+          stopWaiting();
+        }
       });
     </script>
+    <script src="https://www.paypal.com/sdk/js?client-id=ATM8fz6P1Mwg3RkVw5DwEMlDCkIXpMcPwCyvuOHq1tZ0bxjzsvFgBu3-EQXlzxbjqtT_xgcZRB1Jxzn_&currency=USD"></script>
   </body>
-  <script src="js/sticky.js"></script>
 </html>
