@@ -360,10 +360,17 @@
       const API_URL = window.API_BASE_URL;
       const socket = io(API_URL.replace("/api", ""));
 
+      // const PAYMENT_RULES = {
+      //   ke: ["mpesa", "card", "paypal"],
+      //   us: ["card", "paypal"],
+      //   gb: ["card", "paypal"],
+      //   default: ["paypal"],
+      // };
+
       const PAYMENT_RULES = {
-        ke: ["mpesa", "card", "paypal"],
-        us: ["card", "paypal"],
-        gb: ["card", "paypal"],
+        ke: ["mpesa", "paypal"],
+        us: ["paypal"],
+        gb: ["paypal"],
         default: ["paypal"],
       };
 

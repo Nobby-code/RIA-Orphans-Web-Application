@@ -123,6 +123,27 @@ exports.createOrder = async (req, res) => {
 
     const accessToken = await getPayPalAccessToken();
 
+    console.log(
+      "Creating PayPal order for transaction:",
+      transaction._id.toString(),
+    );
+
+    console.log(
+      "PayPal purchase unit:",
+      JSON.stringify(
+        {
+          custom_id: transaction._id.toString(),
+          description: "Donation to Ria Orphans Foundation",
+          amount: {
+            currency_code: "USD",
+            value: numericAmount.toFixed(2),
+          },
+        },
+        null,
+        2,
+      ),
+    );
+
     const response = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders`, {
       method: "POST",
       headers: {
@@ -288,6 +309,11 @@ exports.captureOrder = async (req, res) => {
 
     const orderData = await orderResponse.json();
 
+    console.log(
+      "PayPal GET order response:",
+      JSON.stringify(orderData, null, 2),
+    );
+
     if (!orderResponse.ok) {
       console.error("PayPal order lookup failed:", orderData);
 
@@ -344,7 +370,15 @@ exports.captureOrder = async (req, res) => {
 
     // Extract payment details only after result is available.
     const purchaseUnit = result.purchase_units?.[0];
+    const orderPurchaseUnit = orderData.purchase_units?.[0];
     const capture = purchaseUnit?.payments?.captures?.[0];
+
+    console.log(
+      "PayPal custom_id from original order:",
+      orderPurchaseUnit?.custom_id ?? null,
+    );
+
+    console.log("Expected MongoDB transaction ID:", transaction._id.toString());
 
     console.log("===== PAYPAL PAYMENT VERIFICATION =====");
     console.log("Order ID:", result.id);
@@ -377,16 +411,16 @@ exports.captureOrder = async (req, res) => {
     //   });
     // }
 
-    // const capturedAt = capture.create_time
-    //   ? new Date(capture.create_time)
-    //   : new Date();
+    const capturedAt = capture.create_time
+      ? new Date(capture.create_time)
+      : new Date();
 
-    // if (Number.isNaN(capturedAt.getTime())) {
-    //   return res.status(409).json({
-    //     success: false,
-    //     message: "PayPal returned an invalid capture date.",
-    //   });
-    // }
+    if (Number.isNaN(capturedAt.getTime())) {
+      return res.status(409).json({
+        success: false,
+        message: "PayPal returned an invalid capture date.",
+      });
+    }
 
     const expectedAmount = Number(transaction.amount).toFixed(2);
     const actualAmount = Number(capture?.amount?.value);
@@ -394,7 +428,7 @@ exports.captureOrder = async (req, res) => {
     const checks = {
       orderIdMatches: result.id === orderID,
       orderCompleted: result.status === "COMPLETED",
-      customIdMatches: purchaseUnit?.custom_id === transaction._id.toString(),
+      customIdMatches: orderPurchaseUnit?.custom_id === transaction._id.toString(),
       captureCompleted: capture?.status === "COMPLETED",
       captureIdExists: Boolean(capture?.id),
       currencyMatches: capture?.amount?.currency_code === transaction.currency,
