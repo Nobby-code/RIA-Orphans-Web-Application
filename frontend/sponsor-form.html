@@ -78,6 +78,14 @@
         animation: none;
         border-radius: var(--bs-modal-border-radius, 0.5rem);
       }
+
+      .paybill-sponsor-image {
+        width: 100%;
+        max-width: 400px;
+        max-height: 420px;
+        object-fit: contain;
+        cursor: zoom-in;
+      }
     </style>
   </head>
 
@@ -216,6 +224,57 @@
               <div class="mb-3">
                 <label class="form-label">Payment Method *</label>
                 <div id="paymentMethods"></div>
+              </div>
+
+              <!-- M-Pesa Paybill Instructions -->
+              <div
+                id="paybillInstructions"
+                class="mt-3 p-3 border rounded bg-white"
+                style="display: none"
+              >
+                <h5 class="fw-bold mb-2">
+                  <i class="fa fa-mobile me-2 text-success"></i>
+                  Pay via M-Pesa Paybill
+                </h5>
+
+                <p class="text-secondary">
+                  Follow the instructions below to complete your sponsorship.
+                </p>
+
+                <div class="text-center mb-3">
+                  <a
+                    href="images/ria-mpesa-paybill.jpeg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src="images/ria-mpesa-paybill.jpeg"
+                      alt="RIA Orphans Foundation M-Pesa Paybill details"
+                      class="img-fluid rounded paybill-sponsor-image"
+                    />
+                  </a>
+
+                  <small class="text-muted d-block mt-2">
+                    Tap the image to view it larger.
+                  </small>
+                </div>
+
+                <ol class="ps-3 mb-3">
+                  <li>Open M-Pesa on your phone.</li>
+                  <li>Select <strong>Lipa na M-Pesa</strong>.</li>
+                  <li>Select <strong>Pay Bill</strong>.</li>
+                  <li>Enter the Paybill number shown in the image.</li>
+                  <li>Enter the account number shown in the image.</li>
+                  <li>
+                    Enter your sponsorship amount and confirm the payment.
+                  </li>
+                </ol>
+
+                <div class="alert alert-info mb-0">
+                  <strong>Important:</strong> Confirm the Paybill and account
+                  details before sending your money. Keep your M-Pesa
+                  confirmation message.
+                </div>
               </div>
 
               <div class="mb-3">
@@ -368,7 +427,7 @@
       // };
 
       const PAYMENT_RULES = {
-        ke: ["mpesa", "paypal"],
+        ke: ["mpesa", "paybill", "paypal"],
         us: ["paypal"],
         gb: ["paypal"],
         default: ["paypal"],
@@ -462,22 +521,68 @@
         renderPaymentMethods(countryData.iso2);
       }
 
+      // function renderPaymentMethods(countryCode) {
+      //   const methods = PAYMENT_RULES[countryCode] || PAYMENT_RULES.default;
+      //   const container = document.getElementById("paymentMethods");
+      //   container.innerHTML = methods
+      //     .map(
+      //       (method) => `
+      //       <div class="form-check">
+      //         <input class="form-check-input" type="radio" name="paymentMethod"
+      //           id="pm-${method}" value="${method}" required />
+      //         <label class="form-check-label" for="pm-${method}">
+      //           ${method.toUpperCase()}
+      //         </label>
+      //       </div>`,
+      //     )
+      //     .join("");
+      // }
+
       function renderPaymentMethods(countryCode) {
         const methods = PAYMENT_RULES[countryCode] || PAYMENT_RULES.default;
         const container = document.getElementById("paymentMethods");
+
         container.innerHTML = methods
           .map(
             (method) => `
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="paymentMethod"
-                id="pm-${method}" value="${method}" required />
-              <label class="form-check-label" for="pm-${method}">
-                ${method.toUpperCase()}
-              </label>
-            </div>`,
+        <div class="form-check mb-2">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="paymentMethod"
+            id="pm-${method}"
+            value="${method}"
+            required
+          />
+          <label class="form-check-label" for="pm-${method}">
+            ${
+              method === "paybill"
+                ? "Lipa na M-Pesa Paybill"
+                : method === "mpesa"
+                  ? "M-Pesa STK Push"
+                  : method.toUpperCase()
+            }
+          </label>
+        </div>
+      `,
           )
           .join("");
+
+        // Hide the instructions whenever payment methods are re-rendered.
+        document.getElementById("paybillInstructions").style.display = "none";
       }
+
+      // Show the image only when Paybill is selected.
+      document
+        .getElementById("paymentMethods")
+        .addEventListener("change", (event) => {
+          if (event.target.name !== "paymentMethod") return;
+
+          const instructions = document.getElementById("paybillInstructions");
+
+          instructions.style.display =
+            event.target.value === "paybill" ? "block" : "none";
+        });
 
       phoneInput.addEventListener("countrychange", syncCountry);
       setTimeout(syncCountry, 500);
@@ -888,7 +993,17 @@
 
         const payload = Object.fromEntries(new FormData(sponsorForm).entries());
 
-        if (payload.paymentMethod === "mpesa") {
+        if (payload.paymentMethod === "paybill") {
+          loading.style.display = "none";
+          setButtonLoading(false);
+
+          document.getElementById("paybillInstructions").scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+
+          return;
+        } else if (payload.paymentMethod === "mpesa") {
           try {
             const res = await fetch(`${API_URL}/mpesa/stkpush`, {
               method: "POST",
@@ -945,6 +1060,7 @@
         }
       });
     </script>
-    <script src="https://www.paypal.com/sdk/js?client-id=BAAu40PD_y7SWYHJ_L4Fhxz_fjvvxuwtDt-YIkUEW7BIQ74j6dE-aaFLYzO84Y_GVYcPiU8PGsSmE-3rkI&currency=USD"></script>
+    <!-- <script src="https://www.paypal.com/sdk/js?client-id=BAAu40PD_y7SWYHJ_L4Fhxz_fjvvxuwtDt-YIkUEW7BIQ74j6dE-aaFLYzO84Y_GVYcPiU8PGsSmE-3rkI&currency=USD"></script> -->
+    <script src="https://www.paypal.com/sdk/js?client-id=ATM8fz6P1Mwg3RkVw5DwEMlDCkIXpMcPwCyvuOHq1tZ0bxjzsvFgBu3-EQXlzxbjqtT_xgcZRB1Jxzn_&currency=USD"></script>
   </body>
 </html>

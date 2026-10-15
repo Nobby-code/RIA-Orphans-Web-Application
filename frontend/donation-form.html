@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zxx">
   <head>
     <meta charset="UTF-8" />
@@ -57,6 +57,32 @@
         border-radius: 0.25rem;
         color: #495057;
       }
+
+      .paybill-donation {
+        border: 1px solid #e9ecef;
+      }
+
+      .paybill-image {
+        display: block;
+        width: 100%;
+        max-width: 420px;
+        max-height: 500px;
+        object-fit: contain;
+        margin: 0 auto;
+        border-radius: 8px;
+        cursor: zoom-in;
+        transition: transform 0.2s ease;
+      }
+
+      .paybill-image:hover {
+        transform: scale(1.02);
+      }
+
+      .paybill-donation ol {
+        padding-left: 1.25rem;
+        color: #495057;
+        line-height: 1.6;
+      }
     </style>
   </head>
   <body>
@@ -114,10 +140,10 @@
                       aria-label="Currency"
                     >
                       <option value="USD" selected>USD</option>
-                      <option value="EUR">EUR</option>
+                      <!-- <option value="EUR">EUR</option> -->
                       <!-- <option value="GBP">GBP</option>
                       <option value="NPR">NPR</option> -->
-                      <option value="INR">KES</option>
+                      <option value="KES">KES</option>
                     </select>
                   </div>
                   <div class="col-8">
@@ -185,47 +211,47 @@
                 <div class="donr-info my-4">
                   <h4 class="mb-3">Donor Infomation</h4>
                   <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Full Name *</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="fullName"
-                    placeholder="Enter your full name"
-                    required
-                  />
-                </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Full Name *</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="fullName"
+                        placeholder="Enter your full name"
+                        required
+                      />
+                    </div>
 
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Email Address *</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    name="email"
-                    placeholder="Enter your email"
-                    required
-                  />
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Phone Number *</label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    class="form-control"
-                    required
-                  />
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Country</label>
-                  <input
-                    type="text"
-                    id="country"
-                    name="country"
-                    class="form-control"
-                  />
-                </div>
-              </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Email Address *</label>
+                      <input
+                        type="email"
+                        class="form-control"
+                        name="email"
+                        placeholder="Enter your email"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Phone Number *</label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Country</label>
+                      <input
+                        type="text"
+                        id="country"
+                        name="country"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
                   <!-- <div class="row g-3">
                     <div class="col-md-6">
                       <input
@@ -257,16 +283,73 @@
                   </div> -->
                 </div>
 
-                <div class="donation-btns mt-4">
+                <!-- <div class="donation-btns mt-4">
                   <button id="paypalBtn" class="btn-primary w-100 mb-3">
                     Donate with PayPal
-                  </button>
-                  <button id="stripeBtn" class="btn-secondary w-100 mb-3">
-                    Donate with Stripe
                   </button>
                   <button id="mpesaBtn" class="btn-primary w-100">
                     Donate with M-Pesa
                   </button>
+                </div> -->
+                <!-- M-Pesa Paybill Donation Section -->
+                <div
+                  class="paybill-donation mt-4 p-4 bg-white rounded shadow-sm"
+                >
+                  <div class="text-center">
+                    <h4 class="fw-bold mb-2">
+                      <i class="fa fa-mobile me-2" aria-hidden="true"></i>
+                      Donate via M-Pesa Paybill
+                    </h4>
+
+                    <p class="text-secondary mb-3">
+                      You can also support RIA Orphans Foundation by sending
+                      your donation directly through M-Pesa.
+                    </p>
+                    <a
+                      href="images/ria-mpesa-paybill.jpeg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="View M-Pesa Paybill details"
+                    >
+                      <img
+                        src="images/ria-mpesa-paybill.jpeg"
+                        alt="RIA Orphans Foundation M-Pesa Paybill number and account details"
+                        class="img-fluid paybill-image"
+                        loading="lazy"
+                      />
+                    </a>
+
+                    <p class="small text-secondary mt-2 mb-3">
+                      Tap the image to view it larger.
+                    </p>
+                  </div>
+
+                  <hr />
+
+                  <h5 class="fw-bold mb-3">How to donate</h5>
+
+                  <ol class="mb-0">
+                    <li class="mb-2">Open the M-Pesa menu on your phone.</li>
+                    <li class="mb-2">
+                      Select <strong>Lipa na M-Pesa</strong>, then
+                      <strong>Pay Bill</strong>.
+                    </li>
+                    <li class="mb-2">
+                      Enter the Paybill number shown in the image above.
+                    </li>
+                    <li class="mb-2">
+                      Enter the foundation's account number shown in the image.
+                    </li>
+                    <li class="mb-2">
+                      Enter your donation amount and confirm the details.
+                    </li>
+                    <li>Enter your M-Pesa PIN to complete the transaction.</li>
+                  </ol>
+
+                  <div class="alert alert-info mt-3 mb-0 small">
+                    Please confirm the Paybill and account details before
+                    completing your payment.
+                  </div>
                 </div>
               </div>
             </div>
@@ -590,7 +673,7 @@
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
-              }
+              },
             );
 
             const data = await response.json();
@@ -640,18 +723,27 @@
       const type = params.get("type"); // orphan | widow
       const id = params.get("id");
 
-      if (!type || !id) {
-        alert("Invalid donation link");
-        window.location.href = "orphans.html";
-      }
+      // if (!type || !id) {
+      //   alert("Invalid donation link");
+      //   window.location.href = "orphans.html";
+      // }
+
+      const isOrphanSponsorship = type === "orphan" && Boolean(id);
+
+      const isWidowSponsorship = type === "widow" && Boolean(id);
+
+      const isGeneralDonation = !type && !id;
 
       async function loadDonationTarget() {
         let res;
 
-        if (type === "orphan") {
+        if (isOrphanSponsorship) {
           res = await getOrphanById(id);
-        } else if (type === "widow") {
+        } else if (isWidowSponsorship) {
           res = await getWidowById(id);
+        } else {
+          // General donation, no specific target
+          return;
         }
 
         if (!res.success) {

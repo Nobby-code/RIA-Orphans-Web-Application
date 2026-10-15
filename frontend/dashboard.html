@@ -593,6 +593,44 @@
           font-size: 21px;
         }
       }
+
+      
+      /* .modal.fade:not(.show) {
+        display: none !important;
+      }
+
+      
+      .modal.fade.show {
+        display: block !important;
+      } */
+       
+/* Keep hidden Bootstrap modals from blocking the page */
+.modal.fade:not(.show) {
+  display: none !important;
+}
+
+/* Keep the open modal above its backdrop */
+.modal.fade.show {
+  display: block !important;
+  z-index: 1060 !important;
+}
+
+/* Keep the backdrop behind the modal */
+.modal-backdrop {
+  z-index: 1050 !important;
+}
+
+/* Ensure modal inputs can receive clicks and focus */
+.modal.show .modal-content,
+.modal.show .modal-dialog,
+.modal.show .modal-body,
+.modal.show input,
+.modal.show textarea,
+.modal.show select,
+.modal.show button {
+  pointer-events: auto !important;
+}
+
     </style>
   </head>
   <body>
@@ -1245,18 +1283,30 @@
         try {
           const orphanRes = await fetch(`${API_URL}/orphans`);
           const orphanData = await orphanRes.json();
-          allOrphans = orphanData.data || [];
+          // allOrphans = orphanData.data || [];
 
-          const totalOrphans = allOrphans.length;
+          allOrphans = await fetchAllRecords("orphans");
+
+          // const totalOrphans = allOrphans.length;
+
+          const totalOrphans =
+            orphanData.pagination?.totalItems ?? orphanData.data?.length ?? 0;
+
           document.getElementById("totalOrphans").innerText = totalOrphans;
 
           renderOrphans(allOrphans);
           // Recent widows
           const widowsRes = await fetch(`${API_URL}/widows`);
           const widowsData = await widowsRes.json();
-          allWidows = widowsData.data || [];
+          // allWidows = widowsData.data || [];
 
-          const totalWidows = allWidows.length;
+          allWidows = await fetchAllRecords("widows");
+
+          // const totalWidows = allWidows.length;
+
+          const totalWidows =
+            widowsData.pagination?.totalItems ?? widowsData.data?.length ?? 0;
+
           document.getElementById("totalWidows").innerText = totalWidows;
           renderWidows(allWidows);
 
@@ -1902,5 +1952,6 @@
     </script>
 
     <script src="js/dashboard.js"></script>
+    <script src="js/program-image-preview.js"></script>
   </body>
 </html>

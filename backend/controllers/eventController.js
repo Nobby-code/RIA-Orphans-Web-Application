@@ -3,24 +3,70 @@ const Event = require("../models/Event");
 // @desc   Create event
 // @route  POST /api/events
 // @access Private (Admin)
+
 exports.createEvent = async (req, res) => {
   try {
-    const { title, description, location, eventDate } = req.body;
-    const image = req.file ? req.file.path : null;
-    const event = await Event.create({
+    const {
       title,
       description,
       location,
       eventDate,
-      image,
-      createdBy: req.user._id,
-    });
+      program,
+    } = req.body;
 
-    res.status(201).json({ success: true, data: event });
+    // Validate required fields
+    if (!title?.trim() || !description?.trim() || !eventDate) {
+      return res.status(400).json({
+        success: false,
+        message: "Title, description, and event date are required.",
+      });
+    }
+
+    // Validate event date
+    const parsedDate = new Date(eventDate);
+
+    if (Number.isNaN(parsedDate.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid event date.",
+      });
+    }
+
+    const eventData = {
+      title: title.trim(),
+      description: description.trim(),
+      location: location?.trim() || "",
+      eventDate: parsedDate,
+      image: req.file ? req.file.path : null,
+      createdBy: req.user._id,
+    };
+
+    // Link the event to a program only when one is selected
+    if (program) {
+      eventData.program = program;
+    }
+
+    const event = await Event.create(eventData);
+
+    // Return the saved event with its linked program
+    const savedEvent = await Event.findById(event._id)
+      .populate("program", "title");
+
+    return res.status(201).json({
+      success: true,
+      message: "Event created successfully.",
+      data: savedEvent,
+    });
   } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    console.error("Create event error:", error);
+
+    return res.status(400).json({
+      success: false,
+      message: error.message || "Failed to create event.",
+    });
   }
 };
+
 
 // @desc   Get all events
 // @route  GET /api/events
@@ -49,25 +95,79 @@ exports.getEventById = async (req, res) => {
 // @desc   Update event
 // @route  PUT /api/events/:id
 // @access Private (Admin)
+
 exports.updateEvent = async (req, res) => {
-  const event = await Event.findById(req.params.id);
+  try {
+    const event = await Event.findById(req.params.id);
 
-  if (!event) {
-    return res.status(404).json({ message: "Event not found" });
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found",
+      });
+    }
+
+    const { title, description, location, eventDate, program } = req.body;
+
+    const updateFields = {};
+
+    if (title !== undefined) updateFields.title = title.trim();
+    if (description !== undefined) {
+      updateFields.description = description.trim();
+    }
+    if (location !== undefined) updateFields.location = location.trim();
+
+    if (eventDate !== undefined) {
+      const parsedDate = new Date(eventDate);
+
+      if (Number.isNaN(parsedDate.getTime())) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide a valid event date.",
+        });
+      }
+
+      updateFields.eventDate = parsedDate;
+    }
+
+    if (req.file) {
+      updateFields.image = req.file.path;
+    }
+
+    const updateOperation = { $set: updateFields };
+
+    if (program !== undefined) {
+      if (program === "") {
+        updateOperation.$unset = { program: 1 };
+      } else {
+        updateFields.program = program;
+      }
+    }
+
+    const updatedEvent = await Event.findByIdAndUpdate(
+      req.params.id,
+      updateOperation,
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).populate("program", "title");
+
+    return res.json({
+      success: true,
+      message: "Event updated successfully.",
+      data: updatedEvent,
+    });
+  } catch (error) {
+    console.error("Update event error:", error);
+
+    return res.status(400).json({
+      success: false,
+      message: error.message || "Failed to update event.",
+    });
   }
-
-  if (req.file) {
-    req.body.image = req.file.path;
-  }
-
-  const updatedEvent = await Event.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
-
-  res.json(updatedEvent);
 };
+
 
 // @desc   Delete event
 // @route  DELETE /api/events/:id
